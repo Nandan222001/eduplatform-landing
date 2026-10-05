@@ -1,0 +1,60 @@
+---
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@eduplatform.example';
+---
+<div class="form-card" id="book-demo">
+  <h3>Book a free demo</h3>
+  <p class="form-sub">Tell us about your institution &mdash; we reply within one working day. <b>2 months free</b> on annual plans (launch offer).</p>
+  <form class="lead-form" method="post" action={endpoint || undefined} data-endpoint={endpoint} data-email={email} data-form="demo-request" novalidate>
+    <div class="f-row">
+      <div class="field">
+        <label for="lf-name">Full name <span aria-hidden="true">*</span></label>
+        <input id="lf-name" name="name" type="text" autocomplete="name" required minlength="2" placeholder="Priya Sharma" />
+        <span class="err" data-err-for="name"></span>
+      </div>
+      <div class="field">
+        <label for="lf-email">Work email <span aria-hidden="true">*</span></label>
+        <input id="lf-email" name="email" type="email" autocomplete="email" required inputmode="email" placeholder="principal@school.edu" />
+        <span class="err" data-err-for="email"></span>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="field">
+        <label for="lf-phone">Phone / WhatsApp</label>
+        <input id="lf-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" pattern="[0-9+\-\s()]{7,18}" placeholder="+91 98765 43210" />
+        <span class="err" data-err-for="phone"></span>
+      </div>
+      <div class="field">
+        <label for="lf-org">Institution <span aria-hidden="true">*</span></label>
+        <input id="lf-org" name="institution" type="text" autocomplete="organization" required placeholder="Greenfield Public School" />
+        <span class="err" data-err-for="institution"></span>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="field">
+        <label for="lf-role">Your role</label>
+        <select id="lf-role" name="role">
+          <option>Principal / Head</option><option>Administrator</option><option>Teacher</option><option>IT / Operations</option><option>Group / Trust leadership</option><option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="lf-size">Students</label>
+        <select id="lf-size" name="students">
+          <option>Under 500</option><option>500 – 2,000</option><option>2,000 – 10,000</option><option>10,000+</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="lf-msg">What would you like to improve?</label>
+      <textarea id="lf-msg" name="message" rows="3" maxlength="1000" placeholder="Attendance, fee collection, parent communication…"></textarea>
+    </div>
+    <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+    <label class="consent">
+      <input type="checkbox" name="consent" required />
+      <span>I agree to be contacted about EduPlatform and accept the <a href="/privacy/">Privacy Policy</a>.</span>
+    </label>
+    <span class="err" data-err-for="consent"></span>
+    <button class="btn btn-primary form-submit" type="submit"><span class="lbl">Request my demo</span><span class="spin" aria-hidden="true"></span></button>
+    <p class="form-status" role="status" aria-live="polite"></p>
+  </form>
+</div>

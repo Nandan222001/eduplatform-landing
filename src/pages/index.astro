@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import IconSprite from '../components/IconSprite.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Stats from '../components/Stats.astro';
+import Marquee from '../components/Marquee.astro';
+import Roles from '../components/Roles.astro';
+import ProductTour from '../components/ProductTour.astro';
+import Academics from '../components/Academics.astro';
+import AiSection from '../components/AiSection.astro';
+import Gamification from '../components/Gamification.astro';
+import Parents from '../components/Parents.astro';
+import Platform from '../components/Platform.astro';
+import Testimonials from '../components/Testimonials.astro';
+import Pricing from '../components/Pricing.astro';
+import Faq from '../components/Faq.astro';
+import Cta from '../components/Cta.astro';
+import Footer from '../components/Footer.astro';
+import faqs from '../data/faq.json';
+
+const site = Astro.site!.toString().replace(/\/$/, '');
+const title = 'School Management Software India | AI-Powered ERP & LMS – EduPlatform';
+const description =
+  'EduPlatform is the AI-powered school management software for K-12: attendance, exams, fees, LMS, parent app, gamification and blockchain certificates in one platform. Start a 30-day free trial.';
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': site + '/#org',
+    name: 'EduPlatform',
+    legalName: 'EduPlatform Technologies Pvt. Ltd.',
+    url: site + '/',
+    logo: site + '/logo-512.png',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': site + '/#website',
+    url: site + '/',
+    name: 'EduPlatform',
+    inLanguage: 'en-IN',
+    publisher: { '@id': site + '/#org' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'EduPlatform',
+    applicationCategory: 'EducationApplication',
+    operatingSystem: 'Web, Android, iOS',
+    description,
+    url: site + '/',
+    image: site + '/og-image.jpg',
+    publisher: { '@id': site + '/#org' },
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'INR',
+      lowPrice: 29,
+      highPrice: 59,
+      offerCount: 3,
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+<Layout title={title} description={description} path="/" schema={schema}>
+  <link slot="head" rel="preload" as="image" href="/images/hero-m.webp" media="(max-width:700px)" fetchpriority="high" />
+  <link slot="head" rel="preload" as="image" href="/images/hero.webp" media="(min-width:701px)" fetchpriority="high" />
+  <IconSprite />
+  <Header />
+  <main id="main">
+    <Hero />
+    <Stats />
+    <Marquee />
+    <Roles />
+    <ProductTour />
+    <Academics />
+    <AiSection />
+    <Gamification />
+    <Parents />
+    <Platform />
+    <Testimonials />
+    <Pricing />
+    <Faq />
+    <Cta />
+  </main>
+  <Footer />
+  <script>
+    import '../scripts/main.js';
+  </script>
+</Layout>

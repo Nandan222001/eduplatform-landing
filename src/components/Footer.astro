@@ -1,0 +1,36 @@
+---
+const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@eduplatform.example';
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+---
+<footer class="site-footer">
+  <div class="container foot-grid">
+    <div class="foot-brand">
+      <a class="logo" href="/" style="color:#fff"><span class="logo-mark"><svg class="icon" style="width:22px;height:22px;stroke:none" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 12 6 26l26 13 22-11v15h4V26L32 12z" fill="#fff"/><path d="M17 36v9c0 5 6.7 9 15 9s15-4 15-9v-9l-15 7.5L17 36z" fill="#FFE3D6"/></svg></span>EduPlatform</a>
+      <p>The AI-powered school operating system. Web (EduPortal) · Mobile (EduTrack) · Built on FastAPI, React, React Native, Hyperledger Fabric &amp; AWS.</p>
+      <form class="news-form lead-form" method="post" action={endpoint || undefined} data-endpoint={endpoint} data-email={email} data-form="newsletter" novalidate>
+        <label for="nl-email" class="sr-only">Email address</label>
+        <div class="news-row">
+          <input id="nl-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Your email for product updates" />
+          <button class="btn btn-primary btn-sm form-submit" type="submit"><span class="lbl">Subscribe</span><span class="spin" aria-hidden="true"></span></button>
+        </div>
+        <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off" /></div>
+        <span class="err" data-err-for="email"></span>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+      <div class="trust-badges"><span>FERPA-ready</span><span>AWS Hosted</span><span>99.9% SLA</span><span>ISO practices</span><span>GDPR-minded</span></div>
+    </div>
+    <div><h4>Product</h4><ul>
+      <li><a href="#tour">Product Tour</a></li><li><a href="#academics">Academics Core</a></li><li><a href="#ai">AI &amp; ML Suite</a></li><li><a href="#engage">Gamification</a></li><li><a href="#parents">Parent Portal</a></li><li><a href="#mobile">Mobile Apps</a></li><li><a href="#pricing">Pricing</a></li>
+    </ul></div>
+    <div><h4>Solutions</h4><ul>
+      <li><a href="#roles">K-12 Schools</a></li><li><a href="#roles">Institution Groups</a></li><li><a href="#roles">Coaching Institutes</a></li><li><a href="#academics">Examinations Board</a></li><li><a href="#engage">Student Engagement</a></li><li><a href="#pricing">Enterprise &amp; White-Label</a></li>
+    </ul></div>
+    <div><h4>Company</h4><ul>
+      <li><a href="#book-demo">Contact Sales</a></li><li><a href="#faq">FAQ</a></li><li><a href="#book-demo">Book a Demo</a></li><li><a href="/privacy/">Privacy Policy</a></li><li><a href="/terms/">Terms of Service</a></li>
+    </ul></div>
+  </div>
+  <div class="container foot-bottom">
+    <span>© {new Date().getFullYear()} EduPlatform Technologies Pvt. Ltd. All rights reserved.</span>
+    <span>Made with care for educators · <a href={`mailto:${email}`}>{email}</a></span>
+  </div>
+</footer>

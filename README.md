@@ -1,37 +1,25 @@
-# EduPlatform — Marketing Landing Page
+# EduPlatform — Marketing Site (Astro)
 
-A professional, fully self-contained marketing landing page for **EduPlatform** (EduPortal on Web, EduTrack on Mobile) — the AI-powered, multi-tenant school operating system.
+Static, SEO-optimised landing page for **EduPlatform**, built with [Astro](https://astro.build).
 
-Built on the **Kinetic Scholar** design system: warm coral `#FF7A45`, deep purple `#6C5CE7`, teal `#00CEC9`, gold `#FDCB6E`, cream `#FFF4F0` surfaces, Manrope/Inter typography.
+## Commands
 
-## What's inside
+| Command | Action |
+| :-- | :-- |
+| `npm install` | Install dependencies |
+| `npm run dev` | Dev server at `localhost:4321` |
+| `npm run build` | Build to `dist/` |
+| `npm run preview` | Preview the production build |
+| `npm run images` | Re-optimise `source-images/*.jpg` → `public/images/*.webp` |
 
-- **4 carousels** — product tour, engagement showcase, testimonials, plus an integrations marquee
-- **19 custom images** — 10 cinematic landscape photos, 9 portrait art-directed crops for mobile (`<picture>` sources), served responsively
-- **Code-built product screenshots** — pixel-crisp browser/phone mockups (admin console, attendance, exams, AI predictions, leaderboard, Olympics, wellbeing, career)
-- **Complete feature coverage** — academics core, AI/ML suite, gamification & Virtual Olympics, wellbeing/SEL, career & college, parent portal, live events, blockchain credentials, mobile app, accessibility/PWA, security & white-labeling
-- **Conversion sections** — role cards, pricing tiers (Razorpay), FAQ, launch-offer CTA, trust footer
+## Configuration (`.env`, see `.env.example`)
 
-## Files
+- `SITE_URL` – production URL (canonical, sitemap, robots, Open Graph). **Set this before deploying.**
+- `PUBLIC_FORM_ENDPOINT` – JSON POST endpoint for the demo-request and newsletter forms (Formspree, Getform, your API…). Without it, forms fall back to a prefilled `mailto:`.
+- `PUBLIC_CONTACT_EMAIL` – mailbox shown in the footer / used for the fallback.
 
-| File | Purpose |
-| :--- | :--- |
-| `index.html` | **Deliverable** — single self-contained page (all images inlined as data URIs). Open in any browser. |
-| `template.html` | Editable source template with `{{IMG:name}}` placeholders |
-| `build.py` | Inlines images (PIL-optimized JPEGs / SVG fallbacks) into `index.html` |
-| `svg_assets.py` | Hand-crafted SVG scene fallbacks |
-| `v2/` | Landscape + portrait photography used by the build |
-| `images/` | Earlier illustration set (kept for reference) |
+## SEO included
 
-## Build
+Unique title/description, canonical, robots meta, Open Graph + Twitter cards, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage), sitemap + robots.txt, semantic landmarks and a single `h1`, WebP images with width/height + lazy loading, preloaded hero image, self-hosted fonts, tiny JS.
 
-```bash
-pip install pillow
-python3 build.py   # regenerates index.html from template.html + v2/ images
-```
-
-## Responsive behavior
-
-- `≤700px`: portrait art-directed crops, stacked layouts, mobile menu
-- `320px → 4K`: fluid `clamp()` type and adaptive grids
-- Accessibility: skip link, focus-visible rings, ARIA labels, reduced-motion-friendly CSS
+`legacy/` holds the original single-file HTML build (kept for reference).

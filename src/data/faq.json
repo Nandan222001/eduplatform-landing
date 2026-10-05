@@ -1,0 +1,26 @@
+[
+ {
+  "q": "How long does implementation take?",
+  "a": "Most single-campus schools go live in 5–7 working days. Our onboarding team handles bulk CSV/Excel imports for students, teachers and historical data, configures your academic structure, trains staff over live sessions, and provides a drag-and-drop onboarding designer for your own custom workflows. Multi-institution groups typically roll out campus-by-campus over 3–4 weeks."
+ },
+ {
+  "q": "Is our data safe and compliant?",
+  "a": "Yes. Data lives on AWS with encryption in transit and at rest, plus field-level encryption for sensitive records. The platform ships with FERPA compliance utilities, granular role-based access control, row-level multi-tenant isolation, immutable audit logs, rate limiting and instant session revocation. Family documents are stored in an encrypted vault with 7-year retention policies."
+ },
+ {
+  "q": "Can we use our own branding and domain?",
+  "a": "Absolutely — white-labeling is built in. Upload your logo and favicon, set your colors, run the portal on your own domain with automatic SSL, brand emails with your DKIM/SPF-verified domain, customize the login page and splash screens, inject custom CSS, and even choose your own notification sounds. A toggleable \"Powered by EduPlatform\" footer is entirely your choice."
+ },
+ {
+  "q": "Does it work on basic smartphones and slow internet?",
+  "a": "Yes. The EduTrack mobile apps (Android & iOS) include an offline sync queue so attendance, homework and marks entered offline sync automatically when connectivity returns. The web app is a Progressive Web App with an offline fallback page and background sync, and accessibility features include font scaling, reduced motion and high-contrast modes."
+ },
+ {
+  "q": "How do the AI features handle student privacy?",
+  "a": "AI features are opt-in per institution and tenant-isolated like everything else. Prediction models are trained on your institution's own data with versioning and drift monitoring; the Study Buddy and Doubt Forum assistants run on managed OpenAI models with no training on your data. Counselors control wellbeing alerts, and every AI action is logged in the audit trail."
+ },
+ {
+  "q": "What about fees — can parents pay inside the app?",
+  "a": "Yes. Fee structures, invoices, concessions and due reminders are built in, with Razorpay checkout supporting UPI, cards, net-banking and wallets. Payment webhooks update ledgers instantly, payroll (basic, HRA, DA, deductions) is handled for staff, and financial reports export to CSV/Excel for your auditors."
+ }
+]

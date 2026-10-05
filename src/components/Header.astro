@@ -1,0 +1,44 @@
+---
+const links = [
+  ['#tour', 'Product Tour'],
+  ['#ai', 'AI Learning'],
+  ['#engage', 'Gamification'],
+  ['#parents', 'Parents'],
+  ['#mobile', 'Mobile'],
+  ['#pricing', 'Pricing'],
+  ['#faq', 'FAQ'],
+];
+---
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="siteHeader">
+  <div class="container nav">
+    <a class="logo" href="/" aria-label="EduPlatform home">
+      <span class="logo-mark"><svg class="icon" style="width:22px;height:22px;stroke:none" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 12 6 26l26 13 22-11v15h4V26L32 12z" fill="#fff"/><path d="M17 36v9c0 5 6.7 9 15 9s15-4 15-9v-9l-15 7.5L17 36z" fill="#FFE3D6"/></svg></span>
+      Edu<span style="color:var(--primary)">Platform</span>
+    </a>
+    <nav aria-label="Primary" class="nav-desktop">
+      <ul class="nav-links">
+        {links.map(([href, label]) => <li><a href={href}>{label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <a href="#book-demo" class="btn btn-primary btn-sm nav-cta-btn">Book a Demo</a>
+      <button class="hamburger" id="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <nav aria-label="Mobile">
+      <ul>
+        {links.map(([href, label]) => <li><a href={href}>{label}</a></li>)}
+      </ul>
+    </nav>
+    <div class="mm-actions">
+      <a href="#book-demo" class="btn btn-primary">Start 30-Day Free Trial</a>
+      <a href="#pricing" class="btn btn-outline">View Pricing</a>
+    </div>
+  </div>
+</header>
+<div class="menu-backdrop" id="menuBackdrop" hidden></div>

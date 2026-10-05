@@ -1,0 +1,17 @@
+---
+import faqs from "../data/faq.json";
+---
+<section class="section paper-bg" id="faq">
+  <div class="container center reveal">
+    <span class="eyebrow purple"><svg class="icon"><use href="#i-msg"/></svg> Questions, answered</span>
+    <h2 class="section-title">Frequently Asked <span class="grad-text">Questions</span></h2>
+  </div>
+  <div class="container faq-list reveal">
+    {faqs.map((f) => (
+      <div class="faq-item">
+        <h3 class="faq-h"><button class="faq-q" aria-expanded="false" type="button">{f.q}<span class="pm"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></span></button></h3>
+        <div class="faq-a" role="region"><p>{f.a}</p></div>
+      </div>
+    ))}
+  </div>
+</section>
