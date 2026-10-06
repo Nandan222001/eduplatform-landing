@@ -5,6 +5,7 @@ import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import Stats from '../components/Stats.astro';
 import Marquee from '../components/Marquee.astro';
+import BlessingStory from '../components/BlessingStory.astro';
 import Roles from '../components/Roles.astro';
 import ProductTour from '../components/ProductTour.astro';
 import Academics from '../components/Academics.astro';
@@ -79,6 +80,19 @@ const schema = [
   },
   {
     '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'Sarasvi — Named After Saraswati (20-second brand film)',
+    description:
+      'A 20-second scroll-driven brand film for Sarasvi: Saraswati playing the veena above an open book, as Sanskrit syllables and musical notes rise in golden light.',
+    thumbnailUrl: site + '/media/sarasvi-blessing-p1.webp',
+    contentUrl: site + '/media/sarasvi-blessing.mp4',
+    uploadDate: '2026-10-06',
+    duration: 'PT20S',
+    inLanguage: 'en-IN',
+    publisher: { '@id': site + '/#org' },
+  },
+  {
+    '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: faqs.map((f) => ({
       '@type': 'Question',
@@ -97,6 +111,7 @@ const schema = [
     <Hero />
     <Stats />
     <Marquee />
+    <BlessingStory />
     <Roles />
     <ProductTour />
     <Academics />
@@ -110,7 +125,4 @@ const schema = [
     <Cta />
   </main>
   <Footer />
-  <script>
-    import '../scripts/main.js';
-  </script>
 </Layout>

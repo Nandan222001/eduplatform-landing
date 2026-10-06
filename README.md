@@ -15,6 +15,7 @@ Static, SEO-optimised landing page for **Sarasvi**, built with [Astro](https://a
 | `npm run preview` | Preview the production build |
 | `npm run images` | Re-optimise `source-images/*.jpg` → `public/images/*.webp` |
 | `npm run video` | Re-encode `source-media/*.mp4` → `public/media/*` (needs ffmpeg on `PATH`, or `FFMPEG_BIN=/path/to/ffmpeg`) |
+| `npm run film` | Rebuild the site-wide brand film + its background encode in `public/media/` (same ffmpeg requirement) |
 | `npm run brand` | Rebuild favicons, app icons, header mark and the OG card from `source-images/brand/` |
 
 ## Configuration (`.env`, see `.env.example`)
@@ -63,7 +64,88 @@ a viewer downloads only whichever of the two files their browser can play.
 Explicit `width`/`height` plus `aspect-ratio` reserve the box, so the section
 never shifts. The clip is also exposed as a `VideoObject` in the page JSON-LD.
 
-## Spacing system
+## Brand film (the whole site sits on it)
+
+The 20-second brand film — Saraswati, the goddess the platform is named after,
+playing the veena above an open book — is the **background of every page**, and it
+is meant to be *seen*. It is not played, it is *seeked*: the scroll position of the
+whole document maps onto `currentTime`, so it runs forward as you scroll down,
+rewinds as you scroll back up, and holds its first and last frame at the two ends.
+No player chrome, no autoplay policy, no sound while scrolling.
+
+The layer is `src/components/SiteFilm.astro`, mounted once in
+`src/layouts/Layout.astro` (so `/`, `/privacy/` and `/terms/` all get it), and
+`npm run film` builds everything it needs from the 10.1 MB Gemini master:
+
+| Output | Codec | Size | Role |
+| :-- | :-- | :-- | :-- |
+| `public/media/sarasvi-blessing-bg.mp4` | H.264, 1280×720, silent, soft-blurred in the encode, `+faststart` | ~1.3 MB | the site background the scroll scrubs |
+| `public/media/sarasvi-blessing.mp4` | H.264 + AAC, sharp, `+faststart` | ~3.2 MB | the film itself, for the lightbox |
+| `public/media/sarasvi-blessing-bg-1…4.webp` | WebP stills cut from the same soft chain | 12–19 KB each | the mobile background, and the first paint |
+| `public/media/sarasvi-blessing-p1.webp` | sharp WebP still | ~27 KB | lightbox poster + JSON-LD `thumbnailUrl` |
+
+**Why the background is soft and small.** It sits behind every word on the site, so
+it has to stay quiet — and blurring it *in the encode* rather than in CSS is free
+at runtime, where a `filter:blur()` on a full-viewport layer is one of the most
+expensive things you can ask a compositor to do every frame. The blur is deliberately
+light (`gblur=sigma=5` plus a small contrast/saturation lift): the page's wash in
+front of it is thin, so the film is meant to read as picture, not as a tint. Both
+files keep the dense keyframe ladder scrubbing needs (`-g 4 -sc_threshold 0`, 120
+keyframes, no B-frames); the sharp file pays for it with CRF 34 + a light denoise
+(the master is a grainy diffusion render, and grain is the most expensive thing to
+hand an encoder). VP9/WebM and 12 fps were measured and rejected.
+
+**How the page stays readable — and stays see-through.** The wash in front of the
+film is thin everywhere:
+
+| Section | Wash | Why |
+| :-- | :-- | :-- |
+| `#top` (hero) | `0.02` + its own gradient scrim | the subject fills the frame; the scrim thins to nothing on the right |
+| `#story` | `0.14` | the deliberate window into the film |
+| everything between | `0.26 – 0.36` | film plainly visible, copy still legible |
+| footer | `0.86` | opaque on purpose |
+
+Instead of veiling the picture, each block of text carries its own **pool of light**
+(`--pool` in the tokens, applied to every `.container.center` header and every
+`.split .copy`), and that is what legibility rides on. Cards and section surfaces
+are simply translucent copies of white (`0.58 – 0.90`), so the film reads through
+them as well. Every value was checked by compositing the wash, the pools and the
+surfaces over **all 120 frames** of the background encode and measuring WCAG
+contrast for the text colours sitting on each section — 18 regions, worst case
+5.06:1 against a 4.5:1 requirement.
+
+**What it costs a visitor.** The `<source>` stays in `data-src` and the film is only
+fetched on `load`, and on the device classes where a scroll-driven video is a bad
+idea it is never fetched at all:
+
+| Visitor | Background |
+| :-- | :-- |
+| Any screen, mouse or touch | the 1.3 MB film, buffered, then scrubbed (a finger gets bigger steps through it: 0.12 s vs 0.02 s, so fewer decodes) |
+| Save-Data, or a connection measured as 2G | four stills (~60 KB) cross-fade with the scroll — no video bytes |
+| `prefers-reduced-motion` | the first still, held for the whole visit |
+| JS off | the poster frame, held |
+
+**There is deliberately no width or pointer gate.** Earlier versions required
+`min-width:861px` + `pointer:fine` and excluded `effectiveType === '3g'`, which
+silently switched the film off in a narrow window, on touch-screen laptops, and on
+ordinary slow Wi-Fi (Chrome derives `3g` from *measured throughput*, not connection
+type) — that is how the background went missing. Only two deliberate opt-outs
+remain, above.
+
+**If the film ever looks wrong on a machine, `<html data-film-mode>` says why** —
+`video`, `reduced-motion`, `save-data`, `2g` or `failed` (and its absence means the
+script never ran). The video is also painted unconditionally: it carries a real
+`src` and a `poster` in the markup, and nothing in JS or CSS ever sets it to
+`opacity: 0`, so an unfetched or unplayable film can never mean an invisible
+background — the worst case is the poster frame.
+
+A small dock in the corner shows film progress as a ring around a pause button
+(stop the background where it is, for reading) and a sound button; the story
+section offers the same “Watch with sound”, which opens the sharp, scored film in a
+lightbox with native controls. The film is exposed as a second `VideoObject` in the
+page JSON-LD.
+
+## Spacing system## Spacing system
 
 The vertical rhythm comes from a single set of tokens in `global.css`, so every
 section lines up without per-component overrides:
@@ -83,6 +165,6 @@ section and it inherits the rhythm. The footer (`.foot-grid`, `.foot-news`,
 
 ## SEO included
 
-Unique title/description, canonical, robots meta, Open Graph + Twitter cards, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage), sitemap + robots.txt, semantic landmarks and a single `h1`, WebP images with width/height + lazy loading, preloaded hero image, self-hosted fonts, tiny JS, and a compressed click-to-play product video (see below).
+Unique title/description, canonical, robots meta, Open Graph + Twitter cards, JSON-LD (Organization, WebSite, SoftwareApplication, two VideoObjects, FAQPage), sitemap + robots.txt, semantic landmarks and a single `h1`, WebP images with width/height + lazy loading, preloaded hero image, self-hosted fonts, tiny JS, a compressed click-to-play product video and a site-wide, scroll-scrubbed brand film (see below).
 
 `legacy/` holds the original single-file HTML build (kept for reference).
