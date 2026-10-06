@@ -164,6 +164,19 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .c-dot{width:9px;height:9px;border-radius:999px;background:var(--divider);transition:.3s;padding:0}
 .c-dot.active{width:30px;background:var(--primary)}
 
+/* ============ PRODUCT TOUR VIDEO ============ */
+/* The clip itself carries width/height, so the box is reserved before the poster paints. */
+.video-showcase{margin:0 auto;max-width:1000px}
+.video-shell{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow-lg);background:var(--ink)}
+.video-shell video{display:block;width:100%;height:auto;aspect-ratio:1260/720;object-fit:cover;background:var(--ink)}
+.tour-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:11px;padding:15px 28px;border-radius:999px;background:linear-gradient(135deg,#FF7A45,#FF6B4A);color:#fff;font-weight:700;font-size:.98rem;box-shadow:0 16px 38px rgba(43,20,6,.4);transition:transform .25s,opacity .3s,visibility .3s;animation:tourPulse 2.8s ease-out infinite}
+.tour-play .icon{width:20px;height:20px;fill:currentColor}
+.tour-play:hover{transform:translate(-50%,-50%) scale(1.05)}
+.tour-play:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.is-playing .tour-play{opacity:0;visibility:hidden;pointer-events:none;animation:none}
+.tour-note{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:16px;font-size:.86rem;color:var(--ink-2)}
+.tour-note .icon{width:16px;height:16px;color:var(--primary-dark)}
+
 /* ============ UI MOCKUPS (product screenshots built in CSS) ============ */
 /* the fake product UI uses the body face so it reads as software, not marketing */
 .browser,.phone{--font-head:var(--font-body)}
@@ -398,6 +411,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,28px)}}
 @keyframes shimmer{to{background-position:100% center}}
 @keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(255,122,69,.45)}100%{box-shadow:0 0 0 18px rgba(255,122,69,0)}}
+@keyframes tourPulse{0%{box-shadow:0 16px 38px rgba(43,20,6,.4),0 0 0 0 rgba(255,122,69,.5)}100%{box-shadow:0 16px 38px rgba(43,20,6,.4),0 0 0 20px rgba(255,122,69,0)}}
 .hero .eyebrow,.hero h1,.hero p.lead,.hero-actions,.hero-trust{animation:heroIn .8s cubic-bezier(.2,.7,.2,1) both}
 .hero .eyebrow{animation-delay:.05s}.hero h1{animation-delay:.18s}.hero p.lead{animation-delay:.32s}.hero-actions{animation-delay:.46s}.hero-trust{animation-delay:.6s}
 .hero-visual .frame{animation:frameIn 1s cubic-bezier(.2,.7,.2,1) .25s both}
@@ -451,6 +465,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   .moods{grid-template-columns:repeat(2,1fr)}
   .hero-visual .frame img{height:430px}
   .split .visual img{height:440px}
+  .video-shell{border-radius:18px}
+  .tour-play{padding:13px 20px;font-size:.88rem;gap:9px}
+  .tour-play .icon{width:17px;height:17px}
+  .tour-note{display:none}
 }
 @media (max-width:560px){
   .foot-grid{grid-template-columns:1fr 1fr;gap:30px 22px}

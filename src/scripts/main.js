@@ -34,6 +34,35 @@ document.querySelectorAll('[data-carousel]').forEach(function(root){
   render();restart();
 });
 
+/* Product tour video: sources are attached on the first play click, so a visitor
+   who never presses play downloads the poster only — no video bytes at all. */
+var tourVid=document.getElementById('tourVideo'),tourPlay=document.getElementById('tourPlay');
+if(tourVid&&tourPlay){
+  var tourShell=tourVid.closest('.video-showcase');
+  function tourLoad(){
+    if(tourVid.dataset.loaded)return;
+    tourVid.dataset.loaded='1';
+    tourVid.querySelectorAll('source[data-src]').forEach(function(s){s.src=s.getAttribute('data-src');s.removeAttribute('data-src')});
+    tourVid.load();
+  }
+  function tourStart(){
+    tourLoad();tourVid.controls=true;
+    var p=tourVid.play();
+    if(p&&p.catch)p.catch(function(){});
+  }
+  tourPlay.addEventListener('click',tourStart);
+  document.querySelectorAll('[data-tour-play]').forEach(function(el){
+    el.addEventListener('click',function(e){
+      e.preventDefault();
+      if(tourShell)tourShell.scrollIntoView({behavior:'smooth',block:'center'});
+      tourStart();
+    });
+  });
+  tourVid.addEventListener('play',function(){tourShell.classList.add('is-playing')});
+  tourVid.addEventListener('pause',function(){tourShell.classList.remove('is-playing')});
+  tourVid.addEventListener('ended',function(){tourShell.classList.remove('is-playing')});
+}
+
 var tSlides=document.querySelectorAll('#tCarousel .t-slide'),ti=0,tt;
 function tShow(x){ti=(x+tSlides.length)%tSlides.length;tSlides.forEach(function(s,k){s.classList.toggle('active',k===ti)});}
 document.getElementById('tPrev').addEventListener('click',function(){tShow(ti-1);tReset();});

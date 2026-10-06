@@ -66,6 +66,19 @@ const schema = [
   },
   {
     '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: 'Sarasvi in 10 Seconds — Product Tour',
+    description:
+      'A 10-second tour of Sarasvi: a school campus, the admin command centre, a student learning on a tablet and the gamified XP leaderboard.',
+    thumbnailUrl: site + '/media/sarasvi-tour-poster.webp',
+    contentUrl: site + '/media/sarasvi-tour.mp4',
+    uploadDate: '2026-10-06',
+    duration: 'PT10S',
+    inLanguage: 'en-IN',
+    publisher: { '@id': site + '/#org' },
+  },
+  {
+    '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: faqs.map((f) => ({
       '@type': 'Question',
