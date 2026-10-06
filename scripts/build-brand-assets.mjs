@@ -4,7 +4,8 @@
  * Source artwork lives in source-images/brand/ (the master lockups exported from
  * the brand board). This script:
  *   1. crops the emblem out of the cream lockup and repaints the artwork backdrop
- *   2. writes the round mark used in the header / footer,
+ *   2. re-maps the emblem onto the site palette and writes the round mark
+ *      used in the header / footer,
  *   3. writes favicon + app icon + schema logo,
  *   4. writes the 1200x630 Open Graph card on the site's background colour.
  *
@@ -19,8 +20,14 @@ const OUT = 'public';
 const OUT_IMG = path.join(OUT, 'images/brand');
 
 // Palette (see README) ------------------------------------------------------
-const NAVY = '#002244';
-const GOLD = '#CBA956';
+// The emblem's own navy / gold / sage is re-mapped onto the site palette so the
+// mark sits inside the warm theme: navy -> ink, gold -> coral, sage -> teal.
+// Colours only — the artwork itself is untouched.
+const INK = [75, 36, 10];
+const CORAL = [232, 102, 58];
+const TEAL = [63, 168, 155];
+const SHADOW = [58, 27, 6];
+const GOLD = '#FF7A45';
 const CREAM = '#FBF6EE';
 const CREAM_RGB = [251, 246, 238];
 // The site's own background (--bg), so the social card matches the page theme.
@@ -108,6 +115,85 @@ function recolourBackground(img, box, target, pad = 10) {
   return sharp(out, { raw: { width: w, height: h, channels: 3 } });
 }
 
+/**
+ * Re-map the emblem onto the site palette by hue: the navy artwork -> ink, the
+ * gold ornaments -> coral, the sage lotus leaves -> teal. Lightness — i.e. every
+ * brush stroke of the original — is preserved, so this is a colour change only.
+ */
+function sitePalette(img) {
+  // source hue anchors, measured from the artwork
+  const ANCHORS = [
+    { h: 204, rgb: INK, refS: 0.8 }, // sari + linework (deeply saturated blue)
+    { h: 45, rgb: CORAL, refS: 0.45 }, // ornaments, veena, halo
+    { h: 163, rgb: TEAL, refS: 0.35 }, // lotus leaves behind the figure
+  ];
+  const { data, width, height, channels } = img;
+  const out = Buffer.from(data);
+  const R = 255;
+  const srgb = (c) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+  const hsl = (r, g, b) => {
+    r /= R; g /= R; b /= R;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    let h = 0;
+    if (d) {
+      if (mx === r) h = ((g - b) / d) % 6;
+      else if (mx === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h *= 60;
+      if (h < 0) h += 360;
+    }
+    const l = (mx + mn) / 2;
+    return { h, s: d ? d / (1 - Math.abs(2 * l - 1)) : 0, l };
+  };
+  const fromHsl = (h, s, l) => {
+    const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2;
+    const [r, g, b] =
+      h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+    return [(r + m) * R, (g + m) * R, (b + m) * R];
+  };
+  const hueDist = (a, b) => { const d = Math.abs(a - b) % 360; return d > 180 ? 360 - d : d; };
+
+  for (let p = 0; p < width * height; p++) {
+    const i = p * channels;
+    const r = data[i], g = data[i + 1], b = data[i + 2];
+    if (data[i + 3] === 0) continue;
+    const { h, s, l } = hsl(r, g, b);
+    const lum = 0.2126 * srgb(r / R) + 0.7152 * srgb(g / R) + 0.0722 * srgb(b / R);
+
+    // greys (page edges, faint linework, the tagline): keep the light, warm the dark
+    if (s < 0.1) {
+      if (lum > 0.78) continue;
+      out[i] = r + (SHADOW[0] - r) * 0.5;
+      out[i + 1] = g + (SHADOW[1] - g) * 0.5;
+      out[i + 2] = b + (SHADOW[2] - b) * 0.5;
+      continue;
+    }
+
+    let sum = 0, nearest = 0, nearestD = 999;
+    const w = ANCHORS.map((a, k) => {
+      const d = hueDist(h, a.h);
+      if (d < nearestD) { nearestD = d; nearest = k; }
+      // A tight lobe keeps the blue veil from blending into the leaf green.
+      const v = d > 20 ? 0 : Math.pow(Math.cos((d / 20) * (Math.PI / 2)), 2);
+      sum += v;
+      return v;
+    });
+    if (sum <= 0) { w.fill(0); w[nearest] = 1; sum = 1; }
+
+    let tr = 0, tg = 0, tb = 0;
+    ANCHORS.forEach((a, k) => { const q = w[k] / sum; tr += a.rgb[0] * q; tg += a.rgb[1] * q; tb += a.rgb[2] * q; });
+
+    const t = hsl(tr, tg, tb);
+    const ratio = Math.min(1.15, Math.max(0.12, s / ANCHORS[nearest].refS));
+    let outS = Math.min(1, t.s * ratio);
+    if (l > 0.72) outS *= 1 - ((l - 0.72) / 0.28) * 0.8; // halos stay soft
+    const hue = t.h + (h - ANCHORS[nearest].h) * 0.25; // a little variety survives
+    const [nr, ng, nb] = fromHsl(hue, outS, l);
+    out[i] = nr; out[i + 1] = ng; out[i + 2] = nb;
+  }
+  return sharp(out, { raw: { width, height, channels: 3 } });
+}
+
 /** Mask an image to a centred circle, with a 1px feathered rim. */
 async function maskToCircle(pngBuffer, diameterInset = 0) {
   const meta = await sharp(pngBuffer).metadata();
@@ -172,8 +258,16 @@ async function main() {
   // The header renders the mark at 34px; 256px covers 3x DPR with room to spare.
   // The emblem is repainted onto the badge cream and clipped to a circle, so it
   // sits seamlessly inside the round logo chip.
+  const emblemSite = await recolourBackground(img, emblem, CREAM_RGB, 8)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
   const markPng = await sharp(
-    await (await recolourBackground(img, emblem, CREAM_RGB, 8))
+    await sitePalette({
+      data: emblemSite.data,
+      width: emblemSite.info.width,
+      height: emblemSite.info.height,
+      channels: emblemSite.info.channels,
+    })
       .trim()
       .resize({ width: 256, fit: 'inside' })
       .png({ compressionLevel: 9, palette: true, quality: 92, effort: 10 })
@@ -231,7 +325,15 @@ async function main() {
   // to transparency and set on the site's own warm background, so it matches the
   // page theme instead of carrying the artwork's flat backdrop.
   const lockBox = { x0: 290, y0: 125, x1: 915, y1: 740 };
-  const ogLockup = await (await recolourBackground(img, lockBox, SITE_CREAM_RGB, 6))
+  const lockSite = await recolourBackground(img, lockBox, SITE_CREAM_RGB, 6)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const ogLockup = await (await sitePalette({
+    data: lockSite.data,
+    width: lockSite.info.width,
+    height: lockSite.info.height,
+    channels: lockSite.info.channels,
+  }))
     .trim()
     .resize({ height: 520, fit: 'inside' })
     .jpeg({ quality: 95 })
@@ -269,7 +371,7 @@ async function main() {
       },
       {
         input: Buffer.from(
-          `<svg xmlns="http://www.w3.org/2000/svg" width="470" height="300"><rect width="470" height="300" fill="${NAVY}"/></svg>`
+          `<svg xmlns="http://www.w3.org/2000/svg" width="470" height="300"><rect width="470" height="300" fill="#2A1508"/></svg>`
         ),
         top: 0,
         left: 430,

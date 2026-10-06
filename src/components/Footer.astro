@@ -1,37 +1,103 @@
 ---
 const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@sarasvi.example';
 const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+
+const columns = [
+  {
+    title: 'Product',
+    links: [
+      ['#tour', 'Product Tour'],
+      ['#academics', 'Academics Core'],
+      ['#ai', 'AI & ML Suite'],
+      ['#engage', 'Gamification'],
+      ['#parents', 'Parent Portal'],
+      ['#mobile', 'Mobile Apps'],
+      ['#pricing', 'Pricing'],
+    ],
+  },
+  {
+    title: 'Solutions',
+    links: [
+      ['#roles', 'K-12 Schools'],
+      ['#roles', 'Institution Groups'],
+      ['#roles', 'Coaching Institutes'],
+      ['#academics', 'Examinations Board'],
+      ['#engage', 'Student Engagement'],
+      ['#pricing', 'Enterprise & White-Label'],
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      ['#book-demo', 'Contact Sales'],
+      ['#faq', 'FAQ'],
+      ['#book-demo', 'Book a Demo'],
+      ['/privacy/', 'Privacy Policy'],
+      ['/terms/', 'Terms of Service'],
+    ],
+  },
+];
+
+const badges = ['FERPA-ready', 'AWS Hosted', '99.9% SLA', 'ISO practices', 'GDPR-minded'];
 ---
+
 <footer class="site-footer">
-  <div class="container foot-grid">
-    <div class="foot-brand">
-      <a class="logo" href="/" style="color:#fff" aria-label="Sarasvi home"><span class="logo-mark"><img src="/images/brand/sarasvi-mark.png" alt="" width="34" height="34" loading="lazy" /></span><span class="logo-text">Sarasv<span class="logo-i">i</span></span></a>
-      <p class="tagline">Wisdom Through Education</p>
-      <p>The AI-powered school operating system. Web portal (Sarasvi Portal) · Mobile apps (Sarasvi Mobile) · Built on FastAPI, React, React Native, Hyperledger Fabric &amp; AWS.</p>
+  <div class="container">
+    <h2 class="sr-only">Sarasvi — site footer</h2>
+
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="logo" href="/" aria-label="Sarasvi home">
+          <span class="logo-mark"><img src="/images/brand/sarasvi-mark.png" alt="" width="34" height="34" loading="lazy" /></span>
+          <span class="logo-text">Sarasv<span class="logo-i">i</span></span>
+        </a>
+        <p class="tagline">Wisdom Through Education</p>
+        <p class="foot-blurb">The AI-powered school operating system — web portal (Sarasvi Portal), native mobile apps (Sarasvi Mobile), built on FastAPI, React, React Native, Hyperledger Fabric &amp; AWS.</p>
+      </div>
+
+      {columns.map((col) => (
+        <nav class="foot-col" aria-label={col.title}>
+          <h3>{col.title}</h3>
+          <ul>
+            {col.links.map(([href, label]) => (
+              <li><a href={href}>{label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+    </div>
+
+    <div class="foot-news">
+      <div class="foot-news-copy">
+        <h3>Product updates</h3>
+        <p>Release notes, teaching ideas and campus case studies — once a month, no spam.</p>
+        <div class="trust-badges">
+          {badges.map((badge) => <span>{badge}</span>)}
+        </div>
+      </div>
+
       <form class="news-form lead-form" method="post" action={endpoint || undefined} data-endpoint={endpoint} data-email={email} data-form="newsletter" novalidate>
         <label for="nl-email" class="sr-only">Email address</label>
         <div class="news-row">
-          <input id="nl-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Your email for product updates" />
+          <input id="nl-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@school.edu" />
           <button class="btn btn-primary btn-sm form-submit" type="submit"><span class="lbl">Subscribe</span><span class="spin" aria-hidden="true"></span></button>
         </div>
         <div class="hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off" /></div>
         <span class="err" data-err-for="email"></span>
         <p class="form-status" role="status" aria-live="polite"></p>
       </form>
-      <div class="trust-badges"><span>FERPA-ready</span><span>AWS Hosted</span><span>99.9% SLA</span><span>ISO practices</span><span>GDPR-minded</span></div>
     </div>
-    <div><h4>Product</h4><ul>
-      <li><a href="#tour">Product Tour</a></li><li><a href="#academics">Academics Core</a></li><li><a href="#ai">AI &amp; ML Suite</a></li><li><a href="#engage">Gamification</a></li><li><a href="#parents">Parent Portal</a></li><li><a href="#mobile">Mobile Apps</a></li><li><a href="#pricing">Pricing</a></li>
-    </ul></div>
-    <div><h4>Solutions</h4><ul>
-      <li><a href="#roles">K-12 Schools</a></li><li><a href="#roles">Institution Groups</a></li><li><a href="#roles">Coaching Institutes</a></li><li><a href="#academics">Examinations Board</a></li><li><a href="#engage">Student Engagement</a></li><li><a href="#pricing">Enterprise &amp; White-Label</a></li>
-    </ul></div>
-    <div><h4>Company</h4><ul>
-      <li><a href="#book-demo">Contact Sales</a></li><li><a href="#faq">FAQ</a></li><li><a href="#book-demo">Book a Demo</a></li><li><a href="/privacy/">Privacy Policy</a></li><li><a href="/terms/">Terms of Service</a></li>
-    </ul></div>
   </div>
-  <div class="container foot-bottom">
-    <span>© {new Date().getFullYear()} Sarasvi Technologies Pvt. Ltd. All rights reserved.</span>
-    <span>Made with care for educators · <a href={`mailto:${email}`}>{email}</a></span>
+
+  <div class="foot-bar">
+    <div class="container foot-bottom">
+      <span>© {new Date().getFullYear()} Sarasvi Technologies Pvt. Ltd. All rights reserved.</span>
+      <span class="foot-made">Made with care for educators</span>
+      <nav class="foot-legal" aria-label="Legal and contact">
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+        <a href={`mailto:${email}`}>{email}</a>
+      </nav>
+    </div>
   </div>
 </footer>
