@@ -63,11 +63,15 @@ if(tourVid&&tourPlay){
   tourVid.addEventListener('ended',function(){tourShell.classList.remove('is-playing')});
 }
 
+/* reviews carousel: only present once real reviews are added */
 var tSlides=document.querySelectorAll('#tCarousel .t-slide'),ti=0,tt;
+if(tSlides.length>1&&document.getElementById('tPrev')){
 function tShow(x){ti=(x+tSlides.length)%tSlides.length;tSlides.forEach(function(s,k){s.classList.toggle('active',k===ti)});}
+function tReset(){clearInterval(tt);tt=setInterval(function(){tShow(ti+1)},6500);}
 document.getElementById('tPrev').addEventListener('click',function(){tShow(ti-1);tReset();});
 document.getElementById('tNext').addEventListener('click',function(){tShow(ti+1);tReset();});
-function tReset(){clearInterval(tt);tt=setInterval(function(){tShow(ti+1)},6500);}tReset();
+tReset();
+}
 
 var counted=false;
 function runCounters(){
@@ -115,6 +119,7 @@ document.querySelectorAll('form.lead-form').forEach(function(form){
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.value.trim())){setErr('email','Please enter a valid email address.');ok=false}
     if(f.phone&&f.phone.value&&!/^[0-9+\-\s()]{7,18}$/.test(f.phone.value.trim())){setErr('phone','Enter a valid phone number.');ok=false}
     if(f.institution&&!f.institution.value.trim()){setErr('institution','Please enter your institution.');ok=false}
+    if(f.message&&f.message.required&&f.message.value.trim().length<10){setErr('message','Please write a few words (at least 10 characters).');ok=false}
     if(f.consent&&!f.consent.checked){setErr('consent','Please accept to continue.');ok=false}
     if(!ok){var bad=form.querySelector('.invalid, [data-err-for]:not(:empty)');var fi=form.querySelector('.invalid');if(fi)fi.focus();}
     return ok;
@@ -142,6 +147,7 @@ document.querySelectorAll('form.lead-form').forEach(function(form){
     fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)})
       .then(function(r){if(!r.ok)throw new Error(r.status);try{localStorage.setItem(tkey,String(Date.now()))}catch(err){}form.reset();
         if(data.form==='newsletter'){say('Thanks for subscribing!',true);if(window.gtag)window.gtag('event','sign_up',{method:'newsletter'});return;}
+        if(data.form==='feedback'){say('Thank you! We have received your feedback.',true);if(window.gtag)window.gtag('event','feedback_sent');return;}
         location.href='/thank-you/?form='+encodeURIComponent(data.form);})
       .catch(function(){say('Something went wrong. Please try again or email us directly.',false)})
       .finally(function(){btn.classList.remove('loading');lbl.textContent=orig});

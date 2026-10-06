@@ -91,3 +91,9 @@ body.menu-open{overflow:hidden}
 .consent-bar .btns{display:flex;gap:8px}
 .consent-bar .btn-decline{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
 .t-quote.t-placeholder{font-style:italic;opacity:.7}
+/* feedback form */
+.fb-wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:var(--gap-lg);align-items:center}
+.fb-wrap .section-title{text-align:left}
+.fb-copy p{color:var(--ink-2);margin-top:14px}
+.fb-wrap .consent+.consent{margin-top:4px}
+@media (max-width:860px){.fb-wrap{grid-template-columns:1fr}}

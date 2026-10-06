@@ -1,32 +1,92 @@
+---
+// Real customer reviews only. Add one here ONLY when the customer has given written
+// permission (the feedback form below asks for it). Use their words exactly as sent:
+// never write, invent or reword a review, name or rating.
+//   { quote: '...', name: 'Meera D.', role: 'Principal, Sunrise School · Pune' }
+const reviews: { quote: string; name: string; role: string }[] = [];
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@sarasvi.in';
+const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+---
 <section class="section alt-bg" id="testimonials">
-  <div class="container center reveal">
-    <span class="eyebrow gold"><svg class="icon"><use href="#i-msg"/></svg> From our customers</span>
-    <h2 class="section-title">What Educators <span class="grad-text">Are Saying</span></h2>
-  </div>
-  <div class="container">
-    <div class="t-carousel reveal" id="tCarousel">
-      <div class="t-slide active">
-        <!-- PLACEHOLDER: paste a real review here, with the customer's written permission.
-             Never write, invent or reword a review, name, rating or photo. -->
-        <p class="t-quote t-placeholder">[Real customer review 1 goes here: paste the customer's own words, unedited.]</p>
-        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#BF5000,#8A3A00)" aria-hidden="true">?</div><div class="who"><b>[Customer name]</b><span>[Role, institution · City]</span></div></div>
+  {reviews.length > 0 && (
+    <>
+      <div class="container center reveal">
+        <span class="eyebrow gold"><svg class="icon"><use href="#i-msg"/></svg> From our customers</span>
+        <h2 class="section-title">What Schools <span class="grad-text">Are Saying</span></h2>
       </div>
-      <div class="t-slide">
-        <!-- PLACEHOLDER: paste a real review here, with the customer's written permission.
-             Never write, invent or reword a review, name, rating or photo. -->
-        <p class="t-quote t-placeholder">[Real customer review 2 goes here: paste the customer's own words, unedited.]</p>
-        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#BF5000,#8A3A00)" aria-hidden="true">?</div><div class="who"><b>[Customer name]</b><span>[Role, institution · City]</span></div></div>
+      <div class="container">
+        <div class="t-carousel reveal" id="tCarousel">
+          {reviews.map((r, i) => (
+            <div class={i === 0 ? 't-slide active' : 't-slide'}>
+              <p class="t-quote">"{r.quote}"</p>
+              <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#BF5000,#8A3A00)" aria-hidden="true">{initials(r.name)}</div><div class="who"><b>{r.name}</b><span>{r.role}</span></div></div>
+            </div>
+          ))}
+          {reviews.length > 1 && (
+            <div class="t-nav">
+              <button id="tPrev" aria-label="Previous review"><svg class="icon"><use href="#i-chevron-l"/></svg></button>
+              <button id="tNext" aria-label="Next review"><svg class="icon"><use href="#i-chevron-r"/></svg></button>
+            </div>
+          )}
+        </div>
       </div>
-      <div class="t-slide">
-        <!-- PLACEHOLDER: paste a real review here, with the customer's written permission.
-             Never write, invent or reword a review, name, rating or photo. -->
-        <p class="t-quote t-placeholder">[Real customer review 3 goes here: paste the customer's own words, unedited.]</p>
-        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#BF5000,#8A3A00)" aria-hidden="true">?</div><div class="who"><b>[Customer name]</b><span>[Role, institution · City]</span></div></div>
-      </div>
-      <div class="t-nav">
-        <button id="tPrev" aria-label="Previous testimonial"><svg class="icon"><use href="#i-chevron-l"/></svg></button>
-        <button id="tNext" aria-label="Next testimonial"><svg class="icon"><use href="#i-chevron-r"/></svg></button>
-      </div>
+    </>
+  )}
+
+  <div class="container fb-wrap reveal" id="feedback">
+    <div class="fb-copy">
+      <span class="eyebrow gold"><svg class="icon"><use href="#i-msg"/></svg> Already using Sarasvi?</span>
+      <h2 class="section-title">Tell Us How It's <span class="grad-text">Going</span></h2>
+      <p>Principals, teachers and parents: your honest feedback helps us make Sarasvi better for every school. Good or bad, we read every word.</p>
+      <p>If you're happy for us to share your words on this website, tick the box. We'll publish them exactly as you wrote them, and only with your permission.</p>
+    </div>
+    <div class="form-card">
+      <h3>Share your feedback</h3>
+      <form class="lead-form" method="post" action={endpoint || undefined} data-endpoint={endpoint} data-email={email} data-form="feedback" novalidate>
+        <div class="f-row">
+          <div class="field">
+            <label for="fb-name">Your name <span aria-hidden="true">*</span></label>
+            <input id="fb-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="100" />
+            <span class="err" data-err-for="name"></span>
+          </div>
+          <div class="field">
+            <label for="fb-email">Email <span aria-hidden="true">*</span></label>
+            <input id="fb-email" name="email" type="email" autocomplete="email" required inputmode="email" maxlength="200" />
+            <span class="err" data-err-for="email"></span>
+          </div>
+        </div>
+        <div class="f-row">
+          <div class="field">
+            <label for="fb-role">You are a</label>
+            <select id="fb-role" name="role">
+              <option>Principal / Head</option><option>Teacher</option><option>Parent</option><option>Office / Admin staff</option><option>Student</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fb-org">School and city <span aria-hidden="true">*</span></label>
+            <input id="fb-org" name="institution" type="text" autocomplete="organization" required maxlength="150" />
+            <span class="err" data-err-for="institution"></span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fb-msg">Your feedback <span aria-hidden="true">*</span></label>
+          <textarea id="fb-msg" name="message" rows="4" required minlength="10" maxlength="1000" placeholder="What has changed for you since using Sarasvi? What could be better?"></textarea>
+          <span class="err" data-err-for="message"></span>
+        </div>
+        <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+        <label class="consent">
+          <input type="checkbox" name="publish" value="yes" />
+          <span>Sarasvi may publish my feedback on its website with my name, role and school, word for word.</span>
+        </label>
+        <label class="consent">
+          <input type="checkbox" name="consent" required />
+          <span>I accept the <a href="/privacy/">Privacy Policy</a>.</span>
+        </label>
+        <span class="err" data-err-for="consent"></span>
+        <button class="btn btn-primary form-submit" type="submit"><span class="lbl">Send feedback</span><span class="spin" aria-hidden="true"></span></button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </div>
 </section>
