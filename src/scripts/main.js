@@ -63,73 +63,89 @@ if(tourVid&&tourPlay){
   tourVid.addEventListener('ended',function(){tourShell.classList.remove('is-playing')});
 }
 
-/* ---- Brand film: scrubbed by scroll -----------------------------------------
-   The 20-second film is never played here, it is *seeked*: scroll position inside
-   the runway maps to currentTime, so it runs forward as you scroll down and
-   backwards as you scroll up, from the first frame to the last and no further.
-   On a real pointer the frame is pinned by CSS (position:sticky) inside a 260vh
-   runway, which gives the film about 1.6 screen-heights of travel. On touch the
-   runway is a normal block and the frame cross-fades its four stills instead of
-   seeking — no video byte moves until a finger asks for sound.
-   The media query in PINNED must stay identical to the one in global.css. */
+/* ---- Brand film: the background of the whole site, scrubbed by scroll --------
+   The whole document is the runway: `scrollY / (document height - viewport)` is
+   mapped onto `currentTime`, so the film runs forward as you scroll down, rewinds
+   as you scroll back up, and holds its first and last frame at the two ends.
+   This is the only place the film moves — it is never "played", so there is no
+   third-party player, no autoplay policy, and no sound.
+   Phones and tablets scrub four WebP stills instead (no video byte moves), and
+   reduced motion / Save-Data / 2G-3G readers get a single still that never
+   changes. The wash in front of the film follows the section you are reading:
+   every section declares `data-film-wash`, lerped between section centres. */
 (function(){
-  var root=document.querySelector('[data-film-scrub]');
-  if(!root)return;
-  var frame=root.querySelector('.film-frame'),
-      video=root.querySelector('[data-film-video]'),
-      stills=Array.prototype.slice.call(root.querySelectorAll('[data-film-still]')),
-      bar=root.querySelector('[data-film-bar]'),
-      clock=root.querySelector('[data-film-clock]'),
-      hint=root.querySelector('[data-film-hint]'),
-      soundBtn=root.querySelector('[data-film-sound]'),
+  var layer=document.querySelector('[data-film-bg]');
+  if(!layer)return;
+  var video=layer.querySelector('[data-film-video]'),
+      stills=Array.prototype.slice.call(layer.querySelectorAll('[data-film-still]')),
+      ring=document.querySelector('[data-film-ring]'),
+      dock=document.querySelector('.film-dock'),
+      toggle=document.querySelector('[data-film-toggle]'),
+      soundBtn=document.querySelector('[data-film-sound]'),
       box=document.querySelector('[data-film-box]'),
       full=box?box.querySelector('.film-box-video'):null,
-      PINNED=matchMedia('(min-width:861px) and (hover:hover) and (pointer:fine)'),
-      CALM=matchMedia('(prefers-reduced-motion:reduce)');
-  var duration=20,known=false,warmed=false,ready=false,
-      lastSeek=-1,lastClock=-1,lastStill=0,pending=null,ticking=false;
+      root=document.documentElement,
+      FINE=matchMedia('(hover:hover) and (pointer:fine)'),
+      CALM=matchMedia('(prefers-reduced-motion:reduce)'),
+      conn=navigator.connection||{},
+      DATA=!!conn.saveData||/^(slow-)?2g$|^3g$/.test(conn.effectiveType||''),
+      RING=125.6;   /* 2*pi*20, the ring's circumference */
+  var duration=20,known=false,warmed=false,ready=false,paused=false,held=false,
+      marks=[],lastSeek=-1,lastStill=-1,lastWash=-1,lastRing=-1,pending=null,ticking=false;
 
   function clamp(v){return v<0?0:v>1?1:v}
-  function fmt(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2)}
 
-  /* Nothing is fetched until the section is within two viewports of the
-     read-line, and the video is only ever fetched where it can be scrubbed: a
-     visitor who never scrolls this far, anyone reading on a phone, and anyone who
-     asked for reduced motion all download stills and no film at all. */
+  /* Phones and tablets get the stills: pinning a video to a whole document is a
+     battery tax they never asked for, and the stills scrub just as well. */
+  function stillsOnly(){return !FINE.matches||CALM.matches||DATA}
+
+  /* Nothing is fetched until the page has finished loading its own assets. */
   function warm(){
-    if(warmed||!PINNED.matches||CALM.matches)return;warmed=true;
+    if(warmed||stillsOnly())return;warmed=true;
     var s=video.querySelector('source[data-src]');
     if(s){s.src=s.getAttribute('data-src');s.removeAttribute('data-src');}
     /* `preload="none"` in the markup keeps the film off the wire until here; once
-       we commit to scrubbing, we want the whole 3.2 MB buffered, because every
+       we commit to scrubbing we want the whole ~1 MB buffered, because every
        scroll tick lands on a different byte range. */
     video.preload='auto';
     video.load();
   }
-  if('IntersectionObserver' in window){
-    var warms=new IntersectionObserver(function(es){
-      es.forEach(function(e){if(e.isIntersecting){warm();warms.disconnect()}});
-    },{rootMargin:'200% 0px'});
-    warms.observe(root);
+  if(document.readyState==='complete')setTimeout(warm,120);
+  else addEventListener('load',function(){setTimeout(warm,120)});
+
+  /* Wash marks: every section that declares one, at its own centre. */
+  function measure(){
+    var all=document.querySelectorAll('[data-film-wash]'),y=scrollY;
+    marks=[];
+    Array.prototype.forEach.call(all,function(el){
+      var r=el.getBoundingClientRect(),a=parseFloat(el.getAttribute('data-film-wash'));
+      if(!isFinite(a))return;
+      marks.push({y:y+r.top+r.height/2,a:a});
+    });
+    marks.sort(function(p,q){return p.y-q.y});
+  }
+  function washFor(centre){
+    if(!marks.length)return .62;
+    if(centre<=marks[0].y)return marks[0].a;
+    var last=marks[marks.length-1];
+    if(centre>=last.y)return last.a;
+    for(var i=1;i<marks.length;i++){
+      if(centre<=marks[i].y){
+        var a=marks[i-1],b=marks[i],t=(centre-a.y)/(b.y-a.y||1);
+        return a.a+(b.a-a.a)*t;
+      }
+    }
+    return last.a;
   }
 
-  function sticking(){return PINNED.matches&&document.documentElement.className.indexOf('no-pin')<0}
-
-  /* Scroll -> 0..1. Pinned: the runway's own travel. In flow: the frame crossing
-     the viewport, bottom-edge to top-edge. */
+  /* Scroll -> 0..1 across the whole document. */
   function progress(){
-    var r=root.getBoundingClientRect(),vh=innerHeight;
-    if(sticking()){
-      var travel=root.offsetHeight-vh;
-      return travel>0?clamp(-r.top/travel):0;
-    }
-    var span=vh+r.height;
-    return span>0?clamp((vh-r.top)/span):0;
+    var max=root.scrollHeight-innerHeight;
+    return max>0?clamp(scrollY/max):0;
   }
 
   function seek(t){
-    /* Stills only on touch; nothing moves at all under reduced motion. */
-    if(!known||!PINNED.matches||CALM.matches)return;
+    if(!known||stillsOnly()||paused||held)return;
     t=Math.max(0,Math.min(t,duration-.05));
     if(Math.abs(t-lastSeek)<.02)return;
     lastSeek=t;
@@ -137,40 +153,31 @@ if(tourVid&&tourPlay){
     try{video.currentTime=t}catch(e){}
   }
 
-  var started=false;
-  /* Safety net: if the browser refuses to pin the stage (a clipping ancestor, an
-     engine without sticky), collapse the runway instead of leaving a screen of
-     empty space. The film still scrubs — it just does it as the frame scrolls
-     past, the way it does on a phone. Judged once, only from inside the runway. */
-  var pinChecked=false;
-  function checkPin(){
-    if(pinChecked||!PINNED.matches)return;
-    var r=root.getBoundingClientRect(),vh=innerHeight;
-    if(r.top>-vh*.9||r.bottom<vh*.6)return;   /* not deep enough in, or already past */
-    pinChecked=true;
-    if(frame.getBoundingClientRect().bottom<vh*.4)document.documentElement.classList.add('no-pin');
-  }
-
   function paint(){
     ticking=false;
-    checkPin();
-    var p=CALM.matches?0:progress();
+    var p=progress();
+    /* Reduced motion holds the first frame; pause holds whatever frame the film
+       is on. Either way the page's own progress bar keeps keeping time. */
+    if(!paused){
+      var still=CALM.matches?0:Math.min(stills.length-1,Math.floor(p*stills.length));
+      if(still!==lastStill){lastStill=still;stills.forEach(function(el,k){el.classList.toggle('is-on',k===still)})}
+    }
+    if(ring&&Math.abs(p-lastRing)>.004){
+      lastRing=p;ring.style.strokeDashoffset=(RING*(1-p)).toFixed(2);
+    }
+    var w=washFor(scrollY+innerHeight*.5);
+    if(Math.abs(w-lastWash)>.005){lastWash=w;root.style.setProperty('--film-wash',w.toFixed(3))}
     if(!CALM.matches)seek(p*duration);
-    bar.style.transform='scaleX('+p+')';
-    var startedNow=p>.015;
-    if(startedNow!==started){started=startedNow;frame.classList.toggle('is-started',started)}
-    var i=Math.min(stills.length-1,Math.floor(p*stills.length));
-    if(i!==lastStill){lastStill=i;stills.forEach(function(el,k){el.classList.toggle('is-on',k===i)})}
-    var secs=Math.round(p*duration);
-    if(secs!==lastClock){lastClock=secs;clock.textContent=fmt(secs)}
   }
   function ask(){if(!ticking){ticking=true;requestAnimationFrame(paint)}}
-  /* crossing the pin breakpoint (rotate a tablet, resize a window) can make the
-     video worth fetching, or stop it being worth fetching: re-ask each time. */
-  if(PINNED.addEventListener)PINNED.addEventListener('change',function(){warm();ask()});
+
+  measure();
+  root.style.setProperty('--film-wash',washFor(scrollY+innerHeight*.5).toFixed(3));
   addEventListener('scroll',ask,{passive:true});
-  addEventListener('resize',ask);
-  ask();
+  addEventListener('resize',function(){measure();ask()});
+  /* late layout (fonts, images, the FAQ opening) moves the marks and the runway */
+  addEventListener('load',function(){measure();ask()});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){measure();ask()});
 
   video.addEventListener('loadedmetadata',function(){
     if(video.duration&&isFinite(video.duration))duration=video.duration;
@@ -179,17 +186,32 @@ if(tourVid&&tourPlay){
     else{lastSeek=-1;seek(progress()*duration)}
   });
   video.addEventListener('seeked',function(){
-    if(!ready){ready=true;frame.classList.add('is-ready')}
+    if(!ready){ready=true;layer.classList.add('is-ready')}
   });
   /* Safari drops the first seek until it has a frame to show: nudge it once. */
   video.addEventListener('loadeddata',function(){lastSeek=-1;seek(progress()*duration)});
+  /* Only hide the pause button when nothing can move at all. On a phone the stills
+     do move with the scroll, so pause there still means something. */
+  root.classList.toggle('no-film-motion',CALM.matches);
+  if(FINE.addEventListener)FINE.addEventListener('change',function(){warm();ask()});
 
-  if(CALM.matches&&hint)hint.style.display='none';
+  /* Pause: freeze the background where it is. The dock shows what you will get. */
+  if(toggle){
+    toggle.addEventListener('click',function(){
+      paused=!paused;
+      toggle.setAttribute('aria-pressed',String(paused));
+      toggle.setAttribute('aria-label',paused?'Play the background film':'Pause the background film');
+      if(dock)dock.classList.toggle('is-paused',paused);
+      if(!paused){lastSeek=-1;ask()}
+    });
+  }
 
-  /* "Watch with sound" — the film plays once, properly, in the lightbox, with
-     native controls (which also means free fullscreen, captions and scrubbing). */
-  function openBox(){
+  /* "Watch with sound" — the film once, properly, in the lightbox. */
+  var opener=null;
+  function openBox(from){
     if(!box||!full)return;
+    held=true;
+    opener=from||null;
     box.hidden=false;
     requestAnimationFrame(function(){box.classList.add('is-open')});
     document.body.classList.add('film-open');
@@ -198,14 +220,19 @@ if(tourVid&&tourPlay){
     var pr=full.play();if(pr&&pr.catch)pr.catch(function(){});
   }
   function closeBox(){
-    if(!box||box.hidden)return;
+    if(!box||box.hidden){return}
     box.classList.remove('is-open');
     if(full){full.pause();try{full.currentTime=0}catch(e){}}
     document.body.classList.remove('film-open');
     setTimeout(function(){if(!box.classList.contains('is-open'))box.hidden=true},260);
-    if(soundBtn)soundBtn.focus();
+    held=false;lastSeek=-1;ask();
+    var back=opener||soundBtn;
+    if(back)back.focus();
+    opener=null;
   }
-  if(soundBtn)soundBtn.addEventListener('click',openBox);
+  document.querySelectorAll('[data-film-sound]').forEach(function(el){
+    el.addEventListener('click',function(){openBox(el)});
+  });
   if(box){
     box.querySelectorAll('[data-film-close]').forEach(function(el){el.addEventListener('click',closeBox)});
     addEventListener('keydown',function(e){
@@ -218,6 +245,7 @@ if(tourVid&&tourPlay){
       else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
     });
   }
+  ask();
 })();
 
 var tSlides=document.querySelectorAll('#tCarousel .t-slide'),ti=0,tt;

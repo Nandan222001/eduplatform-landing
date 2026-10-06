@@ -1,0 +1,24 @@
+---
+// The homepage's "why this name" moment. The film itself is no longer *here* —
+// it is the background of the whole site (src/components/SiteFilm.astro) — so
+// this section is deliberately transparent: `data-film-wash="0.34"` is the
+// thinnest wash anywhere on the page, which lets the film come forward behind the
+// copy for one screen before the content sections quieten it down again.
+---
+<section class="section story-section" id="story" data-film-wash="0.34" aria-labelledby="story-title">
+  <div class="container center">
+    <span class="eyebrow gold"><svg class="icon"><use href="#i-spark"/></svg> Wisdom Through Education</span>
+    <h2 class="section-title" id="story-title">Named After <span class="grad-text">Saraswati</span></h2>
+    <p class="section-sub">
+      Sarasvi takes its name from Saraswati, the goddess of knowledge, music and the arts. The 20-second
+      film behind this page was made in her name — scroll, and it plays behind you, frame by frame. Scroll
+      back up and it rewinds.
+    </p>
+    <p class="story-actions">
+      <button class="btn btn-dark" type="button" data-film-sound>
+        <svg class="icon"><use href="#i-volume"/></svg> Watch with sound
+      </button>
+      <span class="story-note"><svg class="icon"><use href="#i-play"/></svg> Muted as you scroll · it keeps time with the page</span>
+    </p>
+  </div>
+</section>

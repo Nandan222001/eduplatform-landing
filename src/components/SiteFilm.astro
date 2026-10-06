@@ -1,0 +1,75 @@
+---
+// The 20-second brand film, as the background of the entire site.
+//
+// It is not played — it is *seeked*: the scroll position of the whole document is
+// mapped onto `currentTime`, so the film runs forward as you scroll down, rewinds
+// as you scroll back up, and holds its first and last frame at the two ends. It
+// sits in a fixed layer behind every section (see `.site-film` in global.css) and
+// each section declares how much cream wash it needs on top of it with
+// `data-film-wash` — so the film is at its most visible behind the hero and the
+// story section, and quiet behind walls of body copy.
+//
+// Cost control, in order of how much a visitor reads:
+//  • The background file is blurred *in the encode* and muted, ~1 MB instead of
+//    3 MB: a CSS blur() on a full-viewport layer would cost more every frame than
+//    the whole video costs once.
+//  • Phones, tablets, `prefers-reduced-motion`, Save-Data and 2G/3G connections
+//    never fetch the video at all — they scrub four blurred WebP stills instead
+//    (~25 KB each), which is why nothing on the page ever jumps.
+//  • Desktop warms the video on `load`, once critical assets are done.
+// The `.film-dock` in the corner is the way out: pause the scrubbing, or play the
+// film properly (sharp, with its music) in the lightbox.
+const bg = [1, 2, 3, 4].map((n) => `/media/sarasvi-blessing-bg-${n}.webp`);
+const film = '/media/sarasvi-blessing.mp4';
+---
+
+<div class="site-film" data-film-bg aria-hidden="true">
+  {bg.map((src, i) => (
+    <img
+      class={i === 0 ? 'site-film-still is-on' : 'site-film-still'}
+      data-film-still={i}
+      src={src}
+      alt=""
+      width="1280"
+      height="720"
+      loading={i === 0 ? 'eager' : 'lazy'}
+      decoding="async"
+    />
+  ))}
+  <video
+    class="site-film-video"
+    data-film-video
+    width="1280"
+    height="720"
+    muted
+    playsinline
+    preload="none"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <source data-src="/media/sarasvi-blessing-bg.mp4" type="video/mp4" />
+  </video>
+  <span class="site-film-wash"></span>
+</div>
+
+<div class="film-dock">
+  <button class="film-dock-btn" type="button" data-film-toggle aria-label="Pause the background film" aria-pressed="false">
+    <svg class="film-dock-ring" viewBox="0 0 44 44" aria-hidden="true"><circle class="ring-bg" cx="22" cy="22" r="20"/><circle class="ring-fg" cx="22" cy="22" r="20" data-film-ring/></svg>
+    <svg class="icon icon-pause"><use href="#i-pause"/></svg>
+    <svg class="icon icon-play"><use href="#i-play"/></svg>
+  </button>
+  <button class="film-dock-btn" type="button" data-film-sound aria-label="Play the brand film with sound" aria-haspopup="dialog">
+    <svg class="icon"><use href="#i-volume"/></svg>
+  </button>
+</div>
+
+<div class="film-lightbox" data-film-box hidden>
+  <div class="film-box-backdrop" data-film-close></div>
+  <div class="film-box-inner" role="dialog" aria-modal="true" aria-label="Sarasvi brand film, 20 seconds with sound">
+    <button class="film-box-close" type="button" data-film-close aria-label="Close the film">
+      <svg class="icon"><use href="#i-close"/></svg>
+    </button>
+    <video class="film-box-video" data-film-full src={film} poster="/media/sarasvi-blessing-p1.webp" controls preload="none" playsinline width="1280" height="720"></video>
+    <p class="film-box-note">Sarasvi — Wisdom Through Education · 20 seconds, with sound</p>
+  </div>
+</div>

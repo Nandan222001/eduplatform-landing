@@ -15,7 +15,7 @@ Static, SEO-optimised landing page for **Sarasvi**, built with [Astro](https://a
 | `npm run preview` | Preview the production build |
 | `npm run images` | Re-optimise `source-images/*.jpg` → `public/images/*.webp` |
 | `npm run video` | Re-encode `source-media/*.mp4` → `public/media/*` (needs ffmpeg on `PATH`, or `FFMPEG_BIN=/path/to/ffmpeg`) |
-| `npm run film` | Rebuild the scroll-scrubbed brand film in `public/media/` from its master (same ffmpeg requirement) |
+| `npm run film` | Rebuild the site-wide brand film + its background encode in `public/media/` (same ffmpeg requirement) |
 | `npm run brand` | Rebuild favicons, app icons, header mark and the OG card from `source-images/brand/` |
 
 ## Configuration (`.env`, see `.env.example`)
@@ -64,50 +64,74 @@ a viewer downloads only whichever of the two files their browser can play.
 Explicit `width`/`height` plus `aspect-ratio` reserve the box, so the section
 never shifts. The clip is also exposed as a `VideoObject` in the page JSON-LD.
 
-## Brand film (scroll-scrubbed)
+## Brand film (the whole site sits on it)
 
 The 20-second brand film — Saraswati, the goddess the platform is named after,
-playing the veena above an open book — sits just under the logo marquee
-(`src/components/BlessingFilm.astro`, `#film`). It is **not played, it is
-seeked**: the scroll position inside the section's runway is mapped onto
+playing the veena above an open book — is the **background of every page**. It is
+not played, it is *seeked*: the scroll position of the whole document maps onto
 `currentTime`, so it runs forward as you scroll down, rewinds as you scroll back
-up, and stops dead at both ends. On a real pointer the frame is pinned
-(`position:sticky`) inside a `260svh` runway, which gives the film roughly 1.6
-screen-heights of travel. `npm run film` rebuilds everything it needs from the
-10.1 MB Gemini master:
+up, and holds its first and last frame at the two ends. It is never "played", so
+there is no player UI, no autoplay policy and no sound — the score lives in the
+lightbox.
+
+The loader is `src/components/SiteFilm.astro`, mounted once in
+`src/layouts/Layout.astro` (so `/`, `/privacy/` and `/terms/` all get it), and
+`npm run film` builds everything it needs from the 10.1 MB Gemini master:
 
 | Output | Codec | Size | Role |
 | :-- | :-- | :-- | :-- |
-| `public/media/sarasvi-blessing.mp4` | H.264 + AAC, 1280×720, `+faststart` | ~3.2 MB | the film itself, for both scrubbing *and* playback |
-| `public/media/sarasvi-blessing-p1…p4.webp` | WebP stills | 27–46 KB each | what you scrub on touch screens, and what covers the first decode |
-| `public/media/sarasvi-blessing-bg.webp` | 160px blurred still | ~0.4 KB | painted behind the frame so the letterbox picks up the film's palette |
+| `public/media/sarasvi-blessing-bg.mp4` | H.264, 1280×720, silent, blurred in the encode, `+faststart` | ~1.1 MB | the site background the scroll scrubs |
+| `public/media/sarasvi-blessing.mp4` | H.264 + AAC, sharp, `+faststart` | ~3.2 MB | the film itself, played in the lightbox |
+| `public/media/sarasvi-blessing-bg-1…4.webp` | WebP stills cut from the same blurred chain | 9–15 KB each | the mobile background, and the first paint |
+| `public/media/sarasvi-blessing-p1.webp` | sharp WebP still | ~27 KB | lightbox poster + JSON-LD `thumbnailUrl` |
 
-**Why this encode looks different from the tour's.** Scrubbing asks the decoder
-for a random frame dozens of times a second, which only stays smooth if
-keyframes are dense, so the file keeps one every 4 frames (`-g 4 -sc_threshold 0`,
-120 of them) instead of every 2 seconds. The size that costs is paid back with
-CRF 34 plus a light denoise — the master is a grainy diffusion render and grain
-is the most expensive thing you can hand an encoder. VP9/WebM and 12 fps
-encodings were measured and rejected: at equal keyframe density WebM came out
-~3× larger, and 12 fps cost *more* bytes while looking worse.
+**Why this encode looks the way it does.** Scrubbing asks the decoder for a random
+frame dozens of times a second, which only stays smooth if keyframes are dense, so
+both files keep one every 4 frames (`-g 4 -sc_threshold 0`, 120 of them) with no
+B-frames. The sharp file pays for that with CRF 34 + a light denoise (the master is
+a grainy diffusion render, and grain is the most expensive thing to hand an
+encoder). The background file is **blurred in the encode rather than in CSS** —
+it sits behind every word on the site, so it has to be quiet, and a `filter:blur()`
+on a full-viewport layer would cost more every frame than the whole video costs
+once. Blurring also nearly halves the file. VP9/WebM and 12 fps were measured and
+rejected (VP9 came out ~3× larger at equal keyframe density; 12 fps cost more bytes
+and looked worse).
 
-**It still costs a visitor almost nothing.** The section is warmed up by an
-`IntersectionObserver` only when it comes within two viewports, and the video is
-only ever fetched where it can actually be scrubbed:
+**How the page stays readable.** Every section declares how much cream wash it
+wants in front of the film with `data-film-wash`, and `main.js` lerps between
+section centres as you scroll, so the film is at its most visible behind the hero
+and the story section and quiet behind walls of copy:
 
-| Visitor | Downloads |
+| Section | Wash | Why |
+| :-- | :-- | :-- |
+| `#top` (hero) | its own gradient scrim (0.97 → 0) | copy column calm, film reads through on the right |
+| `#story` | `0.34` + a pool of light behind the copy | the one deliberate window into the film |
+| sections in between | `0.70 – 0.76` | readable body copy, film still visibly moving |
+| `.stats-bar`, `#cta` | `0.62` | short, high-contrast text |
+| `#faq`, `/privacy/`, `/terms/` | `0.78` | long-form reading |
+| footer | `0.86` | opaque on purpose |
+
+That table is not guesswork: `data-film-wash` values were checked by compositing
+the wash over **all 120 frames** of the background encode and measuring WCAG
+contrast for the text colours that sit on each section (the worst case is the
+hero's lead paragraph at 5.07:1 against a 4.5:1 requirement).
+
+**What it costs a visitor.** The `<source>` stays in `data-src` and the video is
+only fetched on `load`, so nothing competes with the hero; and on the device
+classes where a scroll-driven video is a bad idea it is never fetched at all:
+
+| Visitor | Background |
 | :-- | :-- |
-| Never scrolls this far | one 27 KB still |
-| On a phone / tablet (no fine pointer) | the four stills — the frame cross-fades them with the scroll and **no video byte moves** |
-| `prefers-reduced-motion` | the still only; the film holds its first frame |
-| Desktop, scrolls through | the 3.2 MB film, progressively, then scrubs it |
-| Presses “Watch with sound” | the same bytes again from cache, in a lightbox with native controls |
+| Desktop | the 1.1 MB blurred film, buffered, then scrubbed |
+| Phone / tablet / Save-Data / 2G-3G | four stills (~47 KB total) cross-fade with the scroll — no video bytes |
+| `prefers-reduced-motion` | the first still, held for the whole visit |
 
-One file serves both the scrub and the soundtrack, `width`/`height` +
-`aspect-ratio` + a fixed runway height mean the page never shifts, and if the
-browser refuses to pin the stage (or JS is off) `main.js`/CSS fall back to the
-un-pinned layout rather than leaving a screen of empty space. The film is also
-exposed as a second `VideoObject` in the page JSON-LD.
+If JS is off, the first still simply stays put. A small dock in the corner shows
+film progress as a ring around a pause button (stop the background where it is,
+for reading) and a sound button; the story section offers the same “Watch with
+sound” button, which opens the sharp, scored film in a lightbox with native
+controls — fullscreen, captions and scrubbing for free. The film is exposed as a
+second `VideoObject` in the page JSON-LD.
 
 ## Spacing system
 
@@ -129,6 +153,6 @@ section and it inherits the rhythm. The footer (`.foot-grid`, `.foot-news`,
 
 ## SEO included
 
-Unique title/description, canonical, robots meta, Open Graph + Twitter cards, JSON-LD (Organization, WebSite, SoftwareApplication, two VideoObjects, FAQPage), sitemap + robots.txt, semantic landmarks and a single `h1`, WebP images with width/height + lazy loading, preloaded hero image, self-hosted fonts, tiny JS, a compressed click-to-play product video and a scroll-scrubbed brand film (see below).
+Unique title/description, canonical, robots meta, Open Graph + Twitter cards, JSON-LD (Organization, WebSite, SoftwareApplication, two VideoObjects, FAQPage), sitemap + robots.txt, semantic landmarks and a single `h1`, WebP images with width/height + lazy loading, preloaded hero image, self-hosted fonts, tiny JS, a compressed click-to-play product video and a site-wide, scroll-scrubbed brand film (see below).
 
 `legacy/` holds the original single-file HTML build (kept for reference).
