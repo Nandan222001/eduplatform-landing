@@ -99,7 +99,7 @@ document.querySelectorAll('form.lead-form').forEach(function(form){
     var endpoint=form.getAttribute('data-endpoint');
     if(!endpoint){
       var body=Object.keys(data).map(function(k){return k+': '+data[k]}).join('\n');
-      location.href='mailto:'+form.getAttribute('data-email')+'?subject='+encodeURIComponent('EduPlatform '+data.form)+'&body='+encodeURIComponent(body);
+      location.href='mailto:'+form.getAttribute('data-email')+'?subject='+encodeURIComponent('Sarasvi '+data.form)+'&body='+encodeURIComponent(body);
       say('Opening your email app to send the request…',true);return;
     }
     btn.classList.add('loading');lbl.textContent='Sending…';

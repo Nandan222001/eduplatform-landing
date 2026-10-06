@@ -20,34 +20,37 @@ import Footer from '../components/Footer.astro';
 import faqs from '../data/faq.json';
 
 const site = Astro.site!.toString().replace(/\/$/, '');
-const title = 'School Management Software India | AI-Powered ERP & LMS – EduPlatform';
+const title = 'Sarasvi — School Management Software India | AI-Powered ERP & LMS';
 const description =
-  'EduPlatform is the AI-powered school management software for K-12: attendance, exams, fees, LMS, parent app, gamification and blockchain certificates in one platform. Start a 30-day free trial.';
+  'Sarasvi (Wisdom Through Education) is the AI-powered school management software for K-12: attendance, exams, fees, LMS, parent app, gamification and blockchain certificates in one platform. Start a 30-day free trial.';
 
 const schema = [
   {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': site + '/#org',
-    name: 'EduPlatform',
-    legalName: 'EduPlatform Technologies Pvt. Ltd.',
+    name: 'Sarasvi',
+    legalName: 'Sarasvi Technologies Pvt. Ltd.',
+    slogan: 'Wisdom Through Education',
     url: site + '/',
     logo: site + '/logo-512.png',
+    email: 'hello@sarasvi.example',
   },
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': site + '/#website',
     url: site + '/',
-    name: 'EduPlatform',
+    name: 'Sarasvi',
     inLanguage: 'en-IN',
     publisher: { '@id': site + '/#org' },
   },
   {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'EduPlatform',
+    name: 'Sarasvi',
     applicationCategory: 'EducationApplication',
+    slogan: 'Wisdom Through Education',
     operatingSystem: 'Web, Android, iOS',
     description,
     url: site + '/',
