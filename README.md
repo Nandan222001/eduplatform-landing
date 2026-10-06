@@ -24,17 +24,19 @@ Static, SEO-optimised landing page for **Sarasvi**, built with [Astro](https://a
 
 ## Brand
 
-Defined once in `src/styles/global.css` under `/* TOKENS */`.
+The **site palette is unchanged** — coral, purple, teal, gold and the warm cream
+background are all defined in `src/styles/global.css` under `/* TOKENS */`. Two
+extra tokens exist purely for the Sarasvi lockup, so the mark keeps the colours
+of the supplied artwork:
 
 | Token | Value | Use |
 | :-- | :-- | :-- |
-| Navy | `#002244` | Primary — headings, buttons, footer |
-| Gold | `#CBA956` | Accent — the "i" in the wordmark, rules, seals |
-| Sage | `#669988` | Secondary — AI band, chips, highlights |
-| Grey | `#777777` | Neutral body text |
+| `--cream` | `#FBF6EE` | Round badge behind the emblem (header + footer) |
+| `--brand-gold` | `#CBA956` | The "i" in the wordmark |
 
-- **Typeface** — headings: Garamond Premier (web substitute: [EB Garamond](https://fonts.google.com/specimen/EB+Garamond)); body: [Open Sans](https://fonts.google.com/specimen/Open+Sans). Both are self-hosted via `@fontsource-variable`, so there are no external font requests.
-- **Mark** — the emblem is lifted from `source-images/brand/sarasvi-lockup-cream.png` by `npm run brand`, which keys out the artwork background and writes `public/images/brand/sarasvi-mark.png` (header/footer), `favicon.svg`, `favicon.png`, `favicon-192.png`, `apple-touch-icon.png`, `logo-512.png` (schema logo) and `og-image.jpg`.
+- **Typeface** — headings: Garamond Premier (web substitute: [EB Garamond](https://fonts.google.com/specimen/EB+Garamond)); body: [Open Sans](https://fonts.google.com/specimen/Open+Sans), both per the brand board. Self-hosted via `@fontsource-variable`, so there are no external font requests. The CSS product mockups keep the body face so they still read as software.
+- **Wordmark** — the header/footer lockup is the round emblem badge plus "Sarasv" in ink with a gold "i". The brand board's own navy/gold/green is used *only* inside the mark and the generated icons; it is not applied to the page theme.
+- **Mark** — `npm run brand` crops the emblem from `source-images/brand/sarasvi-lockup-cream.png` and repaints the artwork backdrop to the badge cream. (Keying it to transparency is not possible: the backdrop, the book pages and the halo highlights are all the same near-white, so cutting the background punches holes in the emblem.) It then writes `public/images/brand/sarasvi-mark.png` (header/footer), `favicon.svg`, `favicon.png`, `favicon-192.png`, `apple-touch-icon.png`, `logo-512.png` (schema logo) and `og-image.jpg` (the full lockup on the site's own `--bg`).
 - **Tagline** — "Wisdom Through Education", used in the footer, JSON-LD `slogan`, the web manifest and the social card.
 
 ## SEO included
