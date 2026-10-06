@@ -3,10 +3,10 @@
  *
  * Source artwork lives in source-images/brand/ (the master lockups exported from
  * the brand board). This script:
- *   1. lifts the emblem out of the cream lockup and keys the background away,
- *   2. writes the transparent mark used in the header / footer,
+ *   1. crops the emblem out of the cream lockup and repaints the artwork backdrop
+ *   2. writes the round mark used in the header / footer,
  *   3. writes favicon + app icon + schema logo,
- *   4. writes the 1200x630 Open Graph card.
+ *   4. writes the 1200x630 Open Graph card on the site's background colour.
  *
  * Run with:  npm run brand
  */
@@ -22,7 +22,10 @@ const OUT_IMG = path.join(OUT, 'images/brand');
 const NAVY = '#002244';
 const GOLD = '#CBA956';
 const CREAM = '#FBF6EE';
-const IVORY = '#F7FBFD';
+const CREAM_RGB = [251, 246, 238];
+// The site's own background (--bg), so the social card matches the page theme.
+const SITE_CREAM = '#FFF4F0';
+const SITE_CREAM_RGB = [255, 244, 240];
 // Background of the master artwork — also what gets keyed out.
 const BG = [247, 251, 253];
 
@@ -53,11 +56,16 @@ function contentBox(img, { x0, x1, y0, y1, threshold = 12 }) {
 }
 
 /**
- * Crop the emblem and turn the flat artwork background into real transparency.
- * Background pixels are found by flood-filling inwards from the crop border, so
- * light details *inside* the emblem (book pages, halo) are never punched out.
+ * Crop a region and repaint the flat artwork backdrop to `target`.
+ *
+ * The artwork's backdrop is within ~2/255 of #F7FBFD, but so are the book pages
+ * and other near-white details — the two cannot be told apart by colour, so
+ * keying them out punches holes in the emblem. Instead every backdrop pixel is
+ * repainted to the colour it will sit on, and near-backdrop pixels are blended
+ * toward it. The result is seamless on the cream badge and on the warm page
+ * background, with all artwork detail intact.
  */
-function extractMark(img, box, pad = 10) {
+function recolourBackground(img, box, target, pad = 10) {
   const x0 = Math.max(0, box.x0 - pad);
   const y0 = Math.max(0, box.y0 - pad);
   const x1 = Math.min(img.width - 1, box.x1 + pad);
@@ -65,92 +73,58 @@ function extractMark(img, box, pad = 10) {
   const w = x1 - x0 + 1;
   const h = y1 - y0 + 1;
   const { data, width, channels } = img;
+  const [tr, tg, tb] = target;
 
-  const DEF_BG = 6; // background noise measured at <= 5
-  const FEATHER = 24; // dev at which a pixel counts as fully opaque
-  const isBgish = new Uint8Array(w * h);
+  const DEF_BG = 5; // backdrop noise measured at <= 5
+  const FEATHER = 26; // blend stops here
+  const out = Buffer.alloc(w * h * 3);
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const i = ((y + y0) * width + (x + x0)) * channels;
-      isBgish[y * w + x] = dev(data[i], data[i + 1], data[i + 2]) <= DEF_BG ? 1 : 0;
-    }
-  }
-
-  // flood fill the background from the crop border
-  const bgMask = new Uint8Array(w * h);
-  const stack = [];
-  for (let x = 0; x < w; x++) {
-    stack.push(x, (h - 1) * w + x);
-  }
-  for (let y = 0; y < h; y++) {
-    stack.push(y * w, y * w + w - 1);
-  }
-  while (stack.length) {
-    const p = stack.pop();
-    if (bgMask[p] || !isBgish[p]) continue;
-    bgMask[p] = 1;
-    const x = p % w;
-    const y = (p / w) | 0;
-    if (x > 0) stack.push(p - 1);
-    if (x < w - 1) stack.push(p + 1);
-    if (y > 0) stack.push(p - w);
-    if (y < h - 1) stack.push(p + w);
-  }
-
-  // pixels within 2px of the background form the anti-aliased edge band
-  const band = new Uint8Array(w * h);
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const p = y * w + x;
-      if (bgMask[p]) continue;
-      let near = false;
-      for (let dy = -2; dy <= 2 && !near; dy++) {
-        for (let dx = -2; dx <= 2; dx++) {
-          const nx = x + dx;
-          const ny = y + dy;
-          if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-          if (bgMask[ny * w + nx]) {
-            near = true;
-            break;
-          }
-        }
-      }
-      if (near) band[p] = 1;
-    }
-  }
-
-  const out = Buffer.alloc(w * h * 4);
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const p = y * w + x;
-      const i = ((y + y0) * width + (x + x0)) * channels;
-      const o = p * 4;
-      if (bgMask[p]) {
-        out[o] = out[o + 1] = out[o + 2] = out[o + 3] = 0;
+      const o = (y * w + x) * 3;
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const d = dev(r, g, b);
+      if (d <= DEF_BG) {
+        out[o] = tr;
+        out[o + 1] = tg;
+        out[o + 2] = tb;
         continue;
       }
-      let r = data[i];
-      let g = data[i + 1];
-      let b = data[i + 2];
-      let a = 255;
-      if (band[p]) {
-        const d = dev(r, g, b);
-        a = Math.round(Math.min(1, Math.max(0, (d - DEF_BG) / (FEATHER - DEF_BG))) * 255);
-        // un-blend the original background from the soft edge pixels
-        const af = a / 255;
-        if (af > 0.25) {
-          r = Math.min(255, Math.max(0, Math.round((r - BG[0] * (1 - af)) / af)));
-          g = Math.min(255, Math.max(0, Math.round((g - BG[1] * (1 - af)) / af)));
-          b = Math.min(255, Math.max(0, Math.round((b - BG[2] * (1 - af)) / af)));
-        }
+      if (d < FEATHER) {
+        // feather toward the new background so no bluish fringe survives
+        const t = (d - DEF_BG) / (FEATHER - DEF_BG);
+        out[o] = Math.round(tr + (r - tr) * t);
+        out[o + 1] = Math.round(tg + (g - tg) * t);
+        out[o + 2] = Math.round(tb + (b - tb) * t);
+        continue;
       }
       out[o] = r;
       out[o + 1] = g;
       out[o + 2] = b;
-      out[o + 3] = a;
     }
   }
-  return { data: out, width: w, height: h };
+  return sharp(out, { raw: { width: w, height: h, channels: 3 } });
+}
+
+/** Mask an image to a centred circle, with a 1px feathered rim. */
+async function maskToCircle(pngBuffer, diameterInset = 0) {
+  const meta = await sharp(pngBuffer).metadata();
+  const size = Math.min(meta.width, meta.height) - diameterInset * 2;
+  const r = size / 2;
+  const cx = meta.width / 2;
+  const cy = meta.height / 2;
+  const mask = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${meta.width}" height="${
+      meta.height
+    }"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff"/></svg>`
+  );
+  return sharp(pngBuffer)
+    .ensureAlpha()
+    .composite([{ input: mask, blend: 'dest-in' }])
+    .png()
+    .toBuffer();
 }
 
 /** Trim fully transparent rows/cols so the mark has a tight box. */
@@ -192,25 +166,32 @@ async function main() {
   const emblem = contentBox(img, { x0: 120, x1: 845, y0: 90, y1: 523 });
   console.log('emblem box', emblem, `w=${emblem.x1 - emblem.x0 + 1} h=${emblem.y1 - emblem.y0 + 1}`);
 
-  const mark = extractMark(img, emblem, 8);
-  console.log(`keyed mark ${mark.width}x${mark.height}`);
+  console.log('repainting emblem backdrop to the badge cream');
 
   await mkdir(OUT_IMG, { recursive: true });
-  const markTrimmed = await trim(mark.data, mark.width, mark.height);
   // The header renders the mark at 34px; 256px covers 3x DPR with room to spare.
-  // Palette PNG keeps it to ~30 KB (vs ~250 KB truecolour) with no visible loss.
-  const markPng = await sharp(await markTrimmed.png().toBuffer())
-    .resize({ width: 256, fit: 'inside' })
-    .png({ compressionLevel: 9, palette: true, quality: 92, effort: 10 })
+  // The emblem is repainted onto the badge cream and clipped to a circle, so it
+  // sits seamlessly inside the round logo chip.
+  const markPng = await sharp(
+    await (await recolourBackground(img, emblem, CREAM_RGB, 8))
+      .trim()
+      .resize({ width: 256, fit: 'inside' })
+      .png({ compressionLevel: 9, palette: true, quality: 92, effort: 10 })
+      .toBuffer()
+  )
+    .png()
     .toBuffer();
-  await writeFile(path.join(OUT_IMG, 'sarasvi-mark.png'), markPng);
-  const markSize = await sharp(markPng).metadata();
+  const markPngMasked = await maskToCircle(markPng, 1);
+  await writeFile(path.join(OUT_IMG, 'sarasvi-mark.png'), markPngMasked);
+  const markSize = await sharp(markPngMasked).metadata();
   console.log(
-    `wrote ${OUT_IMG}/sarasvi-mark.png (${markSize.width}x${markSize.height}, ${Math.round(markPng.length / 1024)} KB)`
+    `wrote ${OUT_IMG}/sarasvi-mark.png (${markSize.width}x${markSize.height}, ${Math.round(
+      markPngMasked.length / 1024
+    )} KB)`
   );
 
   const composed = async (size, bg, circle) => {
-    const inner = Math.round(size * (circle ? 0.66 : 0.94));
+    const inner = Math.round(size * (circle ? 0.78 : 0.94));
     const scale = Math.min(inner / markSize.width, inner / markSize.height);
     const w = Math.max(1, Math.round(markSize.width * scale));
     const h = Math.max(1, Math.round(markSize.height * scale));
@@ -229,7 +210,7 @@ async function main() {
       });
     }
     layers.push({
-      input: await sharp(markPng).resize(w, h).png().toBuffer(),
+      input: await sharp(markPngMasked).resize(w, h).png().toBuffer(),
       top: Math.round((size - h) / 2),
       left: Math.round((size - w) / 2),
     });
@@ -241,21 +222,27 @@ async function main() {
   // favicon: cream badge (brand board's gold-on-white favicon treatment)
   await (await composed(64, { r: 0, g: 0, b: 0, alpha: 0 }, CREAM)).toFile(path.join(OUT, 'favicon.png'));
   await (await composed(192, { r: 0, g: 0, b: 0, alpha: 0 }, CREAM)).toFile(path.join(OUT, 'favicon-192.png'));
-  // app icon / schema logo: opaque ivory so iOS doesn't composite on black
-  await (await composed(512, IVORY, CREAM)).png().toFile(path.join(OUT, 'logo-512.png'));
-  await (await composed(180, IVORY, CREAM)).png().toFile(path.join(OUT, 'apple-touch-icon.png'));
+  // app icon / schema logo: opaque so iOS doesn't composite on black
+  await (await composed(512, CREAM, CREAM)).png().toFile(path.join(OUT, 'logo-512.png'));
+  await (await composed(180, CREAM, CREAM)).png().toFile(path.join(OUT, 'apple-touch-icon.png'));
   console.log(`wrote favicon.png, favicon-192.png, apple-touch-icon.png, logo-512.png`);
 
-  // Open Graph card — the master lockup on its own background colour
-  const lockup = await sharp(SRC).extract({ left: 236, top: 118, width: 728, height: 630 }).toBuffer();
-  const ogLockup = await sharp(lockup).resize({ height: 566 }).toBuffer();
+  // Open Graph card: the full lockup (emblem + leaf + wordmark + tagline) is keyed
+  // to transparency and set on the site's own warm background, so it matches the
+  // page theme instead of carrying the artwork's flat backdrop.
+  const lockBox = { x0: 290, y0: 125, x1: 915, y1: 740 };
+  const ogLockup = await (await recolourBackground(img, lockBox, SITE_CREAM_RGB, 6))
+    .trim()
+    .resize({ height: 520, fit: 'inside' })
+    .jpeg({ quality: 95 })
+    .toBuffer();
   const ogMeta = await sharp(ogLockup).metadata();
-  await sharp({ create: { width: 1200, height: 630, channels: 4, background: { r: BG[0], g: BG[1], b: BG[2], alpha: 1 } } })
+  await sharp({ create: { width: 1200, height: 630, channels: 4, background: SITE_CREAM } })
     .composite([
-      { input: ogLockup, top: 32, left: Math.round((1200 - ogMeta.width) / 2) },
+      { input: ogLockup, top: Math.round((630 - ogMeta.height) / 2), left: Math.round((1200 - ogMeta.width) / 2) },
       {
         input: Buffer.from(
-          `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect x="26" y="26" width="1148" height="578" rx="18" fill="none" stroke="${GOLD}" stroke-width="2" opacity=".55"/></svg>`
+          `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"><rect x="26" y="26" width="1148" height="578" rx="18" fill="none" stroke="${GOLD}" stroke-width="2" opacity=".5"/></svg>`
         ),
         top: 0,
         left: 0,
@@ -263,11 +250,11 @@ async function main() {
     ])
     .jpeg({ quality: 88, chromaSubsampling: '4:4:4' })
     .toFile(path.join(OUT, 'og-image.jpg'));
-  console.log('wrote og-image.jpg (1200x630)');
+  console.log('wrote og-image.jpg (1200x630, on the site background)');
 
   // verification renders (not part of the site)
   await mkdir('/tmp/brand-check', { recursive: true });
-  await sharp({ create: { width: 900, height: 300, channels: 4, background: IVORY } })
+  await sharp({ create: { width: 900, height: 300, channels: 4, background: SITE_CREAM } })
     .composite([
       { input: await sharp(markPng).resize({ height: 220 }).toBuffer(), top: 40, left: 40 },
       {
