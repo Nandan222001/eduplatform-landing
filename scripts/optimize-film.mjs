@@ -24,8 +24,9 @@
 // Why the background is blurred *in the file*: it sits behind every word on the
 // site, so it must be quiet — and baking the blur in is free at runtime, where a
 // CSS blur() on a full-viewport layer is one of the most expensive things you can
-// ask a compositor to do every frame. Blur also cuts the file roughly in half,
-// which is why the site-wide background costs about the same as one photo set.
+// ask a compositor to do every frame. The blur is kept light (sigma 5) and given a
+// touch of contrast/saturation, because the page's wash in front of it is thin on
+// purpose: the film is meant to be seen, not deduced.
 //
 // Measured and rejected: VP9/WebM (~3x larger than H.264 at equal keyframe
 // density on this content) and 12 fps (more bytes, worse picture).
@@ -46,7 +47,7 @@ const SRC = process.argv[2] || CANDIDATES.find((p) => existsSync(p));
 const W = 1280;
 const H = 720;
 const DENOISE = 'hqdn3d=2.2:2:7:7';   // smooth the render's grain; keep the drawing
-const SOFT = `scale=${W}:${H},gblur=sigma=8:steps=2`;   // the background's quiet
+const SOFT = `scale=${W}:${H},gblur=sigma=5:steps=2,eq=contrast=1.06:saturation=1.08`;   // the background's quiet
 const SHARP = `scale=${W}:${H},${DENOISE}`;
 const X264 = ['-c:v', 'libx264', '-preset', 'slow', '-profile:v', 'high', '-level', '4.0',
   '-g', '4', '-keyint_min', '4', '-sc_threshold', '0', '-bf', '0', '-pix_fmt', 'yuv420p'];

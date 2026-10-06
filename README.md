@@ -67,73 +67,76 @@ never shifts. The clip is also exposed as a `VideoObject` in the page JSON-LD.
 ## Brand film (the whole site sits on it)
 
 The 20-second brand film — Saraswati, the goddess the platform is named after,
-playing the veena above an open book — is the **background of every page**. It is
-not played, it is *seeked*: the scroll position of the whole document maps onto
-`currentTime`, so it runs forward as you scroll down, rewinds as you scroll back
-up, and holds its first and last frame at the two ends. It is never "played", so
-there is no player UI, no autoplay policy and no sound — the score lives in the
-lightbox.
+playing the veena above an open book — is the **background of every page**, and it
+is meant to be *seen*. It is not played, it is *seeked*: the scroll position of the
+whole document maps onto `currentTime`, so it runs forward as you scroll down,
+rewinds as you scroll back up, and holds its first and last frame at the two ends.
+No player chrome, no autoplay policy, no sound while scrolling.
 
-The loader is `src/components/SiteFilm.astro`, mounted once in
+The layer is `src/components/SiteFilm.astro`, mounted once in
 `src/layouts/Layout.astro` (so `/`, `/privacy/` and `/terms/` all get it), and
 `npm run film` builds everything it needs from the 10.1 MB Gemini master:
 
 | Output | Codec | Size | Role |
 | :-- | :-- | :-- | :-- |
-| `public/media/sarasvi-blessing-bg.mp4` | H.264, 1280×720, silent, blurred in the encode, `+faststart` | ~1.1 MB | the site background the scroll scrubs |
-| `public/media/sarasvi-blessing.mp4` | H.264 + AAC, sharp, `+faststart` | ~3.2 MB | the film itself, played in the lightbox |
-| `public/media/sarasvi-blessing-bg-1…4.webp` | WebP stills cut from the same blurred chain | 9–15 KB each | the mobile background, and the first paint |
+| `public/media/sarasvi-blessing-bg.mp4` | H.264, 1280×720, silent, soft-blurred in the encode, `+faststart` | ~1.3 MB | the site background the scroll scrubs |
+| `public/media/sarasvi-blessing.mp4` | H.264 + AAC, sharp, `+faststart` | ~3.2 MB | the film itself, for the lightbox |
+| `public/media/sarasvi-blessing-bg-1…4.webp` | WebP stills cut from the same soft chain | 12–19 KB each | the mobile background, and the first paint |
 | `public/media/sarasvi-blessing-p1.webp` | sharp WebP still | ~27 KB | lightbox poster + JSON-LD `thumbnailUrl` |
 
-**Why this encode looks the way it does.** Scrubbing asks the decoder for a random
-frame dozens of times a second, which only stays smooth if keyframes are dense, so
-both files keep one every 4 frames (`-g 4 -sc_threshold 0`, 120 of them) with no
-B-frames. The sharp file pays for that with CRF 34 + a light denoise (the master is
-a grainy diffusion render, and grain is the most expensive thing to hand an
-encoder). The background file is **blurred in the encode rather than in CSS** —
-it sits behind every word on the site, so it has to be quiet, and a `filter:blur()`
-on a full-viewport layer would cost more every frame than the whole video costs
-once. Blurring also nearly halves the file. VP9/WebM and 12 fps were measured and
-rejected (VP9 came out ~3× larger at equal keyframe density; 12 fps cost more bytes
-and looked worse).
+**Why the background is soft and small.** It sits behind every word on the site, so
+it has to stay quiet — and blurring it *in the encode* rather than in CSS is free
+at runtime, where a `filter:blur()` on a full-viewport layer is one of the most
+expensive things you can ask a compositor to do every frame. The blur is deliberately
+light (`gblur=sigma=5` plus a small contrast/saturation lift): the page's wash in
+front of it is thin, so the film is meant to read as picture, not as a tint. Both
+files keep the dense keyframe ladder scrubbing needs (`-g 4 -sc_threshold 0`, 120
+keyframes, no B-frames); the sharp file pays for it with CRF 34 + a light denoise
+(the master is a grainy diffusion render, and grain is the most expensive thing to
+hand an encoder). VP9/WebM and 12 fps were measured and rejected.
 
-**How the page stays readable.** Every section declares how much cream wash it
-wants in front of the film with `data-film-wash`, and `main.js` lerps between
-section centres as you scroll, so the film is at its most visible behind the hero
-and the story section and quiet behind walls of copy:
+**How the page stays readable — and stays see-through.** The wash in front of the
+film is thin everywhere:
 
 | Section | Wash | Why |
 | :-- | :-- | :-- |
-| `#top` (hero) | its own gradient scrim (0.97 → 0) | copy column calm, film reads through on the right |
-| `#story` | `0.34` + a pool of light behind the copy | the one deliberate window into the film |
-| sections in between | `0.70 – 0.76` | readable body copy, film still visibly moving |
-| `.stats-bar`, `#cta` | `0.62` | short, high-contrast text |
-| `#faq`, `/privacy/`, `/terms/` | `0.78` | long-form reading |
+| `#top` (hero) | `0.02` + its own gradient scrim | the subject fills the frame; the scrim thins to nothing on the right |
+| `#story` | `0.14` | the deliberate window into the film |
+| everything between | `0.26 – 0.36` | film plainly visible, copy still legible |
 | footer | `0.86` | opaque on purpose |
 
-That table is not guesswork: `data-film-wash` values were checked by compositing
-the wash over **all 120 frames** of the background encode and measuring WCAG
-contrast for the text colours that sit on each section (the worst case is the
-hero's lead paragraph at 5.07:1 against a 4.5:1 requirement).
+Instead of veiling the picture, each block of text carries its own **pool of light**
+(`--pool` in the tokens, applied to every `.container.center` header and every
+`.split .copy`), and that is what legibility rides on. Cards and section surfaces
+are simply translucent copies of white (`0.58 – 0.90`), so the film reads through
+them as well. Every value was checked by compositing the wash, the pools and the
+surfaces over **all 120 frames** of the background encode and measuring WCAG
+contrast for the text colours sitting on each section — 18 regions, worst case
+5.06:1 against a 4.5:1 requirement.
 
-**What it costs a visitor.** The `<source>` stays in `data-src` and the video is
-only fetched on `load`, so nothing competes with the hero; and on the device
-classes where a scroll-driven video is a bad idea it is never fetched at all:
+**What it costs a visitor.** The `<source>` stays in `data-src` and the film is only
+fetched on `load`, and on the device classes where a scroll-driven video is a bad
+idea it is never fetched at all:
 
 | Visitor | Background |
 | :-- | :-- |
-| Desktop | the 1.1 MB blurred film, buffered, then scrubbed |
-| Phone / tablet / Save-Data / 2G-3G | four stills (~47 KB total) cross-fade with the scroll — no video bytes |
+| Desktop / laptop (≥861px, hover) | the 1.3 MB film, buffered, then scrubbed |
+| Phone / tablet / Save-Data / 2G | four stills (~60 KB) cross-fade with the scroll — no video bytes |
 | `prefers-reduced-motion` | the first still, held for the whole visit |
+| JS off | the first still, held |
 
-If JS is off, the first still simply stays put. A small dock in the corner shows
-film progress as a ring around a pause button (stop the background where it is,
-for reading) and a sound button; the story section offers the same “Watch with
-sound” button, which opens the sharp, scored film in a lightbox with native
-controls — fullscreen, captions and scrubbing for free. The film is exposed as a
-second `VideoObject` in the page JSON-LD.
+Note the gate is `min-width:861px` + `hover:hover` + Save-Data/2G only. An earlier
+version also required `pointer:fine` and excluded `effectiveType === '3g'`, which
+silently switched the film off on touch-screen laptops and on ordinary slow Wi-Fi
+(Chrome derives `3g` from *measured throughput*, not from connection type).
 
-## Spacing system
+A small dock in the corner shows film progress as a ring around a pause button
+(stop the background where it is, for reading) and a sound button; the story
+section offers the same “Watch with sound”, which opens the sharp, scored film in a
+lightbox with native controls. The film is exposed as a second `VideoObject` in the
+page JSON-LD.
+
+## Spacing system## Spacing system
 
 The vertical rhythm comes from a single set of tokens in `global.css`, so every
 section lines up without per-component overrides:

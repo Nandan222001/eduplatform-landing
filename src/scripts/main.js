@@ -85,10 +85,13 @@ if(tourVid&&tourPlay){
       box=document.querySelector('[data-film-box]'),
       full=box?box.querySelector('.film-box-video'):null,
       root=document.documentElement,
-      FINE=matchMedia('(hover:hover) and (pointer:fine)'),
+      WIDE=matchMedia('(min-width:861px) and (hover:hover)'),
       CALM=matchMedia('(prefers-reduced-motion:reduce)'),
       conn=navigator.connection||{},
-      DATA=!!conn.saveData||/^(slow-)?2g$|^3g$/.test(conn.effectiveType||''),
+      /* only the genuinely constrained cases: an explicit Save-Data, or a
+         connection Chrome measured as 2G/slow-2G. "3g" is far too eager — it is
+         derived from throughput, so ordinary slow Wi-Fi lands in it. */
+      DATA=!!conn.saveData||/^(slow-)?2g$/.test(conn.effectiveType||''),
       RING=125.6;   /* 2*pi*20, the ring's circumference */
   var duration=20,known=false,warmed=false,ready=false,paused=false,held=false,
       marks=[],lastSeek=-1,lastStill=-1,lastWash=-1,lastRing=-1,pending=null,ticking=false;
@@ -97,7 +100,7 @@ if(tourVid&&tourPlay){
 
   /* Phones and tablets get the stills: pinning a video to a whole document is a
      battery tax they never asked for, and the stills scrub just as well. */
-  function stillsOnly(){return !FINE.matches||CALM.matches||DATA}
+  function stillsOnly(){return !WIDE.matches||CALM.matches||DATA}
 
   /* Nothing is fetched until the page has finished loading its own assets. */
   function warm(){
@@ -185,15 +188,16 @@ if(tourVid&&tourPlay){
     if(pending!==null){lastSeek=-1;seek(pending)}
     else{lastSeek=-1;seek(progress()*duration)}
   });
-  video.addEventListener('seeked',function(){
-    if(!ready){ready=true;layer.classList.add('is-ready')}
-  });
+  function reveal(){if(!ready){ready=true;layer.classList.add('is-ready')}}
+  video.addEventListener('seeked',reveal);
+  video.addEventListener('loadeddata',reveal);
+  video.addEventListener('canplay',reveal);
   /* Safari drops the first seek until it has a frame to show: nudge it once. */
   video.addEventListener('loadeddata',function(){lastSeek=-1;seek(progress()*duration)});
   /* Only hide the pause button when nothing can move at all. On a phone the stills
      do move with the scroll, so pause there still means something. */
   root.classList.toggle('no-film-motion',CALM.matches);
-  if(FINE.addEventListener)FINE.addEventListener('change',function(){warm();ask()});
+  if(WIDE.addEventListener)WIDE.addEventListener('change',function(){warm();ask()});
 
   /* Pause: freeze the background where it is. The dock shows what you will get. */
   if(toggle){
