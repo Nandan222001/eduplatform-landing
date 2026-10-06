@@ -134,6 +134,10 @@ if(tourVid&&tourPlay){
     if(warmed||stillsOnly())return;warmed=true;
     var s=video.querySelector('source[data-src]');
     if(s){s.src=s.getAttribute('data-src');s.removeAttribute('data-src');}
+    /* Tall screens get the portrait cut: the landscape frame stretched to fill a
+       phone is what made the film look blurred. */
+    var tall=video.getAttribute('data-src-portrait');
+    if(tall&&matchMedia('(max-aspect-ratio:1/1)').matches)video.src=tall;
     video.preload='auto';
     try{video.load()}catch(e){}
     prime();

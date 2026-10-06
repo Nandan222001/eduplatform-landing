@@ -183,7 +183,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 /* ============ SITE FILM (the whole page sits on it) ============ */
 /* One fixed layer behind everything, painted with the 20-second brand film:
-   soft-blurred and muted in the encode, seeked by the scroll (main.js).
+   sharp and muted in the encode (a portrait cut on phones), seeked by the scroll (main.js).
    The video is *never* hidden by a class or a flag — it is always painted, with a
    poster, so the layer shows the film whether or not the script ran, whether or
    not the bytes have arrived yet, and whatever the browser decides to do. The
