@@ -111,7 +111,10 @@ if(tourVid&&tourPlay){
   /* Who keeps the stills instead of the film: readers who asked for stillness, and
      connections that asked not to be loaded. Nobody else — in particular not
      phones, and not narrow windows. */
-  function stillsOnly(){return CALM.matches||DATA}
+  /* Reduced motion no longer opts out: the film never plays on its own, it only
+     moves while the reader scrolls (and the dock's pause button freezes it), and
+     Windows laptops with "Animation effects" off were left looking at a still. */
+  function stillsOnly(){return DATA}
 
   /* One attribute, on <html>, recording which path the background took. If the
      film is ever "missing" again, this says why in one look:
@@ -122,7 +125,7 @@ if(tourVid&&tourPlay){
        <html data-film-mode="failed">         the file could not be played
        <html data-film-mode="no-js">          never set — the script did not run */
   function mode(){
-    return CALM.matches?'reduced-motion':(conn.saveData?'save-data':DATA?'2g':'video');
+    return conn.saveData?'save-data':DATA?'2g':(CALM.matches?'video-reduced-motion':'video');
   }
   function setMode(m){root.setAttribute('data-film-mode',m)}
   setMode(mode());
@@ -212,7 +215,7 @@ if(tourVid&&tourPlay){
     /* Reduced motion holds the first frame; pause holds whatever frame the film
        is on. Either way the page's own progress bar keeps keeping time. */
     if(!paused){
-      var still=CALM.matches?0:Math.min(stills.length-1,Math.floor(p*stills.length));
+      var still=Math.min(stills.length-1,Math.floor(p*stills.length));
       if(still!==lastStill){lastStill=still;stills.forEach(function(el,k){el.classList.toggle('is-on',k===still)})}
     }
     if(ring&&Math.abs(p-lastRing)>.004){
@@ -220,7 +223,7 @@ if(tourVid&&tourPlay){
     }
     var w=washFor(scrollY+innerHeight*.5);
     if(Math.abs(w-lastWash)>.005){lastWash=w;root.style.setProperty('--film-wash',w.toFixed(3))}
-    if(!CALM.matches)seek(p*duration);
+    seek(p*duration);
   }
   function ask(){if(!ticking){ticking=true;requestAnimationFrame(paint)}}
 
@@ -249,7 +252,7 @@ if(tourVid&&tourPlay){
   video.addEventListener('loadeddata',function(){lastSeek=-1;seek(progress()*duration)});
   /* Only hide the pause button when nothing can move at all. On a phone the stills
      do move with the scroll, so pause there still means something. */
-  root.classList.toggle('no-film-motion',CALM.matches);
+  root.classList.toggle('no-film-motion',false);
   layer.classList.toggle('no-video',failed);
   if(TOUCH.addEventListener)TOUCH.addEventListener('change',function(){ask()});
   var calmWatch=(CALM.addEventListener||CALM.addListener);

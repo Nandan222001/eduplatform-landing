@@ -9,15 +9,16 @@
 // `data-film-wash` — so the film is at its most visible behind the hero and the
 // story section, and quiet behind walls of body copy.
 //
-// Only two kinds of reader miss out on the video: `prefers-reduced-motion` and
-// connections that asked not to be loaded (Save-Data, 2G/slow-2G). They get four
+// Only connections that asked not to be loaded miss out on the video (Save-Data,
+// 2G/slow-2G); reduced-motion readers scrub it too, since it never moves on its
+// own and the dock can pause it. Those connections get four
 // stills (~12-19 KB each) that cross-fade with the scroll, so the page still moves.
 // There is no width or pointer gate any more — hiding the film behind one is how it
 // went missing before. Everything else warms the video the moment the DOM is ready,
 // with `preload="none"` in the markup keeping it off the wire until then.
 //
 // When something looks wrong, <html data-film-mode> says which path was taken
-// (video / reduced-motion / save-data / 2g / failed) — see main.js.
+// (video / video-reduced-motion / save-data / 2g / failed) — see main.js.
 const bg = [1, 2, 3, 4].map((n) => `/media/sarasvi-blessing-bg-${n}.webp`);
 const film = '/media/sarasvi-blessing.mp4';
 ---
