@@ -3,37 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EduPlatform — The All-in-One AI-Powered School Operating System</title>
-<meta name="description" content="EduPlatform unifies academics, AI-powered learning, gamification, parent engagement, blockchain credentials and school operations in one multi-tenant platform for K-12 institutions.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23FF7A45'/%3E%3Cpath d='M32 14 8 26l24 12 20-10v14h4V26L32 14z' fill='%23fff'/%3E%3Cpath d='M18 34v10c0 4 6.3 8 14 8s14-4 14-8V34l-14 7-14-7z' fill='%23FFE3D6'/%3E%3C/svg%3E">
+<title>Sarasvi — The All-in-One AI-Powered School Operating System</title>
+<meta name="description" content="Sarasvi unifies academics, AI-powered learning, gamification, parent engagement, blockchain credentials and school operations in one multi-tenant platform for K-12 institutions.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23FBF6EE'/%3E%3Cg fill='%23669988'%3E%3Cpath d='M32 41C40 34.5 40 24 32 17.5 24 24 24 34.5 32 41Z' transform='rotate(-55 32 41)'/%3E%3Cpath d='M32 41C40 34.5 40 24 32 17.5 24 24 24 34.5 32 41Z' transform='rotate(55 32 41)'/%3E%3C/g%3E%3Cg fill='%23002244'%3E%3Cpath d='M32 41C40 34.5 40 24 32 17.5 24 24 24 34.5 32 41Z' transform='rotate(-27 32 41)'/%3E%3Cpath d='M32 41C40 34.5 40 24 32 17.5 24 24 24 34.5 32 41Z' transform='rotate(27 32 41)'/%3E%3Cpath d='M32 41C39.5 35 39.5 25.5 32 19.5 24.5 25.5 24.5 35 32 41Z'/%3E%3C/g%3E%3Ccircle cx='32' cy='38.6' r='3' fill='%23CBA956'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ============ TOKENS ============ */
 :root{
-  --primary:#FF7A45; --primary-light:#FE7944; --primary-dark:#A33702;
-  --secondary:#6C5CE7; --secondary-light:#D2CCFF; --secondary-dark:#4935C3;
-  --info:#00CEC9; --info-light:#61FFF9; --info-dark:#006764;
-  --gold:#FDCB6E; --error:#B31B25;
-  --bg:#FFF4F0; --paper:#FFFFFF;
-  --ink:#4B240A; --ink-2:#815032; --divider:#DD9F7C;
-  --line:rgba(221,159,124,.28);
-  --hero-grad:linear-gradient(160deg,#FFF4F0 0%,#FFEADC 35%,#EDE9FF 75%,#D2CCFF 100%);
-  --grad-headline:linear-gradient(135deg,#4B240A 0%,#FF7A45 50%,#6C5CE7 100%);
-  --grad-cta:linear-gradient(135deg,rgba(75,26,5,.82) 0%,rgba(120,40,5,.72) 50%,rgba(58,44,140,.78) 100%);
+  --primary:#002244; --primary-light:#0A3A5F; --primary-dark:#0A3357;
+  --secondary:#2E7D74; --secondary-light:#CBE2DB; --secondary-dark:#1F5F58;
+  --info:#669988; --info-light:#9FC8BA; --info-dark:#2E6B5E;
+  --gold:#CBA956; --error:#B31B25;
+  --bg:#F7FBFD; --paper:#FFFFFF;
+  --ink:#12283C; --ink-2:#5F6B76; --divider:#B9C4CC;
+  --line:rgba(18,40,60,.14);
+  --hero-grad:linear-gradient(160deg,#F7FBFD 0%,#EEF4FA 35%,#E7F1EE 75%,#CBE2DB 100%);
+  --grad-headline:linear-gradient(135deg,#12283C 0%,#002244 50%,#2E7D74 100%);
+  --grad-cta:linear-gradient(135deg,rgba(0,26,51,.86) 0%,rgba(10,58,95,.78) 50%,rgba(31,95,88,.80) 100%);
   --r-card:24px; --r-input:16px;
-  --shadow-sm:0 4px 20px rgba(75,36,10,.06);
-  --shadow-md:0 8px 30px rgba(75,36,10,.09);
-  --shadow-lg:0 24px 60px rgba(75,36,10,.14);
-  --shadow-hover:0 16px 44px rgba(75,36,10,.16);
-  --font-head:'Manrope',Inter,-apple-system,'Segoe UI',sans-serif;
-  --font-body:'Inter',-apple-system,'Segoe UI',sans-serif;
+  --shadow-sm:0 4px 20px rgba(0,34,68,.05);
+  --shadow-md:0 8px 30px rgba(0,34,68,.07);
+  --shadow-lg:0 24px 60px rgba(0,34,68,.12);
+  --shadow-hover:0 16px 44px rgba(0,34,68,.14);
+  --font-head:'EB Garamond','Garamond Premier',Garamond,Georgia,serif;
+  --font-body:'Open Sans',-apple-system,'Segoe UI',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:var(--font-body);font-size:16px;line-height:1.65;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-h1,h2,h3,h4{font-family:var(--font-head);line-height:1.18;font-weight:800;letter-spacing:-.015em}
+h1,h2,h3,h4{font-family:var(--font-head);line-height:1.2;font-weight:700;letter-spacing:0}
 img{max-width:100%;display:block}
 picture{display:contents}
 a{color:inherit;text-decoration:none}
@@ -44,11 +44,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .container{max-width:1180px;margin:0 auto;padding:0 28px}
 .section{padding:96px 0}
 .icon{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--primary-dark);background:rgba(255,122,69,.12);padding:8px 18px;border-radius:999px;margin-bottom:18px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--primary-dark);background:rgba(0,34,68,.08);padding:8px 18px;border-radius:999px;margin-bottom:18px}
 .eyebrow .icon{width:15px;height:15px}
-.eyebrow.purple{color:var(--secondary-dark);background:rgba(108,92,231,.12)}
-.eyebrow.teal{color:var(--info-dark);background:rgba(0,206,201,.14)}
-.eyebrow.gold{color:#8a6d1a;background:rgba(253,203,110,.3)}
+.eyebrow.purple{color:var(--secondary-dark);background:rgba(46,125,116,.12)}
+.eyebrow.teal{color:var(--info-dark);background:rgba(102,153,136,.16)}
+.eyebrow.gold{color:#7A6224;background:rgba(203,169,86,.30)}
 .section-title{font-size:clamp(1.8rem,3.6vw,2.7rem);margin-bottom:16px}
 .grad-text{background:var(--grad-headline);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 .section-sub{color:var(--ink-2);max-width:700px;font-size:1.06rem}
@@ -57,9 +57,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 /* ============ BUTTONS ============ */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:600;font-size:1rem;padding:15px 30px;border-radius:14px;transition:transform .2s,box-shadow .2s,background .25s;white-space:nowrap}
 .btn .icon{width:17px;height:17px}
-.btn-primary{background:linear-gradient(135deg,#FF7A45,#FF6B4A);color:#fff;box-shadow:0 10px 26px rgba(255,107,74,.35)}
-.btn-primary:hover{background:linear-gradient(135deg,#FF6B4A,#FF8659);transform:translateY(-2px);box-shadow:0 14px 34px rgba(255,107,74,.45)}
-.btn-outline{border:1.5px solid rgba(75,36,10,.25);color:var(--ink);background:rgba(255,255,255,.7)}
+.btn-primary{background:linear-gradient(135deg,#002244,#0A3A5F);color:#fff;box-shadow:0 10px 26px rgba(255,107,74,.35)}
+.btn-primary:hover{background:linear-gradient(135deg,#0A3A5F,#12507F);transform:translateY(-2px);box-shadow:0 14px 34px rgba(255,107,74,.45)}
+.btn-outline{border:1.5px solid rgba(0,34,68,.22);color:var(--ink);background:rgba(255,255,255,.7)}
 .btn-outline:hover{border-color:var(--primary);color:var(--primary-dark);transform:translateY(-2px)}
 .btn-dark{background:var(--ink);color:#fff}
 .btn-dark:hover{background:var(--primary-dark);transform:translateY(-2px)}
@@ -70,11 +70,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .btn-sm{padding:11px 20px;font-size:.92rem;border-radius:12px}
 
 /* ============ HEADER ============ */
-.site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,244,240,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(221,159,124,.18);box-shadow:0 1px 0 rgba(75,36,10,.06)}
-.site-header.scrolled{box-shadow:0 8px 30px rgba(75,36,10,.10)}
+.site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,244,240,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(18,40,60,.10);box-shadow:0 1px 0 rgba(0,34,68,.05)}
+.site-header.scrolled{box-shadow:0 8px 30px rgba(0,34,68,.08)}
 .nav{display:flex;align-items:center;justify-content:space-between;height:76px}
-.logo{display:flex;align-items:center;gap:11px;font-family:var(--font-head);font-weight:800;font-size:1.28rem;letter-spacing:-.02em}
-.logo-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#FF7A45,#6C5CE7);display:grid;place-items:center;box-shadow:0 6px 16px rgba(255,122,69,.35)}
+.logo{display:flex;align-items:center;gap:11px;font-family:var(--font-head);font-weight:700;font-size:1.5rem;letter-spacing:.01em}
+.logo-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#002244,#2E7D74);display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,34,68,.26)}
 .nav-links{display:flex;align-items:center;gap:30px;list-style:none}
 .nav-links a{font-weight:600;font-size:.94rem;color:var(--ink-2);transition:color .2s}
 .nav-links a:hover{color:var(--primary)}
@@ -86,7 +86,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 /* ============ HERO ============ */
 .hero{background:var(--hero-grad);padding:168px 0 96px;position:relative;overflow:hidden}
 .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;filter:blur(80px);opacity:.4;pointer-events:none}
-.hero::before{width:460px;height:460px;background:#FFDBC9;top:-140px;right:-120px}
+.hero::before{width:460px;height:460px;background:#DCE9F3;top:-140px;right:-120px}
 .hero::after{width:420px;height:420px;background:var(--secondary-light);bottom:-160px;left:-140px}
 .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:64px;align-items:center;position:relative;z-index:1}
 .hero h1{font-size:clamp(2.3rem,4.7vw,3.6rem);margin-bottom:22px}
@@ -110,7 +110,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding:46px 0}
 .stat{text-align:center;border-right:1px solid var(--line)}
 .stat:last-child{border-right:none}
-.stat .num{font-family:var(--font-head);font-weight:800;font-size:2.4rem;background:linear-gradient(135deg,#FF7A45,#6C5CE7);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.stat .num{font-family:var(--font-head);font-weight:800;font-size:2.4rem;background:linear-gradient(135deg,#002244,#2E7D74);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .stat .lbl{color:var(--ink-2);font-weight:600;font-size:.9rem}
 
 /* ============ MARQUEE ============ */
@@ -135,19 +135,19 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .role-card ul{list-style:none;font-size:.85rem;color:var(--ink-2)}
 .role-card li{padding:5px 0 5px 26px;position:relative}
 .role-card li::before{content:"";position:absolute;left:0;top:9px;width:16px;height:16px;background:currentColor;opacity:.9;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5 5L20 7'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5 5L20 7'/%3E%3C/svg%3E") center/contain no-repeat}
-.rc-student{background:linear-gradient(135deg,#FFF4F0 0%,#FFDBC9 100%)}.rc-student .ic{background:#FF7A45}.rc-student li::before{color:#FF7A45}
-.rc-teacher{background:linear-gradient(135deg,#F0EEFF 0%,#D2CCFF 100%)}.rc-teacher .ic{background:#6C5CE7}.rc-teacher li::before{color:#6C5CE7}
-.rc-parent{background:linear-gradient(135deg,#E8FFFE 0%,#CCFCFA 100%)}.rc-parent .ic{background:#00CEC9}.rc-parent li::before{color:#00838F}
-.rc-admin{background:linear-gradient(135deg,#FFF8F4 0%,#FFEADC 100%)}.rc-admin .ic{background:#815032}.rc-admin li::before{color:#815032}
+.rc-student{background:linear-gradient(135deg,#F7FBFD 0%,#DCE9F3 100%)}.rc-student .ic{background:#002244}.rc-student li::before{color:#002244}
+.rc-teacher{background:linear-gradient(135deg,#EDF5F2 0%,#CBE2DB 100%)}.rc-teacher .ic{background:#2E7D74}.rc-teacher li::before{color:#2E7D74}
+.rc-parent{background:linear-gradient(135deg,#EAF4F1 0%,#D3E7E0 100%)}.rc-parent .ic{background:#669988}.rc-parent li::before{color:#2E6B5E}
+.rc-admin{background:linear-gradient(135deg,#F5F9FC 0%,#EEF4FA 100%)}.rc-admin .ic{background:#5F6B76}.rc-admin li::before{color:#5F6B76}
 
 /* ============ CAROUSEL ============ */
 .carousel{position:relative;margin-top:48px}
 .carousel-viewport{overflow:hidden;border-radius:22px;box-shadow:var(--shadow-lg);border:1px solid var(--line);background:#fff}
 .carousel-track{display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1)}
 .slide{min-width:100%}
-.slide .shot{position:relative;height:560px;background:linear-gradient(160deg,#FFF4F0,#FFEADC 60%,#EDE9FF)}
+.slide .shot{position:relative;height:560px;background:linear-gradient(160deg,#F7FBFD,#EEF4FA 60%,#E7F1EE)}
 .slide img.photo{width:100%;height:100%;object-fit:cover}
-.slide-cap{position:absolute;left:0;right:0;bottom:0;padding:70px 36px 26px;background:linear-gradient(0deg,rgba(43,20,6,.86) 0%,rgba(43,20,6,.4) 60%,transparent 100%);color:#fff}
+.slide-cap{position:absolute;left:0;right:0;bottom:0;padding:70px 36px 26px;background:linear-gradient(0deg,rgba(0,20,38,.86) 0%,rgba(0,20,38,.42) 60%,transparent 100%);color:#fff}
 .slide-cap h3{font-size:1.28rem;margin-bottom:5px}
 .slide-cap p{font-size:.93rem;opacity:.92;max-width:660px}
 .slide-tag{position:absolute;top:20px;left:24px;background:rgba(255,255,255,.92);color:var(--primary-dark);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border-radius:999px;box-shadow:var(--shadow-sm)}
@@ -160,15 +160,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .c-dot.active{width:30px;background:var(--primary)}
 
 /* ============ UI MOCKUPS (product screenshots built in CSS) ============ */
-.browser{position:absolute;inset:26px 34px;background:#fff;border-radius:14px;box-shadow:0 30px 70px rgba(75,36,10,.25);overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--line)}
-.b-top{display:flex;gap:7px;align-items:center;padding:11px 14px;background:#FFF8F4;border-bottom:1px solid var(--line);flex:0 0 auto}
+.browser{position:absolute;inset:26px 34px;background:#fff;border-radius:14px;box-shadow:0 30px 70px rgba(0,34,68,.22);overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--line)}
+.b-top{display:flex;gap:7px;align-items:center;padding:11px 14px;background:#F5F9FC;border-bottom:1px solid var(--line);flex:0 0 auto}
 .b-dot{width:10px;height:10px;border-radius:50%}
 .b-url{flex:1;margin-left:8px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:5px 12px;font-size:10.5px;color:var(--ink-2);font-weight:600;display:flex;gap:6px;align-items:center}
 .b-url .icon{width:11px;height:11px;color:var(--info-dark)}
 .b-body{flex:1;display:flex;min-height:0}
-.b-side{width:56px;background:#FFF1EA;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:14px;padding:14px 0}
+.b-side{width:56px;background:#F0F5F9;border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:14px;padding:14px 0}
 .b-side .s-ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--ink-2)}
-.b-side .s-ic.on{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(255,122,69,.4)}
+.b-side .s-ic.on{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(0,34,68,.28)}
 .b-side .icon{width:15px;height:15px}
 .b-main{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .b-head{display:flex;justify-content:space-between;align-items:center}
@@ -176,7 +176,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .b-sub{font-size:10px;color:var(--ink-2);font-weight:600}
 .b-btn{background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:6px 12px;border-radius:8px}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.kpi{background:#FFF8F4;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.kpi{background:#F5F9FC;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 .kpi b{display:block;font-family:var(--font-head);font-size:15px}
 .kpi span{font-size:9.5px;color:var(--ink-2);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
 .kpi i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
@@ -185,10 +185,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .p-title{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
 /* mini charts */
 .mini-bars{display:flex;align-items:flex-end;gap:7px;height:100%;padding-top:6px}
-.mini-bars i{flex:1;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#FF8659,#FF7A45)}
-.mini-bars i:nth-child(2n){background:linear-gradient(180deg,#8B7FF0,#6C5CE7)}
+.mini-bars i{flex:1;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#12507F,#002244)}
+.mini-bars i:nth-child(2n){background:linear-gradient(180deg,#4E9E93,#2E7D74)}
 .mini-line{width:100%;height:100%}
-.donut{width:86px;height:86px;border-radius:50%;background:conic-gradient(#FF7A45 0 62%,#6C5CE7 62% 84%,#00CEC9 84% 100%);position:relative;flex:0 0 auto}
+.donut{width:86px;height:86px;border-radius:50%;background:conic-gradient(#002244 0 62%,#2E7D74 62% 84%,#669988 84% 100%);position:relative;flex:0 0 auto}
 .donut::after{content:"";position:absolute;inset:16px;background:#fff;border-radius:50%}
 .donut-wrap{display:flex;align-items:center;gap:14px}
 .legend{display:flex;flex-direction:column;gap:6px;font-size:10px;font-weight:600;color:var(--ink-2)}
@@ -200,55 +200,55 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .att small{font-size:8.5px;font-weight:700;color:var(--ink-2)}
 .att .st{position:absolute;top:-6px;right:-4px;width:16px;height:16px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center}
 .att .st .icon{width:9px;height:9px;stroke-width:3.4}
-.st.ok{background:#00B8B2;color:#fff}.st.abs{background:#FDCB6E;color:#7a5a12}
+.st.ok{background:#669988;color:#fff}.st.abs{background:#CBA956;color:#6F5A20}
 /* exam table */
 .tbl{display:flex;flex-direction:column;gap:7px}
 .tbl-r{display:grid;grid-template-columns:86px 1fr 46px 40px;gap:10px;align-items:center;font-size:10.5px;font-weight:600}
-.tbl-r .bar{height:8px;border-radius:5px;background:#F5E9E1;overflow:hidden}
+.tbl-r .bar{height:8px;border-radius:5px;background:#EDF1F4;overflow:hidden}
 .tbl-r .bar i{display:block;height:100%;border-radius:5px}
 .grade{font-weight:800;font-size:9.5px;padding:4px 0;text-align:center;border-radius:7px}
 /* prediction */
 .slider-row{display:flex;align-items:center;gap:10px;font-size:10px;font-weight:700;color:var(--ink-2)}
-.slider{flex:1;height:6px;border-radius:4px;background:#F0E4DA;position:relative}
+.slider{flex:1;height:6px;border-radius:4px;background:#E7ECF0;position:relative}
 .slider i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--secondary)}
 .slider::after{content:"";position:absolute;top:-4px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--secondary);box-shadow:0 2px 6px rgba(0,0,0,.2)}
-.risk-card{background:#FFF6EC;border:1px solid #F4CBA9;border-radius:10px;padding:9px 11px;font-size:10px;font-weight:600;display:flex;gap:8px;align-items:center}
+.risk-card{background:#FBF3E2;border:1px solid #E6D2A6;border-radius:10px;padding:9px 11px;font-size:10px;font-weight:600;display:flex;gap:8px;align-items:center}
 .risk-card .icon{width:14px;height:14px;color:var(--primary-dark)}
 /* leaderboard */
 .lb{display:flex;flex-direction:column;gap:8px}
 .lb-r{display:grid;grid-template-columns:26px 34px 1fr 74px 52px;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:11px;font-weight:700}
 .lb-r .rk{font-family:var(--font-head);font-weight:800;color:var(--ink-2)}
 .lb-r .av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:800}
-.lb-r .xp{height:7px;border-radius:4px;background:#F5E9E1;overflow:hidden}.lb-r .xp i{display:block;height:100%;background:linear-gradient(90deg,#FDCB6E,#FF7A45);border-radius:4px}
+.lb-r .xp{height:7px;border-radius:4px;background:#EDF1F4;overflow:hidden}.lb-r .xp i{display:block;height:100%;background:linear-gradient(90deg,#CBA956,#002244);border-radius:4px}
 .lb-r .pts{font-size:10px;color:var(--primary-dark);text-align:right}
-.lb-r.first{border-color:var(--gold);background:#FFFDF4;box-shadow:0 4px 14px rgba(253,203,110,.35)}
+.lb-r.first{border-color:var(--gold);background:#FDFAF0;box-shadow:0 4px 14px rgba(203,169,86,.34)}
 /* wellbeing */
 .moods{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .mood{border-radius:12px;border:1px solid var(--line);padding:12px 8px;text-align:center;background:#fff}
 .mood .face{width:38px;height:38px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center}
 .mood small{font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
-.mood.sel{border-color:var(--primary);box-shadow:0 6px 16px rgba(255,122,69,.25);background:#FFF8F4}
+.mood.sel{border-color:var(--primary);box-shadow:0 6px 16px rgba(0,34,68,.18);background:#F5F9FC}
 .gauge{position:relative;width:120px;height:64px;overflow:hidden}
-.gauge::before{content:"";position:absolute;inset:0;border-radius:120px 120px 0 0;background:conic-gradient(from 270deg at 50% 100%,#00CEC9 0 40%,#FDCB6E 40% 72%,#FF7A45 72% 100%)}
+.gauge::before{content:"";position:absolute;inset:0;border-radius:120px 120px 0 0;background:conic-gradient(from 270deg at 50% 100%,#669988 0 40%,#CBA956 40% 72%,#002244 72% 100%)}
 .gauge::after{content:"";position:absolute;inset:16px 16px 0;border-radius:110px 110px 0 0;background:#fff}
 .gauge .needle{position:absolute;left:50%;bottom:0;width:3px;height:52px;background:var(--ink);border-radius:3px;transform-origin:bottom;transform:rotate(38deg)}
 /* career */
 .career-list{display:flex;flex-direction:column;gap:9px}
 .car-r{display:flex;align-items:center;gap:10px;font-size:10.5px;font-weight:700}
 .car-r .pct{margin-left:auto;color:var(--secondary-dark)}
-.car-r .bar{flex:1;height:8px;background:#F0E4DA;border-radius:5px;overflow:hidden}.car-r .bar i{display:block;height:100%;border-radius:5px}
+.car-r .bar{flex:1;height:8px;background:#E7ECF0;border-radius:5px;overflow:hidden}.car-r .bar i{display:block;height:100%;border-radius:5px}
 /* phone mock */
-.phone{position:absolute;background:#1E1410;border-radius:38px;padding:10px;box-shadow:0 34px 80px rgba(40,18,6,.4)}
-.phone .p-screen{border-radius:30px;overflow:hidden;height:100%;background:#FFF8F4;display:flex;flex-direction:column}
-.p-notch{height:22px;background:#1E1410;border-radius:0 0 14px 14px;width:44%;margin:0 auto;flex:0 0 auto}
+.phone{position:absolute;background:#001A33;border-radius:38px;padding:10px;box-shadow:0 34px 80px rgba(0,20,38,.40)}
+.phone .p-screen{border-radius:30px;overflow:hidden;height:100%;background:#F5F9FC;display:flex;flex-direction:column}
+.p-notch{height:22px;background:#001A33;border-radius:0 0 14px 14px;width:44%;margin:0 auto;flex:0 0 auto}
 /* certificate mock */
 .cert-scene{position:absolute;inset:0;display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center;padding:52px 64px}
-.cert{background:#fff;border-radius:14px;box-shadow:0 30px 70px rgba(75,36,10,.28);padding:30px 34px;position:relative;border:1px solid var(--line);transform:rotate(-1.5deg)}
+.cert{background:#fff;border-radius:14px;box-shadow:0 30px 70px rgba(0,34,68,.24);padding:30px 34px;position:relative;border:1px solid var(--line);transform:rotate(-1.5deg)}
 .cert::before{content:"";position:absolute;inset:10px;border:2px dashed var(--gold);border-radius:8px}
 .cert .c-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
-.cert .seal{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE29A,#FDCB6E 60%,#E0A93E);display:grid;place-items:center;box-shadow:0 6px 16px rgba(224,169,62,.4)}
+.cert .seal{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#F0E2B8,#CBA956 60%,#B4903F);display:grid;place-items:center;box-shadow:0 6px 16px rgba(224,169,62,.4)}
 .cert h4{font-size:15px}
-.cert .lines i{display:block;height:8px;border-radius:4px;background:#EFE3D9;margin:8px 0}
+.cert .lines i{display:block;height:8px;border-radius:4px;background:#E8EDF1;margin:8px 0}
 .cert .sig{display:flex;gap:26px;margin-top:16px}
 .cert .sig i{display:block;height:3px;width:70px;background:var(--secondary);border-radius:2px;position:relative}
 .vcard{background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow-md);display:flex;flex-direction:column;gap:14px}
@@ -263,14 +263,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .f-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-hover)}
 .f-card .ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;margin-bottom:18px;color:#fff}
 .f-card .ic .icon{width:24px;height:24px}
-.ic-coral{background:linear-gradient(135deg,#FF8659,#FF6B4A)}.ic-purple{background:linear-gradient(135deg,#8B7FF0,#6C5CE7)}.ic-teal{background:linear-gradient(135deg,#35E0DB,#00A6A1)}.ic-gold{background:linear-gradient(135deg,#FFD98A,#F0B03E)}.ic-brown{background:linear-gradient(135deg,#9A6238,#6E4222)}.ic-crimson{background:linear-gradient(135deg,#FB5151,#B31B25)}
+.ic-coral{background:linear-gradient(135deg,#12507F,#0A3A5F)}.ic-purple{background:linear-gradient(135deg,#4E9E93,#2E7D74)}.ic-teal{background:linear-gradient(135deg,#7FB3A6,#4E8578)}.ic-gold{background:linear-gradient(135deg,#E4C77E,#C9A84E)}.ic-brown{background:linear-gradient(135deg,#8A97A3,#5F6B76)}.ic-crimson{background:linear-gradient(135deg,#002244,#B31B25)}
 .f-card h3{font-size:1.12rem;margin-bottom:10px}
 .f-card p{font-size:.9rem;color:var(--ink-2)}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.chip{font-size:.73rem;font-weight:700;padding:6px 13px;border-radius:999px;background:rgba(108,92,231,.10);color:var(--secondary-dark)}
-.chip.c{background:rgba(255,122,69,.12);color:var(--primary-dark)}
-.chip.t{background:rgba(0,206,201,.13);color:var(--info-dark)}
-.chip.g{background:rgba(253,203,110,.3);color:#7c611a}
+.chip{font-size:.73rem;font-weight:700;padding:6px 13px;border-radius:999px;background:rgba(46,125,116,.10);color:var(--secondary-dark)}
+.chip.c{background:rgba(0,34,68,.08);color:var(--primary-dark)}
+.chip.t{background:rgba(102,153,136,.16);color:var(--info-dark)}
+.chip.g{background:rgba(203,169,86,.30);color:#6F5A20}
 
 /* ============ SPLIT ============ */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
@@ -281,16 +281,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .split .copy>p{color:var(--ink-2);margin-bottom:22px}
 .check-list{list-style:none}
 .check-list li{padding:8px 0 8px 36px;position:relative;font-size:.97rem}
-.check-list li::before{content:"";position:absolute;left:0;top:10px;width:22px;height:22px;border-radius:8px;background:rgba(255,122,69,.16)}
+.check-list li::before{content:"";position:absolute;left:0;top:10px;width:22px;height:22px;border-radius:8px;background:rgba(0,34,68,.12)}
 .check-list li::after{content:"";position:absolute;left:5px;top:15px;width:12px;height:12px;background:var(--primary);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5 5L20 7'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5 5L20 7'/%3E%3C/svg%3E") center/contain no-repeat}
-.check-list.purple li::before{background:rgba(108,92,231,.14)}.check-list.purple li::after{background:var(--secondary)}
-.check-list.teal li::before{background:rgba(0,206,201,.16)}.check-list.teal li::after{background:var(--info-dark)}
-.alt-bg{background:linear-gradient(180deg,#FFF4F0 0%,#F2EEFF 100%)}
+.check-list.purple li::before{background:rgba(46,125,116,.13)}.check-list.purple li::after{background:var(--secondary)}
+.check-list.teal li::before{background:rgba(102,153,136,.16)}.check-list.teal li::after{background:var(--info-dark)}
+.alt-bg{background:linear-gradient(180deg,#F7FBFD 0%,#EBF3F0 100%)}
 .paper-bg{background:var(--paper)}
 
 /* ============ AI BAND ============ */
-.ai-band{background:linear-gradient(135deg,#231740 0%,#4935C3 55%,#6C5CE7 100%);color:#fff;border-radius:28px;padding:64px 52px;margin-top:52px;position:relative;overflow:hidden}
-.ai-band::after{content:"";position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(255,122,69,.4),transparent 70%);top:-140px;right:-100px}
+.ai-band{background:linear-gradient(135deg,#001A33 0%,#1F5F58 55%,#2E7D74 100%);color:#fff;border-radius:28px;padding:64px 52px;margin-top:52px;position:relative;overflow:hidden}
+.ai-band::after{content:"";position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(0,34,68,.28),transparent 70%);top:-140px;right:-100px}
 .ai-band h3{font-size:clamp(1.4rem,2.6vw,2rem);margin-bottom:12px;position:relative;z-index:1}
 .ai-band p{opacity:.88;max-width:760px;position:relative;z-index:1}
 .ai-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;position:relative;z-index:1}
@@ -318,7 +318,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .price-card{background:var(--paper);border-radius:var(--r-card);padding:40px 34px;box-shadow:var(--shadow-sm);border:2px solid var(--line);display:flex;flex-direction:column;position:relative;transition:transform .25s,box-shadow .25s}
 .price-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-hover)}
 .price-card.popular{border-color:var(--primary);box-shadow:var(--shadow-lg)}
-.pop-badge{position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#FF7A45,#6C5CE7);color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.1em;padding:8px 22px;border-radius:999px;text-transform:uppercase}
+.pop-badge{position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#002244,#2E7D74);color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.1em;padding:8px 22px;border-radius:999px;text-transform:uppercase}
 .price-card h3{font-size:1.22rem;margin-bottom:6px}
 .price-card .p-desc{font-size:.88rem;color:var(--ink-2);margin-bottom:22px}
 .price{font-family:var(--font-head);font-weight:800;font-size:2.7rem}
@@ -334,7 +334,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .faq-list{max-width:840px;margin:48px auto 0}
 .faq-item{background:var(--paper);border-radius:var(--r-input);box-shadow:var(--shadow-sm);margin-bottom:14px;border:1px solid var(--line);overflow:hidden}
 .faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;text-align:left;padding:21px 28px;font-family:var(--font-head);font-weight:700;font-size:1.02rem}
-.faq-q .pm{width:30px;height:30px;border-radius:50%;background:rgba(255,122,69,.14);color:var(--primary-dark);display:grid;place-items:center;flex:0 0 auto;transition:.3s}
+.faq-q .pm{width:30px;height:30px;border-radius:50%;background:rgba(0,34,68,.10);color:var(--primary-dark);display:grid;place-items:center;flex:0 0 auto;transition:.3s}
 .faq-q .pm .icon{width:15px;height:15px}
 .faq-item.open .pm{transform:rotate(45deg);background:var(--primary);color:#fff}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
@@ -354,7 +354,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .offer-card p:last-child{font-size:.84rem;opacity:.85;margin:0}
 
 /* ============ FOOTER ============ */
-.site-footer{background:#2A1508;color:#F5E6DC;padding:76px 0 0;margin-top:96px}
+.site-footer{background:#001B33;color:#E9EFF4;padding:76px 0 0;margin-top:96px}
 .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:44px;padding-bottom:54px}
 .site-footer h4{font-size:.95rem;color:#fff;margin-bottom:18px;letter-spacing:.04em}
 .site-footer ul{list-style:none}
@@ -378,7 +378,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 @keyframes cardPop{from{opacity:0;transform:scale(.6) translateY(20px)}to{opacity:1;transform:none}}
 @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,28px)}}
 @keyframes shimmer{to{background-position:100% center}}
-@keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(255,122,69,.45)}100%{box-shadow:0 0 0 18px rgba(255,122,69,0)}}
+@keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(0,34,68,.32)}100%{box-shadow:0 0 0 18px rgba(255,122,69,0)}}
 .hero .eyebrow,.hero h1,.hero p.lead,.hero-actions,.hero-trust{animation:heroIn .8s cubic-bezier(.2,.7,.2,1) both}
 .hero .eyebrow{animation-delay:.05s}.hero h1{animation-delay:.18s}.hero p.lead{animation-delay:.32s}.hero-actions{animation-delay:.46s}.hero-trust{animation-delay:.6s}
 .hero-visual .frame{animation:frameIn 1s cubic-bezier(.2,.7,.2,1) .25s both}
@@ -491,8 +491,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 <header class="site-header" id="siteHeader">
   <div class="container nav">
-    <a class="logo" href="#top" aria-label="EduPlatform home">
-      <span class="logo-mark"><svg class="icon" style="width:22px;height:22px;stroke:none" viewBox="0 0 64 64"><path d="M32 12 6 26l26 13 22-11v15h4V26L32 12z" fill="#fff"/><path d="M17 36v9c0 5 6.7 9 15 9s15-4 15-9v-9l-15 7.5L17 36z" fill="#FFE3D6"/></svg></span>
+    <a class="logo" href="#top" aria-label="Sarasvi home">
+      <span class="logo-mark"><svg class="icon" style="width:22px;height:22px;stroke:none" viewBox="0 0 64 64"><path d="M32 12 6 26l26 13 22-11v15h4V26L32 12z" fill="#fff"/><path d="M17 36v9c0 5 6.7 9 15 9s15-4 15-9v-9l-15 7.5L17 36z" fill="#E4EEF6"/></svg></span>
       Edu<span style="color:var(--primary)">Platform</span>
     </a>
     <nav aria-label="Primary">
@@ -525,7 +525,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     <div>
       <span class="eyebrow"><svg class="icon"><use href="#i-cap"/></svg> Trusted by 500+ institutions</span>
       <h1>One Platform to <span class="grad-text">Run, Teach &amp; Grow</span> Your Entire School</h1>
-      <p class="lead">EduPlatform is the AI-powered, multi-tenant school operating system — academics, attendance, exams, gamified learning, parent engagement, blockchain certificates and full school operations, beautifully unified on Web &amp; Mobile.</p>
+      <p class="lead">Sarasvi is the AI-powered, multi-tenant school operating system — academics, attendance, exams, gamified learning, parent engagement, blockchain certificates and full school operations, beautifully unified on Web &amp; Mobile.</p>
       <div class="hero-actions">
         <a href="#cta" class="btn btn-primary">Start 30-Day Free Trial <svg class="icon"><use href="#i-arrow"/></svg></a>
         <a href="#tour" class="btn btn-outline"><svg class="icon"><use href="#i-play"/></svg> Watch Product Tour</a>
@@ -537,10 +537,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
       </div>
     </div>
     <div class="hero-visual">
-      <div class="frame"><picture><source media="(max-width:700px)" srcset="{{IMG:hero-m}}"><img src="{{IMG:hero}}" alt="Students using EduPlatform on laptop and tablet on campus" width="1400" height="950"></picture></div>
-      <div class="float-card fc-a"><span class="fc-ic" style="background:rgba(0,206,201,.15);color:var(--info-dark)"><svg class="icon"><use href="#i-trend"/></svg></span><span>Attendance today<small>96.4% across 42 classes</small></span></div>
-      <div class="float-card fc-b"><span class="fc-ic" style="background:rgba(253,203,110,.3);color:#8a6d1a"><svg class="icon"><use href="#i-medal"/></svg></span><span>+250 XP earned<small>Level 7 unlocked</small></span></div>
-      <div class="float-card fc-c"><span class="fc-ic" style="background:rgba(108,92,231,.14);color:var(--secondary-dark)"><svg class="icon"><use href="#i-bot"/></svg></span><span>AI Study Buddy<small>Answering 1,204 doubts today</small></span></div>
+      <div class="frame"><picture><source media="(max-width:700px)" srcset="{{IMG:hero-m}}"><img src="{{IMG:hero}}" alt="Students using Sarasvi on laptop and tablet on campus" width="1400" height="950"></picture></div>
+      <div class="float-card fc-a"><span class="fc-ic" style="background:rgba(102,153,136,.16);color:var(--info-dark)"><svg class="icon"><use href="#i-trend"/></svg></span><span>Attendance today<small>96.4% across 42 classes</small></span></div>
+      <div class="float-card fc-b"><span class="fc-ic" style="background:rgba(203,169,86,.30);color:#7A6224"><svg class="icon"><use href="#i-medal"/></svg></span><span>+250 XP earned<small>Level 7 unlocked</small></span></div>
+      <div class="float-card fc-c"><span class="fc-ic" style="background:rgba(46,125,116,.13);color:var(--secondary-dark)"><svg class="icon"><use href="#i-bot"/></svg></span><span>AI Study Buddy<small>Answering 1,204 doubts today</small></span></div>
     </div>
   </div>
 </section>
@@ -600,7 +600,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 <section class="section paper-bg" id="tour">
   <div class="container center reveal">
     <span class="eyebrow purple"><svg class="icon"><use href="#i-eye"/></svg> Product tour</span>
-    <h2 class="section-title">See EduPlatform <span class="grad-text">In Action</span></h2>
+    <h2 class="section-title">See Sarasvi <span class="grad-text">In Action</span></h2>
     <p class="section-sub">Real product screens — from the morning attendance bell to board-exam result day. Glide through a typical day on the platform.</p>
   </div>
   <div class="container">
@@ -611,7 +611,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
           <!-- Slide 1: admin dashboard mock -->
           <div class="slide"><div class="shot">
             <div class="browser">
-              <div class="b-top"><span class="b-dot" style="background:#FB5151"></span><span class="b-dot" style="background:#FDCB6E"></span><span class="b-dot" style="background:#00CEC9"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.eduplatform.io/admin</span></div>
+              <div class="b-top"><span class="b-dot" style="background:#002244"></span><span class="b-dot" style="background:#CBA956"></span><span class="b-dot" style="background:#669988"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.sarasvi.io/admin</span></div>
               <div class="b-body">
                 <div class="b-side">
                   <span class="s-ic on"><svg class="icon"><use href="#i-chart"/></svg></span>
@@ -624,14 +624,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
                 <div class="b-main">
                   <div class="b-head"><div><div class="b-title">Good morning, Principal Deshpande</div><div class="b-sub">Sunrise International · Term II · Week 6</div></div><span class="b-btn">+ New Exam</span></div>
                   <div class="kpis">
-                    <div class="kpi"><span><i style="background:#00CEC9"></i>Attendance</span><b>96.4%</b></div>
-                    <div class="kpi"><span><i style="background:#FF7A45"></i>Fee Collection</span><b>₹18.2L</b></div>
-                    <div class="kpi"><span><i style="background:#6C5CE7"></i>Exams This Week</span><b>12</b></div>
-                    <div class="kpi"><span><i style="background:#FDCB6E"></i>At-Risk Alerts</span><b>3</b></div>
+                    <div class="kpi"><span><i style="background:#669988"></i>Attendance</span><b>96.4%</b></div>
+                    <div class="kpi"><span><i style="background:#002244"></i>Fee Collection</span><b>₹18.2L</b></div>
+                    <div class="kpi"><span><i style="background:#2E7D74"></i>Exams This Week</span><b>12</b></div>
+                    <div class="kpi"><span><i style="background:#CBA956"></i>At-Risk Alerts</span><b>3</b></div>
                   </div>
                   <div class="b-row">
                     <div class="b-panel" style="flex:1.5"><span class="p-title">Attendance — last 14 days</span><div class="mini-bars"><i style="height:62%"></i><i style="height:70%"></i><i style="height:66%"></i><i style="height:78%"></i><i style="height:74%"></i><i style="height:82%"></i><i style="height:80%"></i><i style="height:88%"></i><i style="height:84%"></i><i style="height:90%"></i><i style="height:86%"></i><i style="height:93%"></i><i style="height:91%"></i><i style="height:96%"></i></div></div>
-                    <div class="b-panel" style="flex:1"><span class="p-title">Fee status</span><div class="donut-wrap"><div class="donut"></div><div class="legend"><span><i style="background:#FF7A45"></i>Collected 62%</span><span><i style="background:#6C5CE7"></i>Pending 22%</span><span><i style="background:#00CEC9"></i>Waived 16%</span></div></div></div>
+                    <div class="b-panel" style="flex:1"><span class="p-title">Fee status</span><div class="donut-wrap"><div class="donut"></div><div class="legend"><span><i style="background:#002244"></i>Collected 62%</span><span><i style="background:#2E7D74"></i>Pending 22%</span><span><i style="background:#669988"></i>Waived 16%</span></div></div></div>
                   </div>
                 </div>
               </div>
@@ -643,7 +643,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
           <!-- Slide 2: attendance mock -->
           <div class="slide"><div class="shot">
             <div class="browser">
-              <div class="b-top"><span class="b-dot" style="background:#FB5151"></span><span class="b-dot" style="background:#FDCB6E"></span><span class="b-dot" style="background:#00CEC9"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.eduplatform.io/attendance</span></div>
+              <div class="b-top"><span class="b-dot" style="background:#002244"></span><span class="b-dot" style="background:#CBA956"></span><span class="b-dot" style="background:#669988"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.sarasvi.io/attendance</span></div>
               <div class="b-body">
                 <div class="b-side">
                   <span class="s-ic"><svg class="icon"><use href="#i-chart"/></svg></span>
@@ -654,18 +654,18 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
                 <div class="b-main">
                   <div class="b-head"><div><div class="b-title">Grade 8 · Section A — Mathematics</div><div class="b-sub">Mon 04 Aug · Period 3 · 36 students</div></div><span class="b-btn">Mark All Present</span></div>
                   <div class="att-grid">
-                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#FF7A45">AR</span><small>Aarav R.</small></div>
-                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#6C5CE7">DK</span><small>Diya K.</small></div>
-                    <div class="att"><span class="st abs"><svg class="icon" style="stroke-width:3.4"><use href="#i-plus"/></svg></span><span class="av" style="background:#00A6A1">IP</span><small>Ishaan P.</small></div>
-                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#E0A93E">MS</span><small>Meera S.</small></div>
-                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#4935C3">RT</span><small>Rohan T.</small></div>
-                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#A33702">AN</span><small>Anaya N.</small></div>
-                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#006764">KV</span><small>Kabir V.</small></div>
+                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#002244">AR</span><small>Aarav R.</small></div>
+                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#2E7D74">DK</span><small>Diya K.</small></div>
+                    <div class="att"><span class="st abs"><svg class="icon" style="stroke-width:3.4"><use href="#i-plus"/></svg></span><span class="av" style="background:#4E8578">IP</span><small>Ishaan P.</small></div>
+                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#B4903F">MS</span><small>Meera S.</small></div>
+                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#1F5F58">RT</span><small>Rohan T.</small></div>
+                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#0A3357">AN</span><small>Anaya N.</small></div>
+                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#2E6B5E">KV</span><small>Kabir V.</small></div>
                     <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#B31B25">ZS</span><small>Zara S.</small></div>
-                    <div class="att"><span class="st abs"><svg class="icon" style="stroke-width:3.4"><use href="#i-plus"/></svg></span><span class="av" style="background:#815032">VD</span><small>Vihaan D.</small></div>
-                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#FF6B4A">NM</span><small>Naira M.</small></div>
-                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#6C5CE7">AJ</span><small>Advait J.</small></div>
-                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#00CEC9">SC</span><small>Sara C.</small></div>
+                    <div class="att"><span class="st abs"><svg class="icon" style="stroke-width:3.4"><use href="#i-plus"/></svg></span><span class="av" style="background:#5F6B76">VD</span><small>Vihaan D.</small></div>
+                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#0A3A5F">NM</span><small>Naira M.</small></div>
+                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#2E7D74">AJ</span><small>Advait J.</small></div>
+                    <div class="att"><span class="st ok"><svg class="icon"><use href="#i-check"/></svg></span><span class="av" style="background:#669988">SC</span><small>Sara C.</small></div>
                   </div>
                   <div class="risk-card"><svg class="icon"><use href="#i-msg"/></svg> SMS + push alerts sent to 2 parents for today's absence. Correction requests route for approval automatically.</div>
                 </div>
@@ -678,7 +678,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
           <!-- Slide 3: exams mock -->
           <div class="slide"><div class="shot">
             <div class="browser">
-              <div class="b-top"><span class="b-dot" style="background:#FB5151"></span><span class="b-dot" style="background:#FDCB6E"></span><span class="b-dot" style="background:#00CEC9"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.eduplatform.io/exams/results</span></div>
+              <div class="b-top"><span class="b-dot" style="background:#002244"></span><span class="b-dot" style="background:#CBA956"></span><span class="b-dot" style="background:#669988"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.sarasvi.io/exams/results</span></div>
               <div class="b-body">
                 <div class="b-side">
                   <span class="s-ic"><svg class="icon"><use href="#i-chart"/></svg></span>
@@ -692,14 +692,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
                     <div class="b-panel" style="flex:1.6">
                       <span class="p-title">Diya Kulkarni — subject-wise</span>
                       <div class="tbl">
-                        <div class="tbl-r"><span>Mathematics</span><span class="bar"><i style="width:92%;background:linear-gradient(90deg,#FF8659,#FF7A45)"></i></span><span>92</span><span class="grade" style="background:#E9FFF6;color:#006764">A+</span></div>
-                        <div class="tbl-r"><span>Science</span><span class="bar"><i style="width:88%;background:linear-gradient(90deg,#8B7FF0,#6C5CE7)"></i></span><span>88</span><span class="grade" style="background:#E9FFF6;color:#006764">A+</span></div>
-                        <div class="tbl-r"><span>English</span><span class="bar"><i style="width:81%;background:linear-gradient(90deg,#35E0DB,#00A6A1)"></i></span><span>81</span><span class="grade" style="background:#F0EEFF;color:#4935C3">A</span></div>
-                        <div class="tbl-r"><span>Social Sci.</span><span class="bar"><i style="width:76%;background:linear-gradient(90deg,#FFD98A,#F0B03E)"></i></span><span>76</span><span class="grade" style="background:#F0EEFF;color:#4935C3">A</span></div>
-                        <div class="tbl-r"><span>Hindi</span><span class="bar"><i style="width:84%;background:linear-gradient(90deg,#FF8659,#FF7A45)"></i></span><span>84</span><span class="grade" style="background:#F0EEFF;color:#4935C3">A</span></div>
+                        <div class="tbl-r"><span>Mathematics</span><span class="bar"><i style="width:92%;background:linear-gradient(90deg,#12507F,#002244)"></i></span><span>92</span><span class="grade" style="background:#EDF6F2;color:#2E6B5E">A+</span></div>
+                        <div class="tbl-r"><span>Science</span><span class="bar"><i style="width:88%;background:linear-gradient(90deg,#4E9E93,#2E7D74)"></i></span><span>88</span><span class="grade" style="background:#EDF6F2;color:#2E6B5E">A+</span></div>
+                        <div class="tbl-r"><span>English</span><span class="bar"><i style="width:81%;background:linear-gradient(90deg,#7FB3A6,#4E8578)"></i></span><span>81</span><span class="grade" style="background:#EDF5F2;color:#1F5F58">A</span></div>
+                        <div class="tbl-r"><span>Social Sci.</span><span class="bar"><i style="width:76%;background:linear-gradient(90deg,#E4C77E,#C9A84E)"></i></span><span>76</span><span class="grade" style="background:#EDF5F2;color:#1F5F58">A</span></div>
+                        <div class="tbl-r"><span>Hindi</span><span class="bar"><i style="width:84%;background:linear-gradient(90deg,#12507F,#002244)"></i></span><span>84</span><span class="grade" style="background:#EDF5F2;color:#1F5F58">A</span></div>
                       </div>
                     </div>
-                    <div class="b-panel" style="flex:1"><span class="p-title">Class grade split</span><div class="donut-wrap"><div class="donut" style="background:conic-gradient(#00A6A1 0 44%,#6C5CE7 44% 78%,#FDCB6E 78% 93%,#FF7A45 93% 100%)"></div><div class="legend"><span><i style="background:#00A6A1"></i>A+ / A · 78%</span><span><i style="background:#6C5CE7"></i>B · 34%…</span></div></div><div class="risk-card" style="margin-top:auto"><svg class="icon"><use href="#i-shield"/></svg> Two-stage verification complete. 0 anomalies.</div></div>
+                    <div class="b-panel" style="flex:1"><span class="p-title">Class grade split</span><div class="donut-wrap"><div class="donut" style="background:conic-gradient(#4E8578 0 44%,#2E7D74 44% 78%,#CBA956 78% 93%,#002244 93% 100%)"></div><div class="legend"><span><i style="background:#4E8578"></i>A+ / A · 78%</span><span><i style="background:#2E7D74"></i>B · 34%…</span></div></div><div class="risk-card" style="margin-top:auto"><svg class="icon"><use href="#i-shield"/></svg> Two-stage verification complete. 0 anomalies.</div></div>
                   </div>
                 </div>
               </div>
@@ -711,7 +711,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
           <!-- Slide 4: AI prediction mock -->
           <div class="slide"><div class="shot">
             <div class="browser">
-              <div class="b-top"><span class="b-dot" style="background:#FB5151"></span><span class="b-dot" style="background:#FDCB6E"></span><span class="b-dot" style="background:#00CEC9"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.eduplatform.io/ai/predictions</span></div>
+              <div class="b-top"><span class="b-dot" style="background:#002244"></span><span class="b-dot" style="background:#CBA956"></span><span class="b-dot" style="background:#669988"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.sarasvi.io/ai/predictions</span></div>
               <div class="b-body">
                 <div class="b-side">
                   <span class="s-ic on"><svg class="icon"><use href="#i-spark"/></svg></span>
@@ -726,11 +726,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
                       <span class="p-title">Predicted score trajectory (with confidence band)</span>
                       <svg class="mini-line" viewBox="0 0 300 130" preserveAspectRatio="none">
                         <path d="M10 110 C60 100 90 78 140 70 C190 62 240 40 290 26 L290 62 C240 74 190 92 140 98 C90 104 60 118 10 122 Z" fill="rgba(108,92,231,.16)"/>
-                        <path d="M10 116 C60 108 90 92 140 84 C190 76 240 57 290 44" stroke="#6C5CE7" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-                        <path d="M10 118 C60 114 90 108 140 104 C190 100 240 92 290 84" stroke="#FF7A45" stroke-width="3" stroke-dasharray="6 6" fill="none" stroke-linecap="round"/>
-                        <circle cx="290" cy="44" r="6" fill="#6C5CE7"/><circle cx="290" cy="84" r="6" fill="#FF7A45"/>
+                        <path d="M10 116 C60 108 90 92 140 84 C190 76 240 57 290 44" stroke="#2E7D74" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                        <path d="M10 118 C60 114 90 108 140 104 C190 100 240 92 290 84" stroke="#002244" stroke-width="3" stroke-dasharray="6 6" fill="none" stroke-linecap="round"/>
+                        <circle cx="290" cy="44" r="6" fill="#2E7D74"/><circle cx="290" cy="84" r="6" fill="#002244"/>
                       </svg>
-                      <div class="legend" style="flex-direction:row;gap:16px"><span><i style="background:#6C5CE7"></i>With AI intervention</span><span><i style="background:#FF7A45"></i>Current trajectory</span></div>
+                      <div class="legend" style="flex-direction:row;gap:16px"><span><i style="background:#2E7D74"></i>With AI intervention</span><span><i style="background:#002244"></i>Current trajectory</span></div>
                     </div>
                     <div class="b-panel" style="flex:1">
                       <span class="p-title">What-If simulator</span>
@@ -756,7 +756,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
           <!-- Slide 6: parent photo -->
           <div class="slide"><div class="shot">
-            <picture><source media="(max-width:700px)" srcset="{{IMG:parent-m}}"><img class="photo" src="{{IMG:parent}}" alt="Parent checking child's progress in the EduPlatform parent app"></picture>
+            <picture><source media="(max-width:700px)" srcset="{{IMG:parent-m}}"><img class="photo" src="{{IMG:parent}}" alt="Parent checking child's progress in the Sarasvi parent app"></picture>
             <span class="slide-tag">Parent Portal</span>
             <div class="slide-cap"><h3>Parents in the Loop, Always</h3><p>Unified multi-child view with attendance, grades, assignments, weekly charts and one-tap teacher conferences.</p></div>
           </div></div>
@@ -864,14 +864,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
           <!-- leaderboard mock -->
           <div class="slide"><div class="shot">
             <div class="browser">
-              <div class="b-top"><span class="b-dot" style="background:#FB5151"></span><span class="b-dot" style="background:#FDCB6E"></span><span class="b-dot" style="background:#00CEC9"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.eduplatform.io/gamify/leaderboard</span></div>
+              <div class="b-top"><span class="b-dot" style="background:#002244"></span><span class="b-dot" style="background:#CBA956"></span><span class="b-dot" style="background:#669988"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.sarasvi.io/gamify/leaderboard</span></div>
               <div class="b-body"><div class="b-main" style="padding:20px">
                 <div class="b-head"><div><div class="b-title">Weekly Leaderboard — Grade 8</div><div class="b-sub">XP · streaks · badges · resets in 2d 14h</div></div><span class="b-btn" style="background:var(--secondary)">Start Subject Battle</span></div>
                 <div class="lb">
-                  <div class="lb-r first"><span class="rk">1</span><span class="av" style="background:#FF7A45">DK</span><span>Diya Kulkarni · Level 9 · 21-day streak</span><span class="xp"><i style="width:96%"></i></span><span class="pts">4,820 XP</span></div>
-                  <div class="lb-r"><span class="rk">2</span><span class="av" style="background:#6C5CE7">AR</span><span>Aarav Rao · Level 8 · 14-day streak</span><span class="xp"><i style="width:84%"></i></span><span class="pts">4,210 XP</span></div>
-                  <div class="lb-r"><span class="rk">3</span><span class="av" style="background:#00A6A1">MS</span><span>Meera Shah · Level 8 · 9-day streak</span><span class="xp"><i style="width:77%"></i></span><span class="pts">3,860 XP</span></div>
-                  <div class="lb-r"><span class="rk">4</span><span class="av" style="background:#E0A93E">KV</span><span>Kabir Verma · Level 7 · 12-day streak</span><span class="xp"><i style="width:64%"></i></span><span class="pts">3,240 XP</span></div>
+                  <div class="lb-r first"><span class="rk">1</span><span class="av" style="background:#002244">DK</span><span>Diya Kulkarni · Level 9 · 21-day streak</span><span class="xp"><i style="width:96%"></i></span><span class="pts">4,820 XP</span></div>
+                  <div class="lb-r"><span class="rk">2</span><span class="av" style="background:#2E7D74">AR</span><span>Aarav Rao · Level 8 · 14-day streak</span><span class="xp"><i style="width:84%"></i></span><span class="pts">4,210 XP</span></div>
+                  <div class="lb-r"><span class="rk">3</span><span class="av" style="background:#4E8578">MS</span><span>Meera Shah · Level 8 · 9-day streak</span><span class="xp"><i style="width:77%"></i></span><span class="pts">3,860 XP</span></div>
+                  <div class="lb-r"><span class="rk">4</span><span class="av" style="background:#B4903F">KV</span><span>Kabir Verma · Level 7 · 12-day streak</span><span class="xp"><i style="width:64%"></i></span><span class="pts">3,240 XP</span></div>
                 </div>
               </div></div>
             </div>
@@ -882,23 +882,23 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
           <!-- olympics mock -->
           <div class="slide"><div class="shot">
             <div class="browser">
-              <div class="b-top"><span class="b-dot" style="background:#FB5151"></span><span class="b-dot" style="background:#FDCB6E"></span><span class="b-dot" style="background:#00CEC9"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.eduplatform.io/olympics/2026</span></div>
+              <div class="b-top"><span class="b-dot" style="background:#002244"></span><span class="b-dot" style="background:#CBA956"></span><span class="b-dot" style="background:#669988"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.sarasvi.io/olympics/2026</span></div>
               <div class="b-body"><div class="b-main" style="padding:20px">
-                <div class="b-head"><div><div class="b-title">Virtual Academic Olympics '26</div><div class="b-sub">Inter-house finals · live bracket · 4 houses</div></div><span class="b-btn" style="background:#E0A93E">Live Bracket</span></div>
+                <div class="b-head"><div><div class="b-title">Virtual Academic Olympics '26</div><div class="b-sub">Inter-house finals · live bracket · 4 houses</div></div><span class="b-btn" style="background:#B4903F">Live Bracket</span></div>
                 <div class="b-row">
                   <div class="b-panel" style="flex:1.2">
                     <span class="p-title">Medal tally</span>
                     <div class="lb">
-                      <div class="lb-r first" style="grid-template-columns:26px 1fr 30px 30px 30px"><span class="rk">1</span><span>Phoenix House</span><span style="color:#E0A93E;font-weight:800">12</span><span style="color:#9AA3AF;font-weight:800">8</span><span style="color:#C9803A;font-weight:800">6</span></div>
-                      <div class="lb-r" style="grid-template-columns:26px 1fr 30px 30px 30px"><span class="rk">2</span><span>Orion House</span><span style="color:#E0A93E;font-weight:800">10</span><span style="color:#9AA3AF;font-weight:800">11</span><span style="color:#C9803A;font-weight:800">4</span></div>
-                      <div class="lb-r" style="grid-template-columns:26px 1fr 30px 30px 30px"><span class="rk">3</span><span>Atlas House</span><span style="color:#E0A93E;font-weight:800">7</span><span style="color:#9AA3AF;font-weight:800">6</span><span style="color:#C9803A;font-weight:800">9</span></div>
+                      <div class="lb-r first" style="grid-template-columns:26px 1fr 30px 30px 30px"><span class="rk">1</span><span>Phoenix House</span><span style="color:#B4903F;font-weight:800">12</span><span style="color:#A8B4BF;font-weight:800">8</span><span style="color:#C9803A;font-weight:800">6</span></div>
+                      <div class="lb-r" style="grid-template-columns:26px 1fr 30px 30px 30px"><span class="rk">2</span><span>Orion House</span><span style="color:#B4903F;font-weight:800">10</span><span style="color:#A8B4BF;font-weight:800">11</span><span style="color:#C9803A;font-weight:800">4</span></div>
+                      <div class="lb-r" style="grid-template-columns:26px 1fr 30px 30px 30px"><span class="rk">3</span><span>Atlas House</span><span style="color:#B4903F;font-weight:800">7</span><span style="color:#A8B4BF;font-weight:800">6</span><span style="color:#C9803A;font-weight:800">9</span></div>
                     </div>
                   </div>
                   <div class="b-panel" style="flex:1">
                     <span class="p-title">Semi-final · Science Sprint</span>
                     <div class="tbl" style="gap:9px">
-                      <div class="tbl-r" style="grid-template-columns:1fr 60px"><span>Phoenix vs Atlas</span><span class="grade" style="background:#FFF6EC;color:#A33702">2 : 1</span></div>
-                      <div class="tbl-r" style="grid-template-columns:1fr 60px"><span>Orion vs Nova</span><span class="grade" style="background:#F0EEFF;color:#4935C3">2 : 0</span></div>
+                      <div class="tbl-r" style="grid-template-columns:1fr 60px"><span>Phoenix vs Atlas</span><span class="grade" style="background:#FBF3E2;color:#0A3357">2 : 1</span></div>
+                      <div class="tbl-r" style="grid-template-columns:1fr 60px"><span>Orion vs Nova</span><span class="grade" style="background:#EDF5F2;color:#1F5F58">2 : 0</span></div>
                     </div>
                     <div class="risk-card" style="margin-top:auto"><svg class="icon"><use href="#i-video"/></svg> Finals stream live on YouTube at 4:00 PM.</div>
                   </div>
@@ -912,18 +912,18 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
           <!-- wellbeing mock -->
           <div class="slide"><div class="shot">
             <div class="browser">
-              <div class="b-top"><span class="b-dot" style="background:#FB5151"></span><span class="b-dot" style="background:#FDCB6E"></span><span class="b-dot" style="background:#00CEC9"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.eduplatform.io/wellbeing</span></div>
+              <div class="b-top"><span class="b-dot" style="background:#002244"></span><span class="b-dot" style="background:#CBA956"></span><span class="b-dot" style="background:#669988"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.sarasvi.io/wellbeing</span></div>
               <div class="b-body"><div class="b-main" style="padding:20px">
                 <div class="b-head"><div><div class="b-title">Morning Check-In — How do you feel?</div><div class="b-sub">Stress-O-Meter · SEL · confidential</div></div></div>
                 <div class="moods">
-                  <div class="mood"><span class="face" style="background:#FFE9C9"><svg class="icon" style="width:20px;height:20px;color:#B98A1E;stroke-width:2.4"><use href="#i-heart"/></svg></span><small>Happy</small></div>
-                  <div class="mood sel"><span class="face" style="background:#DFFBF9"><svg class="icon" style="width:20px;height:20px;color:#006764;stroke-width:2.4"><use href="#i-check"/></svg></span><small>Calm</small></div>
-                  <div class="mood"><span class="face" style="background:#FFE3D6"><svg class="icon" style="width:20px;height:20px;color:#A33702;stroke-width:2.4"><use href="#i-gauge"/></svg></span><small>Stressed</small></div>
-                  <div class="mood"><span class="face" style="background:#EDE9FF"><svg class="icon" style="width:20px;height:20px;color:#4935C3;stroke-width:2.4"><use href="#i-msg"/></svg></span><small>Need to talk</small></div>
+                  <div class="mood"><span class="face" style="background:#F6E8CE"><svg class="icon" style="width:20px;height:20px;color:#8A6D1A;stroke-width:2.4"><use href="#i-heart"/></svg></span><small>Happy</small></div>
+                  <div class="mood sel"><span class="face" style="background:#DCEAE5"><svg class="icon" style="width:20px;height:20px;color:#2E6B5E;stroke-width:2.4"><use href="#i-check"/></svg></span><small>Calm</small></div>
+                  <div class="mood"><span class="face" style="background:#E4EEF6"><svg class="icon" style="width:20px;height:20px;color:#0A3357;stroke-width:2.4"><use href="#i-gauge"/></svg></span><small>Stressed</small></div>
+                  <div class="mood"><span class="face" style="background:#E7F1EE"><svg class="icon" style="width:20px;height:20px;color:#1F5F58;stroke-width:2.4"><use href="#i-msg"/></svg></span><small>Need to talk</small></div>
                 </div>
                 <div class="b-row">
                   <div class="b-panel" style="flex:1"><span class="p-title">Class stress index</span><div class="gauge"><span class="needle"></span></div><div class="b-sub">Grade 8A · trending down 12% this month</div></div>
-                  <div class="b-panel" style="flex:1.3"><span class="p-title">Counselor notes</span><div class="risk-card" style="background:#F2FFFE;border-color:#9BE8E4"><svg class="icon" style="color:#006764"><use href="#i-shield"/></svg> 2 gentle nudges scheduled · 1 mindfulness session suggested · CASEL tracker updated.</div></div>
+                  <div class="b-panel" style="flex:1.3"><span class="p-title">Counselor notes</span><div class="risk-card" style="background:#EDF6F2;border-color:#9BE8E4"><svg class="icon" style="color:#2E6B5E"><use href="#i-shield"/></svg> 2 gentle nudges scheduled · 1 mindfulness session suggested · CASEL tracker updated.</div></div>
                 </div>
               </div></div>
             </div>
@@ -934,24 +934,24 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
           <!-- career mock -->
           <div class="slide"><div class="shot">
             <div class="browser">
-              <div class="b-top"><span class="b-dot" style="background:#FB5151"></span><span class="b-dot" style="background:#FDCB6E"></span><span class="b-dot" style="background:#00CEC9"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.eduplatform.io/career</span></div>
+              <div class="b-top"><span class="b-dot" style="background:#002244"></span><span class="b-dot" style="background:#CBA956"></span><span class="b-dot" style="background:#669988"></span><span class="b-url"><svg class="icon"><use href="#i-lock"/></svg>app.sarasvi.io/career</span></div>
               <div class="b-body"><div class="b-main" style="padding:20px">
                 <div class="b-head"><div><div class="b-title">Career Pathways — AI Recommender</div><div class="b-sub">Based on grades, interests &amp; learning style</div></div><span class="b-btn">Explore 40+ tracks</span></div>
                 <div class="b-row">
                   <div class="b-panel" style="flex:1.2">
                     <span class="p-title">Top matches</span>
                     <div class="career-list">
-                      <div class="car-r"><svg class="icon" style="width:15px;height:15px;color:#FF7A45"><use href="#i-flask"/></svg>Biomedical Engineering<span class="pct">94%</span><span class="bar"><i style="width:94%;background:linear-gradient(90deg,#FF8659,#FF7A45)"></i></span></div>
-                      <div class="car-r"><svg class="icon" style="width:15px;height:15px;color:#6C5CE7"><use href="#i-bot"/></svg>Data Science<span class="pct">89%</span><span class="bar"><i style="width:89%;background:linear-gradient(90deg,#8B7FF0,#6C5CE7)"></i></span></div>
-                      <div class="car-r"><svg class="icon" style="width:15px;height:15px;color:#00A6A1"><use href="#i-rocket"/></svg>Aerospace Design<span class="pct">81%</span><span class="bar"><i style="width:81%;background:linear-gradient(90deg,#35E0DB,#00A6A1)"></i></span></div>
+                      <div class="car-r"><svg class="icon" style="width:15px;height:15px;color:#002244"><use href="#i-flask"/></svg>Biomedical Engineering<span class="pct">94%</span><span class="bar"><i style="width:94%;background:linear-gradient(90deg,#12507F,#002244)"></i></span></div>
+                      <div class="car-r"><svg class="icon" style="width:15px;height:15px;color:#2E7D74"><use href="#i-bot"/></svg>Data Science<span class="pct">89%</span><span class="bar"><i style="width:89%;background:linear-gradient(90deg,#4E9E93,#2E7D74)"></i></span></div>
+                      <div class="car-r"><svg class="icon" style="width:15px;height:15px;color:#4E8578"><use href="#i-rocket"/></svg>Aerospace Design<span class="pct">81%</span><span class="bar"><i style="width:81%;background:linear-gradient(90deg,#7FB3A6,#4E8578)"></i></span></div>
                     </div>
                   </div>
                   <div class="b-panel" style="flex:1">
                     <span class="p-title">College shortlist</span>
                     <div class="tbl" style="gap:9px">
-                      <div class="tbl-r" style="grid-template-columns:1fr 70px"><span>IIT Bombay — deadline tracker</span><span class="grade" style="background:#E9FFF6;color:#006764">On track</span></div>
-                      <div class="tbl-r" style="grid-template-columns:1fr 70px"><span>NID — portfolio review</span><span class="grade" style="background:#FFF6EC;color:#A33702">Action</span></div>
-                      <div class="tbl-r" style="grid-template-columns:1fr 70px"><span>Ashoka — scholarship essay</span><span class="grade" style="background:#F0EEFF;color:#4935C3">Drafted</span></div>
+                      <div class="tbl-r" style="grid-template-columns:1fr 70px"><span>IIT Bombay — deadline tracker</span><span class="grade" style="background:#EDF6F2;color:#2E6B5E">On track</span></div>
+                      <div class="tbl-r" style="grid-template-columns:1fr 70px"><span>NID — portfolio review</span><span class="grade" style="background:#FBF3E2;color:#0A3357">Action</span></div>
+                      <div class="tbl-r" style="grid-template-columns:1fr 70px"><span>Ashoka — scholarship essay</span><span class="grade" style="background:#EDF5F2;color:#1F5F58">Drafted</span></div>
                     </div>
                     <div class="risk-card" style="margin-top:auto"><svg class="icon"><use href="#i-wallet"/></svg> Financial-aid calculator: est. ₹4.2L/yr support.</div>
                   </div>
@@ -979,20 +979,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   <div class="container">
     <div class="split reveal" style="margin-top:88px">
       <div class="visual">
-        <div class="cert-scene" style="position:relative;height:440px;background:linear-gradient(160deg,#FFF4F0,#EDE9FF);border-radius:22px;box-shadow:var(--shadow-lg);overflow:hidden">
+        <div class="cert-scene" style="position:relative;height:440px;background:linear-gradient(160deg,#F7FBFD,#E7F1EE);border-radius:22px;box-shadow:var(--shadow-lg);overflow:hidden">
           <div class="cert">
             <div class="c-top">
               <div><h4>Certificate of Excellence</h4><div class="b-sub">Sunrise International School · Reg. No 2026-1042</div></div>
-              <span class="seal"><svg class="icon" style="width:26px;height:26px;color:#8a6d1a"><use href="#i-medal"/></svg></span>
+              <span class="seal"><svg class="icon" style="width:26px;height:26px;color:#7A6224"><use href="#i-medal"/></svg></span>
             </div>
             <div class="lines"><i style="width:88%"></i><i style="width:72%"></i><i style="width:80%"></i><i style="width:56%"></i></div>
             <div class="sig"><i></i><i style="background:var(--primary)"></i></div>
           </div>
           <div class="vcard">
-            <div class="vrow"><span class="ic" style="background:linear-gradient(135deg,#35E0DB,#00A6A1)"><svg class="icon"><use href="#i-shield"/></svg></span><span>Verified on Hyperledger Fabric<small>Block #48,201 · credentials channel</small></span></div>
-            <div class="vrow"><span class="ic" style="background:linear-gradient(135deg,#8B7FF0,#6C5CE7)"><svg class="icon"><use href="#i-link"/></svg></span><span>Immutable issuance history<small>Issued → shared → verified ×3</small></span></div>
-            <div class="vrow"><span class="ic" style="background:linear-gradient(135deg,#FF8659,#FF6B4A)"><svg class="icon"><use href="#i-wallet"/></svg></span><span>Held in Student Virtual Wallet<small>Lifetime, revocation-aware</small></span></div>
-            <div class="vrow"><span class="ic" style="background:linear-gradient(135deg,#FFD98A,#F0B03E)"><svg class="icon"><use href="#i-brief"/></svg></span><span>Employer verification portal<small>Instant checks, zero phone calls</small></span></div>
+            <div class="vrow"><span class="ic" style="background:linear-gradient(135deg,#7FB3A6,#4E8578)"><svg class="icon"><use href="#i-shield"/></svg></span><span>Verified on Hyperledger Fabric<small>Block #48,201 · credentials channel</small></span></div>
+            <div class="vrow"><span class="ic" style="background:linear-gradient(135deg,#4E9E93,#2E7D74)"><svg class="icon"><use href="#i-link"/></svg></span><span>Immutable issuance history<small>Issued → shared → verified ×3</small></span></div>
+            <div class="vrow"><span class="ic" style="background:linear-gradient(135deg,#12507F,#0A3A5F)"><svg class="icon"><use href="#i-wallet"/></svg></span><span>Held in Student Virtual Wallet<small>Lifetime, revocation-aware</small></span></div>
+            <div class="vrow"><span class="ic" style="background:linear-gradient(135deg,#E4C77E,#C9A84E)"><svg class="icon"><use href="#i-brief"/></svg></span><span>Employer verification portal<small>Instant checks, zero phone calls</small></span></div>
           </div>
         </div>
       </div>
@@ -1059,16 +1059,16 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
       <div class="visual"><picture><source media="(max-width:700px)" srcset="{{IMG:live-m}}"><img src="{{IMG:live-class}}" alt="Teacher broadcasting a live class with a ring light"></picture></div>
     </div>
     <div class="split reveal">
-      <div class="visual"><picture><source media="(max-width:700px)" srcset="{{IMG:mobile-m}}"><img src="{{IMG:mobile-hand}}" alt="Hand holding the EduTrack mobile app on campus"></picture></div>
+      <div class="visual"><picture><source media="(max-width:700px)" srcset="{{IMG:mobile-m}}"><img src="{{IMG:mobile-hand}}" alt="Hand holding the Sarasvi app mobile app on campus"></picture></div>
       <div class="copy">
-        <span class="eyebrow purple"><svg class="icon"><use href="#i-phone"/></svg> EduTrack mobile app</span>
+        <span class="eyebrow purple"><svg class="icon"><use href="#i-phone"/></svg> Sarasvi app mobile app</span>
         <h3>Your Whole School, In Every Pocket</h3>
         <p>Native React Native (Expo) apps for students, teachers and parents — not a webview wrapper.</p>
         <ul class="check-list purple">
           <li>Biometric login (Face ID / Touch ID / Fingerprint) with secure token storage</li>
           <li>Offline mode with smart sync queue — works in low-connectivity areas</li>
           <li>Camera homework scanning &amp; QR code scanning built in</li>
-          <li>Rich push notifications, deep links (edutrack://) and universal links</li>
+          <li>Rich push notifications, deep links (sarasvi://) and universal links</li>
           <li>Progressive Web App on desktop too: offline fallback, install prompt &amp; background sync</li>
         </ul>
         <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
@@ -1094,7 +1094,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
       <div class="copy">
         <span class="eyebrow teal"><svg class="icon"><use href="#i-phone"/></svg> Responsive by design</span>
         <h3>One Design System, Every Screen Size</h3>
-        <p>Every dashboard, carousel and form is built mobile-first with fluid type, generous touch targets and adaptive layouts — the same warm Kinetic Scholar experience from a 4-inch phone to a boardroom wall.</p>
+        <p>Every dashboard, carousel and form is built mobile-first with fluid type, generous touch targets and adaptive layouts — the same warm, considered Sarasvi experience from a 4-inch phone to a boardroom wall.</p>
         <ul class="check-list teal">
           <li>Fluid clamp() typography and adaptive grids from 320px to 4K displays</li>
           <li>Touch-first carousels with swipe, snap and autoplay that pauses on interaction</li>
@@ -1103,7 +1103,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
           <li>Accessibility everywhere: font scaling 75–200%, reduced motion, high contrast, ARIA live regions</li>
         </ul>
       </div>
-      <div class="visual"><img src="{{IMG:devices}}" alt="Laptop, tablet and phone showing the same EduPlatform experience"></div>
+      <div class="visual"><img src="{{IMG:devices}}" alt="Laptop, tablet and phone showing the same Sarasvi experience"></div>
     </div>
   </div>
 </section>
@@ -1118,28 +1118,28 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     <div class="t-carousel reveal" id="tCarousel">
       <div class="t-slide active">
         <div class="t-stars" aria-label="5 star rating"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></div>
-        <p class="t-quote">"We replaced four separate systems with EduPlatform. Result computation that took our staff three days now finishes before lunch — and the plagiarism dashboard has transformed how we teach academic honesty."</p>
-        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#FF7A45,#A33702)">MD</div><div class="who"><b>Dr. Meera Deshpande</b><span>Principal, Sunrise International School · Pune</span></div></div>
+        <p class="t-quote">"We replaced four separate systems with Sarasvi. Result computation that took our staff three days now finishes before lunch — and the plagiarism dashboard has transformed how we teach academic honesty."</p>
+        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#002244,#0A3357)">MD</div><div class="who"><b>Dr. Meera Deshpande</b><span>Principal, Sunrise International School · Pune</span></div></div>
       </div>
       <div class="t-slide">
         <div class="t-stars" aria-label="5 star rating"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></div>
         <p class="t-quote">"The AI prediction engine flagged 14 at-risk students in term one. With targeted intervention, eleven of them cleared term two with distinction. This is what data-driven compassion looks like."</p>
-        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#6C5CE7,#4935C3)">RK</div><div class="who"><b>Rahul Kulkarni</b><span>Academic Coordinator, Greenfield Academy · Mumbai</span></div></div>
+        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#2E7D74,#1F5F58)">RK</div><div class="who"><b>Rahul Kulkarni</b><span>Academic Coordinator, Greenfield Academy · Mumbai</span></div></div>
       </div>
       <div class="t-slide">
         <div class="t-stars" aria-label="5 star rating"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></div>
         <p class="t-quote">"My twins are in different grades and I see both of them on one screen — attendance, homework, exams, even the bus location. Booking a parent-teacher conference takes ten seconds now."</p>
-        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#00CEC9,#006764)">SN</div><div class="who"><b>Sneha Nair</b><span>Parent of two · Kochi</span></div></div>
+        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#669988,#2E6B5E)">SN</div><div class="who"><b>Sneha Nair</b><span>Parent of two · Kochi</span></div></div>
       </div>
       <div class="t-slide">
         <div class="t-stars" aria-label="5 star rating"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></div>
         <p class="t-quote">"The gamification layer changed my classroom. Students beg for subject battles, the appreciation wall keeps the culture positive, and I spend my time teaching — not chasing paperwork."</p>
-        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#FDCB6E,#E0A93E)">AJ</div><div class="who"><b>Arjun Joshi</b><span>Science Teacher, Heritage Public School · Delhi</span></div></div>
+        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#CBA956,#B4903F)">AJ</div><div class="who"><b>Arjun Joshi</b><span>Science Teacher, Heritage Public School · Delhi</span></div></div>
       </div>
       <div class="t-slide">
         <div class="t-stars" aria-label="5 star rating"><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg><svg class="icon"><use href="#i-star"/></svg></div>
         <p class="t-quote">"As a group running nine institutions, the super-admin console is unbeatable: cross-campus analytics, health scores, churn-risk alerts and white-labeling per campus. Migration was painless."</p>
-        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#815032,#4B240A)">PV</div><div class="who"><b>Priya Venkataraman</b><span>Chief Operating Officer, Vidyodaya Group · Bengaluru</span></div></div>
+        <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#5F6B76,#12283C)">PV</div><div class="who"><b>Priya Venkataraman</b><span>Chief Operating Officer, Vidyodaya Group · Bengaluru</span></div></div>
       </div>
       <div class="t-nav">
         <button id="tPrev" aria-label="Previous testimonial"><svg class="icon"><use href="#i-chevron-l"/></svg></button>
@@ -1216,8 +1216,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   <div class="container faq-list reveal">
     <div class="faq-item"><button class="faq-q" aria-expanded="false">How long does implementation take?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></button><div class="faq-a"><p>Most single-campus schools go live in 5–7 working days. Our onboarding team handles bulk CSV/Excel imports for students, teachers and historical data, configures your academic structure, trains staff over live sessions, and provides a drag-and-drop onboarding designer for your own custom workflows. Multi-institution groups typically roll out campus-by-campus over 3–4 weeks.</p></div></div>
     <div class="faq-item"><button class="faq-q" aria-expanded="false">Is our data safe and compliant?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></button><div class="faq-a"><p>Yes. Data lives on AWS with encryption in transit and at rest, plus field-level encryption for sensitive records. The platform ships with FERPA compliance utilities, granular role-based access control, row-level multi-tenant isolation, immutable audit logs, rate limiting and instant session revocation. Family documents are stored in an encrypted vault with 7-year retention policies.</p></div></div>
-    <div class="faq-item"><button class="faq-q" aria-expanded="false">Can we use our own branding and domain?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></button><div class="faq-a"><p>Absolutely — white-labeling is built in. Upload your logo and favicon, set your colors, run the portal on your own domain with automatic SSL, brand emails with your DKIM/SPF-verified domain, customize the login page and splash screens, inject custom CSS, and even choose your own notification sounds. A toggleable "Powered by EduPlatform" footer is entirely your choice.</p></div></div>
-    <div class="faq-item"><button class="faq-q" aria-expanded="false">Does it work on basic smartphones and slow internet?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></button><div class="faq-a"><p>Yes. The EduTrack mobile apps (Android &amp; iOS) include an offline sync queue so attendance, homework and marks entered offline sync automatically when connectivity returns. The web app is a Progressive Web App with an offline fallback page and background sync, and accessibility features include font scaling, reduced motion and high-contrast modes.</p></div></div>
+    <div class="faq-item"><button class="faq-q" aria-expanded="false">Can we use our own branding and domain?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></button><div class="faq-a"><p>Absolutely — white-labeling is built in. Upload your logo and favicon, set your colors, run the portal on your own domain with automatic SSL, brand emails with your DKIM/SPF-verified domain, customize the login page and splash screens, inject custom CSS, and even choose your own notification sounds. A toggleable "Powered by Sarasvi" footer is entirely your choice.</p></div></div>
+    <div class="faq-item"><button class="faq-q" aria-expanded="false">Does it work on basic smartphones and slow internet?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></button><div class="faq-a"><p>Yes. The Sarasvi app mobile apps (Android &amp; iOS) include an offline sync queue so attendance, homework and marks entered offline sync automatically when connectivity returns. The web app is a Progressive Web App with an offline fallback page and background sync, and accessibility features include font scaling, reduced motion and high-contrast modes.</p></div></div>
     <div class="faq-item"><button class="faq-q" aria-expanded="false">How do the AI features handle student privacy?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></button><div class="faq-a"><p>AI features are opt-in per institution and tenant-isolated like everything else. Prediction models are trained on your institution's own data with versioning and drift monitoring; the Study Buddy and Doubt Forum assistants run on managed OpenAI models with no training on your data. Counselors control wellbeing alerts, and every AI action is logged in the audit trail.</p></div></div>
     <div class="faq-item"><button class="faq-q" aria-expanded="false">What about fees — can parents pay inside the app?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></button><div class="faq-a"><p>Yes. Fee structures, invoices, concessions and due reminders are built in, with Razorpay checkout supporting UPI, cards, net-banking and wallets. Payment webhooks update ledgers instantly, payroll (basic, HRA, DA, deductions) is handled for staff, and financial reports export to CSV/Excel for your auditors.</p></div></div>
   </div>
@@ -1231,7 +1231,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
       <div class="cta-inner">
         <div>
           <h2>Ready to Transform Your Institution?</h2>
-          <p>Join 500+ schools and 2 million learners already growing with EduPlatform. Full-featured 30-day trial, free data migration, and a success team that answers in minutes.</p>
+          <p>Join 500+ schools and 2 million learners already growing with Sarasvi. Full-featured 30-day trial, free data migration, and a success team that answers in minutes.</p>
           <div style="display:flex;gap:14px;flex-wrap:wrap">
             <a href="#" class="btn btn-white">Start Your Free Trial <svg class="icon"><use href="#i-arrow"/></svg></a>
             <a href="#" class="btn btn-ghost">Book a Live Demo</a>
@@ -1252,8 +1252,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 <footer class="site-footer">
   <div class="container foot-grid">
     <div class="foot-brand">
-      <a class="logo" href="#top" style="color:#fff"><span class="logo-mark"><svg class="icon" style="width:22px;height:22px;stroke:none" viewBox="0 0 64 64"><path d="M32 12 6 26l26 13 22-11v15h4V26L32 12z" fill="#fff"/><path d="M17 36v9c0 5 6.7 9 15 9s15-4 15-9v-9l-15 7.5L17 36z" fill="#FFE3D6"/></svg></span>EduPlatform</a>
-      <p>The AI-powered school operating system. Web (EduPortal) · Mobile (EduTrack) · Built on FastAPI, React, React Native, Hyperledger Fabric &amp; AWS.</p>
+      <a class="logo" href="#top" style="color:#fff"><span class="logo-mark"><svg class="icon" style="width:22px;height:22px;stroke:none" viewBox="0 0 64 64"><path d="M32 12 6 26l26 13 22-11v15h4V26L32 12z" fill="#fff"/><path d="M17 36v9c0 5 6.7 9 15 9s15-4 15-9v-9l-15 7.5L17 36z" fill="#E4EEF6"/></svg></span>Sarasvi</a>
+      <p>The AI-powered school operating system. Web (Sarasvi Portal) · Mobile (Sarasvi app) · Built on FastAPI, React, React Native, Hyperledger Fabric &amp; AWS.</p>
       <div class="trust-badges"><span>FERPA-ready</span><span>AWS Hosted</span><span>99.9% SLA</span><span>ISO practices</span><span>GDPR-minded</span></div>
     </div>
     <div><h4>Product</h4><ul>
@@ -1267,8 +1267,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
     </ul></div>
   </div>
   <div class="container foot-bottom">
-    <span>© <span id="yr">2026</span> EduPlatform Technologies Pvt. Ltd. All rights reserved.</span>
-    <span>Made with care for educators · hello@eduplatform.example</span>
+    <span>© <span id="yr">2026</span> Sarasvi Technologies Pvt. Ltd. All rights reserved.</span>
+    <span>Made with care for educators · hello@sarasvi.example</span>
   </div>
 </footer>
 

@@ -9,11 +9,11 @@
  },
  {
   "q": "Can we use our own branding and domain?",
-  "a": "Absolutely — white-labeling is built in. Upload your logo and favicon, set your colors, run the portal on your own domain with automatic SSL, brand emails with your DKIM/SPF-verified domain, customize the login page and splash screens, inject custom CSS, and even choose your own notification sounds. A toggleable \"Powered by EduPlatform\" footer is entirely your choice."
+  "a": "Absolutely — white-labeling is built in. Upload your logo and favicon, set your colors, run the portal on your own domain with automatic SSL, brand emails with your DKIM/SPF-verified domain, customize the login page and splash screens, inject custom CSS, and even choose your own notification sounds. A toggleable \"Powered by Sarasvi\" footer is entirely your choice."
  },
  {
   "q": "Does it work on basic smartphones and slow internet?",
-  "a": "Yes. The EduTrack mobile apps (Android & iOS) include an offline sync queue so attendance, homework and marks entered offline sync automatically when connectivity returns. The web app is a Progressive Web App with an offline fallback page and background sync, and accessibility features include font scaling, reduced motion and high-contrast modes."
+  "a": "Yes. The Sarasvi Mobile apps (Android & iOS) include an offline sync queue so attendance, homework and marks entered offline sync automatically when connectivity returns. The web app is a Progressive Web App with an offline fallback page and background sync, and accessibility features include font scaling, reduced motion and high-contrast modes."
  },
  {
   "q": "How do the AI features handle student privacy?",
