@@ -9,7 +9,6 @@
     "preview": "astro preview",
     "images": "node scripts/optimize-images.mjs",
     "video": "node scripts/optimize-video.mjs",
-    "film": "node scripts/optimize-film.mjs",
     "brand": "node scripts/build-brand-assets.mjs"
   },
   "dependencies": {
