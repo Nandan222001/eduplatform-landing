@@ -1,9 +1,23 @@
 ---
 import Layout from '../layouts/Layout.astro';
+// Static 404: Vercel/Netlify serve this file with a real HTTP 404 status for any unknown URL.
+const links = [
+  ['/', 'Home', 'Back to the Sarasvi home page'],
+  ['/#tour', 'Product tour', 'See the admin console, teacher and parent apps'],
+  ['/#pricing', 'Pricing', 'Plans for single schools and groups'],
+  ['/#faq', 'FAQ', 'Answers to common questions'],
+  ['/#book-demo', 'Book a demo', 'Talk to our team'],
+];
 ---
-<Layout title="Page not found – Sarasvi" description="The page you are looking for does not exist." path="/404/" noindex>
-  <main class="legal container" id="main">
-    <h1>Page not found</h1>
-    <p>The page you requested doesn't exist. <a href="/">Back to the Sarasvi home page</a>.</p>
+<Layout title="Page Not Found | Sarasvi" description="This page doesn't exist. Find your way back to the Sarasvi school management platform: home, product tour, pricing, FAQ or a free demo." path="/404/" noindex>
+  <main class="legal container nf" id="main">
+    <p class="nf-code" aria-hidden="true">404</p>
+    <h1>We couldn't find that page</h1>
+    <p>The link may be old, or the address may have a typo. Here are the places most people are looking for:</p>
+    <ul class="nf-links">
+      {links.map(([href, label, sub]) => (
+        <li><a href={href}><b>{label}</b><span>{sub}</span></a></li>
+      ))}
+    </ul>
   </main>
 </Layout>

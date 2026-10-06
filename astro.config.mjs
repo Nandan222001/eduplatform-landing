@@ -6,7 +6,9 @@ const site = process.env.SITE_URL || 'https://www.sarasvi.in';
 
 export default defineConfig({
   site,
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({ filter: (page) => !/\/(404|thank-you)\/?$/.test(page) }),
+  ],
   compressHTML: true,
   build: { inlineStylesheets: 'auto' },
   prefetch: { prefetchAll: false },

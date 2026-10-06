@@ -1,0 +1,52 @@
+---
+// Google Analytics 4, loaded only when PUBLIC_GA_ID is set (e.g. G-XXXXXXXXXX).
+// Visitors whose time zone is in Europe (EU, UK, Switzerland) get a consent banner
+// and GA stays off (Consent Mode "denied") until they accept. Everyone else gets
+// GA with analytics storage granted. The choice is remembered in localStorage.
+const gaId = import.meta.env.PUBLIC_GA_ID ?? '';
+---
+{gaId && (
+  <>
+    <div class="consent-bar" id="consentBar" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
+      <p>We use Google Analytics cookies to understand how this site is used. See our <a href="/privacy/">Privacy Policy</a>.</p>
+      <div class="btns">
+        <button class="btn btn-sm btn-decline" type="button" data-consent="denied">Decline</button>
+        <button class="btn btn-primary btn-sm" type="button" data-consent="granted">Accept</button>
+      </div>
+    </div>
+    <script is:inline define:vars={{ gaId }}>
+      (function () {
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        window.gtag = gtag;
+        var KEY = 'sarasvi-consent', saved = null;
+        try { saved = localStorage.getItem(KEY); } catch (e) {}
+        var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+        var needsConsent = /^(Europe|Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe))\//.test(tz);
+        var state = saved || (needsConsent ? 'denied' : 'granted');
+        gtag('consent', 'default', { analytics_storage: state, ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+        var loaded = false;
+        function load() {
+          if (loaded) return; loaded = true;
+          var s = document.createElement('script'); s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+          document.head.appendChild(s);
+          gtag('js', new Date()); gtag('config', gaId, { anonymize_ip: true });
+        }
+        if (state === 'granted') load();
+        var bar = document.getElementById('consentBar');
+        if (needsConsent && !saved && bar) {
+          bar.hidden = false;
+          bar.addEventListener('click', function (e) {
+            var c = e.target.closest && e.target.closest('[data-consent]'); if (!c) return;
+            var v = c.getAttribute('data-consent');
+            try { localStorage.setItem(KEY, v); } catch (err) {}
+            gtag('consent', 'update', { analytics_storage: v });
+            if (v === 'granted') load();
+            bar.hidden = true;
+          });
+        }
+      })();
+    </script>
+  </>
+)}

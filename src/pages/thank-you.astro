@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+// Where the demo form lands after a successful submission. noindex + left out of
+// the sitemap. In GA4, mark the page_view of /thank-you/ (or the generate_lead
+// event fired below) as a key event so form submissions are counted.
+---
+<Layout title="Thank You | Sarasvi" description="Thanks for contacting Sarasvi. Our team will get back to you within one working day." path="/thank-you/" noindex>
+  <main class="legal container nf" id="main">
+    <p class="nf-code" aria-hidden="true">✓</p>
+    <h1>Thank you, we've got your request</h1>
+    <p>Here's what happens next:</p>
+    <ol>
+      <li>Our team reads your request and replies by email within <b>one working day</b>.</li>
+      <li>We schedule a 30-minute demo at a time that suits you, online or on campus.</li>
+      <li>After the demo you can start the 30-day free trial with your own data.</li>
+    </ol>
+    <ul class="nf-links">
+      <li><a href="/"><b>Back to home</b><span>Keep exploring Sarasvi</span></a></li>
+      <li><a href="/#tour"><b>Product tour</b><span>See the platform while you wait</span></a></li>
+      <li><a href="/#faq"><b>FAQ</b><span>Answers to common questions</span></a></li>
+    </ul>
+  </main>
+  <script is:inline>
+    // Count the lead in GA4 (only fires if analytics has loaded with consent).
+    addEventListener('load', function () { if (window.gtag) window.gtag('event', 'generate_lead', { form: new URLSearchParams(location.search).get('form') || 'demo-request' }); });
+  </script>
+</Layout>

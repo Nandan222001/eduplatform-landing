@@ -1,18 +1,46 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@sarasvi.in';
+const site = Astro.site!.host;
+const updated = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
-<Layout title="Privacy Policy – Sarasvi" description="How Sarasvi collects, uses and protects the information you share with us through this website." path="/privacy/">
+<Layout title="Privacy Policy | Sarasvi" description="How Sarasvi collects, uses and protects the information you share with us through this website." path="/privacy/">
   <main class="legal container" id="main">
     <p><a href="/">← Sarasvi</a></p>
     <h1>Privacy Policy</h1>
-    <p><em>Template text — have it reviewed by your legal counsel before launch.</em></p>
-    <h2>What we collect</h2>
-    <p>When you submit the demo-request or newsletter form we collect the details you enter (name, email, phone, institution, role, student count and message) so we can respond to you.</p>
-    <h2>How we use it</h2>
-    <p>We use this information only to reply to your enquiry, schedule a demo and, if you subscribed, send product updates. We do not sell your data.</p>
-    <h2>Your choices</h2>
-    <p>You can ask us to access, correct or delete your data, or unsubscribe at any time by emailing us.</p>
+    <p><em>Template, not legal advice. Review it with your legal counsel and confirm it matches the live site before launch.</em></p>
+    <p>Last updated: {updated}. This policy covers the Sarasvi marketing website ({site}). It describes only what this website collects.</p>
+
+    <h2>What this website collects</h2>
+    <ul>
+      <li><b>Demo-request form:</b> name, work email, phone/WhatsApp (optional), institution, role, number of students, your message and your consent tick, plus the page address and time of submission.</li>
+      <li><b>Newsletter form:</b> your email address.</li>
+      <li><b>Google Analytics 4</b> (only if enabled, and for visitors in the EU, UK and Switzerland only after you click Accept): pages viewed, approximate location (country/city), device and browser type, how you arrived at the site, and form-submission events. Google Analytics uses cookies (<code>_ga</code>, <code>_ga_*</code>). IP addresses are not stored by GA4.</li>
+      <li><b>Your browser's local storage</b> (not sent to us): your cookie-consent choice and the time you last sent a form, used to stop accidental duplicate submissions.</li>
+    </ul>
+    <p>We do not use advertising cookies, and we do not sell or rent your data.</p>
+
+    <h2>Who processes it</h2>
+    <ul>
+      <li><b>Form provider</b> (for example Formspree): receives form submissions and forwards them to our team.</li>
+      <li><b>Google LLC</b> (Google Analytics): website usage statistics, under Google's data processing terms.</li>
+      <li><b>Hosting provider</b> (Vercel): serves the website and keeps standard server logs for security.</li>
+    </ul>
+
+    <h2>Why we use it</h2>
+    <p>We use form data only to reply to your enquiry, schedule a demo and, if you subscribed, send product updates. We use analytics to understand which pages help visitors and to count demo requests.</p>
+
+    <h2>How long we keep it</h2>
+    <p>We keep enquiries for up to 24 months after our last contact with you, unless you become a customer. Analytics data is kept for 14 months. You can ask us to delete your data sooner.</p>
+
+    <h2>Your choices and rights</h2>
+    <ul>
+      <li>Withdraw analytics consent at any time by clearing this site's cookies and local storage. The banner will then ask you again.</li>
+      <li>Unsubscribe from the newsletter using the link in any email.</li>
+      <li>Ask to access, correct or delete your data, or object to how we use it, by emailing us. Depending on where you live, this includes your rights under India's Digital Personal Data Protection Act 2023 and the EU/UK GDPR.</li>
+    </ul>
+
     <h2>Contact</h2>
-    <p>Email: <a href="mailto:hello@sarasvi.example">hello@sarasvi.example</a></p>
+    <p>Sarasvi Technologies Pvt. Ltd. Email: <a href={`mailto:${email}`}>{email}</a></p>
   </main>
 </Layout>

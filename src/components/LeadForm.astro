@@ -9,12 +9,12 @@ const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@sarasvi.example';
     <div class="f-row">
       <div class="field">
         <label for="lf-name">Full name <span aria-hidden="true">*</span></label>
-        <input id="lf-name" name="name" type="text" autocomplete="name" required minlength="2" placeholder="Priya Sharma" />
+        <input id="lf-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="100" placeholder="Priya Sharma" />
         <span class="err" data-err-for="name"></span>
       </div>
       <div class="field">
         <label for="lf-email">Work email <span aria-hidden="true">*</span></label>
-        <input id="lf-email" name="email" type="email" autocomplete="email" required inputmode="email" placeholder="principal@school.edu" />
+        <input id="lf-email" name="email" type="email" autocomplete="email" required inputmode="email" maxlength="200" placeholder="principal@school.edu" />
         <span class="err" data-err-for="email"></span>
       </div>
     </div>
@@ -26,7 +26,7 @@ const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@sarasvi.example';
       </div>
       <div class="field">
         <label for="lf-org">Institution <span aria-hidden="true">*</span></label>
-        <input id="lf-org" name="institution" type="text" autocomplete="organization" required placeholder="Greenfield Public School" />
+        <input id="lf-org" name="institution" type="text" autocomplete="organization" required maxlength="150" placeholder="Greenfield Public School" />
         <span class="err" data-err-for="institution"></span>
       </div>
     </div>

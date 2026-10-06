@@ -105,6 +105,7 @@ var mq=document.getElementById('mqTrack');mq.innerHTML+=mq.innerHTML;
 
 // ---- Forms (progressive: posts JSON to PUBLIC_FORM_ENDPOINT, falls back to mailto) ----
 document.querySelectorAll('form.lead-form').forEach(function(form){
+  var started=Date.now();
   var status=form.querySelector('.form-status'),btn=form.querySelector('.form-submit'),lbl=btn.querySelector('.lbl'),orig=lbl.textContent;
   function setErr(name,msg){var el=form.querySelector('[data-err-for="'+name+'"]'),inp=form.elements[name];if(el)el.textContent=msg||'';if(inp&&inp.classList)inp.classList.toggle('invalid',!!msg);if(inp&&inp.setAttribute)inp.setAttribute('aria-invalid',msg?'true':'false');}
   function validate(){
@@ -122,7 +123,13 @@ document.querySelectorAll('form.lead-form').forEach(function(form){
   form.addEventListener('submit',function(e){
     e.preventDefault();status.textContent='';
     if(form.elements.website&&form.elements.website.value)return; // honeypot
+    if(Date.now()-started<3000)return;                              // bots submit instantly
     if(!validate())return;
+    /* one submission per form per minute from this browser; the form provider
+       (e.g. Formspree) does the real server-side rate limiting and validation */
+    var tkey='sarasvi-sent-'+form.getAttribute('data-form'),last=0;
+    try{last=+localStorage.getItem(tkey)||0}catch(err){}
+    if(Date.now()-last<60000){say('You just sent this form. Please wait a minute before sending it again.',false);return;}
     var data={form:form.getAttribute('data-form'),page:location.href,submittedAt:new Date().toISOString()};
     new FormData(form).forEach(function(v,k){if(k!=='website')data[k]=v});
     var endpoint=form.getAttribute('data-endpoint');
@@ -133,7 +140,9 @@ document.querySelectorAll('form.lead-form').forEach(function(form){
     }
     btn.classList.add('loading');lbl.textContent='Sending…';
     fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)})
-      .then(function(r){if(!r.ok)throw new Error(r.status);form.reset();say(data.form==='newsletter'?'Thanks for subscribing!':'Thank you! Our team will contact you within one working day.',true);})
+      .then(function(r){if(!r.ok)throw new Error(r.status);try{localStorage.setItem(tkey,String(Date.now()))}catch(err){}form.reset();
+        if(data.form==='newsletter'){say('Thanks for subscribing!',true);if(window.gtag)window.gtag('event','sign_up',{method:'newsletter'});return;}
+        location.href='/thank-you/?form='+encodeURIComponent(data.form);})
       .catch(function(){say('Something went wrong. Please try again or email us directly.',false)})
       .finally(function(){btn.classList.remove('loading');lbl.textContent=orig});
   });
