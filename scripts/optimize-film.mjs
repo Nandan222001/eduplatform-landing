@@ -49,7 +49,7 @@ const SRC = process.argv[2] || CANDIDATES.find((p) => existsSync(p));
 const W = 1280;
 const H = 720;
 const DENOISE = 'hqdn3d=2.2:2:7:7';   // smooth the render's grain; keep the drawing
-const SOFT = `scale=${W}:${H},gblur=sigma=3:steps=1,eq=contrast=1.10:saturation=1.12`;   // the background's quiet
+const SOFT = `scale=${W}:${H},gblur=sigma=1.2:steps=1,eq=contrast=1.10:saturation=1.12`;   // the background's quiet
 const SHARP = `scale=${W}:${H},${DENOISE}`;
 const X264 = ['-c:v', 'libx264', '-preset', 'slow', '-profile:v', 'high', '-level', '4.0',
   '-g', '4', '-keyint_min', '4', '-sc_threshold', '0', '-bf', '0', '-pix_fmt', 'yuv420p'];
@@ -94,7 +94,7 @@ run('background', [
   '-i', SRC,
   '-an',
   '-vf', SOFT,
-  ...X264, '-crf', '37',
+  ...X264, '-crf', '32',
   '-movflags', '+faststart', '-map_metadata', '-1',
   `${OUT}/sarasvi-blessing-bg.mp4`,
 ]);

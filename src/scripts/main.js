@@ -104,7 +104,7 @@ if(tourVid&&tourPlay){
       DATA=!!conn.saveData||/^(slow-)?2g$/.test(conn.effectiveType||''),
       RING=125.6;   /* 2*pi*20, the ring's circumference */
   var duration=20,known=false,warmed=false,paused=false,held=false,failed=false,
-      marks=[],lastSeek=-1,lastStill=-1,lastWash=-1,lastRing=-1,pending=null,ticking=false;
+      marks=[],lastSeek=-1,lastStill=-1,lastWash=-1,lastRing=-1,pending=null,wanted=null,ticking=false;
 
   function clamp(v){return v<0?0:v>1?1:v}
 
@@ -136,7 +136,21 @@ if(tourVid&&tourPlay){
     if(s){s.src=s.getAttribute('data-src');s.removeAttribute('data-src');}
     video.preload='auto';
     try{video.load()}catch(e){}
+    prime();
   }
+  /* Phones will not paint a seek on a video that has never played. A muted
+     play()->pause() is allowed without a gesture and wakes the decoder, so the
+     first scroll tick already lands on a real frame. */
+  function prime(){
+    try{
+      video.muted=true;
+      var pr=video.play();
+      var stop=function(){try{video.pause()}catch(e){}lastSeek=-1;ask()};
+      if(pr&&pr.then)pr.then(stop,function(){});else stop();
+    }catch(e){}
+  }
+  /* first touch is a gesture: retry the prime if the autoplay attempt was refused */
+  addEventListener('touchstart',function(){if(video.paused&&video.readyState<2)prime()},{once:true,passive:true});
   if(document.readyState!=='loading')setTimeout(warm,150);
   else addEventListener('DOMContentLoaded',function(){setTimeout(warm,150)});
   /* belt and braces: if DOMContentLoaded has already been and gone, or never
@@ -179,9 +193,12 @@ if(tourVid&&tourPlay){
     t=Math.max(0,Math.min(t,duration-.05));
     /* A finger drag leaves far less CPU for decoding than a wheel does, so on a
        coarse pointer we take bigger steps through the film. */
-    if(Math.abs(t-lastSeek)<(TOUCH.matches?.12:.02))return;
+    if(Math.abs(t-lastSeek)<(TOUCH.matches?.06:.02))return;
+    if(video.readyState<1){lastSeek=t;pending=t;return;}
+    /* one seek in flight at a time: stacking them on a phone just starves the
+       decoder, so remember the latest target and take it when this one lands */
+    if(video.seeking){wanted=t;return;}
     lastSeek=t;
-    if(video.readyState<1){pending=t;return;}
     try{video.currentTime=t}catch(e){}
   }
 
@@ -221,6 +238,9 @@ if(tourVid&&tourPlay){
      element and let the stills underneath carry the page. */
   video.addEventListener('error',function(){failed=true;layer.classList.add('no-video');setMode('failed')});
   if(video.error){failed=true;layer.classList.add('no-video');setMode('failed')}
+  video.addEventListener('seeked',function(){
+    if(wanted!==null){var t=wanted;wanted=null;seek(t)}
+  });
   /* Safari drops the first seek until it has a frame to show: nudge it once. */
   video.addEventListener('loadeddata',function(){lastSeek=-1;seek(progress()*duration)});
   /* Only hide the pause button when nothing can move at all. On a phone the stills
