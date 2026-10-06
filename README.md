@@ -26,18 +26,35 @@ Static, SEO-optimised landing page for **Sarasvi**, built with [Astro](https://a
 
 The **site palette is unchanged** — coral, purple, teal, gold and the warm cream
 background are all defined in `src/styles/global.css` under `/* TOKENS */`. Two
-extra tokens exist purely for the Sarasvi lockup, so the mark keeps the colours
-of the supplied artwork:
+extra tokens serve the Sarasvi lockup:
 
 | Token | Value | Use |
 | :-- | :-- | :-- |
 | `--cream` | `#FBF6EE` | Round badge behind the emblem (header + footer) |
-| `--brand-gold` | `#CBA956` | The "i" in the wordmark |
+| `--brand-accent` | `var(--primary)` (`#FF7A45`) | The "i" in the wordmark, and the footer tagline |
 
 - **Typeface** — headings: Garamond Premier (web substitute: [EB Garamond](https://fonts.google.com/specimen/EB+Garamond)); body: [Open Sans](https://fonts.google.com/specimen/Open+Sans), both per the brand board. Self-hosted via `@fontsource-variable`, so there are no external font requests. The CSS product mockups keep the body face so they still read as software.
-- **Wordmark** — the header/footer lockup is the round emblem badge plus "Sarasv" in ink with a gold "i". The brand board's own navy/gold/green is used *only* inside the mark and the generated icons; it is not applied to the page theme.
-- **Mark** — `npm run brand` crops the emblem from `source-images/brand/sarasvi-lockup-cream.png` and repaints the artwork backdrop to the badge cream. (Keying it to transparency is not possible: the backdrop, the book pages and the halo highlights are all the same near-white, so cutting the background punches holes in the emblem.) It then writes `public/images/brand/sarasvi-mark.png` (header/footer), `favicon.svg`, `favicon.png`, `favicon-192.png`, `apple-touch-icon.png`, `logo-512.png` (schema logo) and `og-image.jpg` (the full lockup on the site's own `--bg`).
+- **Wordmark** — the header/footer lockup is the round emblem badge plus "Sarasv" in ink with a coral "i".
+- **Mark & icons** — `npm run brand` crops the emblem from `source-images/brand/sarasvi-lockup-cream.png`, repaints the artwork backdrop to the badge cream, and **re-maps the artwork's own navy / gold / sage onto the site palette** (navy → `--ink`, gold ornaments → `--primary` coral, sage lotus leaves → `--info` teal) while preserving every brush stroke's lightness — a colour change only, the line art is never redrawn. It then writes `public/images/brand/sarasvi-mark.png` (header/footer), `favicon.png`, `favicon-192.png`, `apple-touch-icon.png`, `logo-512.png` (schema logo) and `og-image.jpg` (the full lockup on the site's own `--bg`). The hand-authored `public/favicon.svg` carries the same three colours.
 - **Tagline** — "Wisdom Through Education", used in the footer, JSON-LD `slogan`, the web manifest and the social card.
+
+## Spacing system
+
+The vertical rhythm comes from a single set of tokens in `global.css`, so every
+section lines up without per-component overrides:
+
+| Token | Default | Use |
+| :-- | :-- | :-- |
+| `--header-h` | `76px` (`64px` ≤480px) | Fixed header height; also drives the hero offset, anchor scroll-margin and menu height |
+| `--pad-x` | `clamp(18px, 4vw, 28px)` | `.container` side padding |
+| `--sp-section` | `clamp(64px, 8vw, 96px)` | Vertical padding of a `.section` |
+| `--sp-block` | `clamp(40px, 5vw, 60px)` | Every stacked block inside a section (via `.section > * + *`) |
+| `--sp-stack` | `clamp(56px, 7vw, 88px)` | Between repeated blocks (`.split + .split`) |
+| `--gap-card` / `--gap-lg` / `--pad-card` | `24px` / `clamp(28px, 4.5vw, 64px)` / `clamp(24px, 3vw, 32px)` | Card grids, two-column gaps, card padding |
+
+Components carry no inline `margin-top`/`padding` overrides — add a block to a
+section and it inherits the rhythm. The footer (`.foot-grid`, `.foot-news`,
+`.foot-bar`) is built on the same tokens.
 
 ## SEO included
 
