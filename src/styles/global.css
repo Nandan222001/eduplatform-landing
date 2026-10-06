@@ -81,8 +81,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .logo{display:flex;align-items:center;gap:11px;font-family:var(--font-head);font-weight:700;font-size:1.5rem;letter-spacing:.01em}
 .logo-mark{width:42px;height:42px;border-radius:50%;background:var(--cream);border:1px solid rgba(191,80,0,.5);display:grid;place-items:center;overflow:hidden;box-shadow:0 4px 14px rgba(59,35,20,.12);flex:0 0 auto}
 .logo-mark img{width:34px;height:34px;object-fit:contain}
-.logo .logo-text{white-space:nowrap}
-.logo .logo-i{color:var(--brand-accent)}
+/* Wordmark: Cinzel capitals (inscriptional, temple-stone feel) in a chocolate to
+   burnt-orange gradient, the final I picked out in solid burnt orange, and a
+   small spaced tagline underneath. */
+.logo-type{display:flex;flex-direction:column;line-height:1}
+.logo .logo-text{white-space:nowrap;font-family:'Cinzel Variable','Cinzel',var(--font-head);font-weight:700;font-size:1em;letter-spacing:.14em;text-transform:uppercase;background:linear-gradient(100deg,#3B2314 0%,#6F4527 45%,#BF5000 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:#3B2314;padding-top:2px}
+.logo .logo-i{-webkit-text-fill-color:#BF5000;color:#BF5000;position:relative}
+.logo .logo-i::after{content:"";position:absolute;left:calc(50% - .07em);top:-3px;width:5px;height:5px;background:#D9732E;transform:translateX(-50%) rotate(45deg);border-radius:1px}
+.foot-brand .logo .logo-i::after{background:#E39A55}
+.logo-tag{margin-top:5px;font-family:var(--font-body);font-size:.4em;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:#8B5E3C;white-space:nowrap}
 .nav-links{display:flex;align-items:center;gap:30px;list-style:none}
 .nav-links a{font-weight:600;font-size:.94rem;color:var(--ink-2);transition:color .2s}
 .nav-links a:hover{color:var(--primary)}
@@ -382,6 +389,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .site-footer li a:hover,.site-footer .foot-col a:hover{color:var(--gold);transform:translateX(2px)}
 .foot-brand{max-width:380px}
 .foot-brand .logo{color:#fff;font-size:1.5rem}
+.foot-brand .logo .logo-text{background:linear-gradient(100deg,#FBF3E6 0%,#F2C9A0 55%,#E39A55 100%);-webkit-background-clip:text;background-clip:text}
+.foot-brand .logo .logo-i{-webkit-text-fill-color:#E39A55;color:#E39A55}
+.foot-brand .logo-tag{color:#D4B896}
 .foot-brand .logo-mark{box-shadow:0 6px 20px rgba(0,0,0,.35)}
 .foot-brand .tagline{font-family:var(--font-head);font-style:italic;font-size:1.2rem;color:var(--brand-accent);margin:14px 0 10px}
 .foot-blurb{font-size:.9rem;line-height:1.7;color:rgba(245,234,215,.72)}
