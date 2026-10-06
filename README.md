@@ -14,6 +14,7 @@ Static, SEO-optimised landing page for **Sarasvi**, built with [Astro](https://a
 | `npm run build` | Build to `dist/` |
 | `npm run preview` | Preview the production build |
 | `npm run images` | Re-optimise `source-images/*.jpg` → `public/images/*.webp` |
+| `npm run video` | Re-encode `source-media/*.mp4` → `public/media/*` (needs ffmpeg on `PATH`, or `FFMPEG_BIN=/path/to/ffmpeg`) |
 | `npm run brand` | Rebuild favicons, app icons, header mark and the OG card from `source-images/brand/` |
 
 ## Configuration (`.env`, see `.env.example`)
@@ -38,6 +39,30 @@ extra tokens serve the Sarasvi lockup:
 - **Mark & icons** — `npm run brand` crops the emblem from `source-images/brand/sarasvi-lockup-cream.png`, repaints the artwork backdrop to the badge cream, and **re-maps the artwork's own navy / gold / sage onto the site palette** (navy → `--ink`, gold ornaments → `--primary` coral, sage lotus leaves → `--info` teal) while preserving every brush stroke's lightness — a colour change only, the line art is never redrawn. It then writes `public/images/brand/sarasvi-mark.png` (header/footer), `favicon.png`, `favicon-192.png`, `apple-touch-icon.png`, `logo-512.png` (schema logo) and `og-image.jpg` (the full lockup on the site's own `--bg`). The hand-authored `public/favicon.svg` carries the same three colours.
 - **Tagline** — "Wisdom Through Education", used in the footer, JSON-LD `slogan`, the web manifest and the social card.
 
+## Product video
+
+The 10-second product film runs at the top of the Product Tour section
+(`src/components/VideoTour.astro`). `npm run video` compresses the master in
+`source-media/` into the three files the page actually ships:
+
+| Output | Codec | Size | Role |
+| :-- | :-- | :-- | :-- |
+| `public/media/sarasvi-tour.webm` | VP9 + Opus, 1260×720 | ~1.5 MB | served first |
+| `public/media/sarasvi-tour.mp4` | H.264 + AAC, 1260×720, `+faststart` | ~1.8 MB | fallback where VP9 is unavailable |
+| `public/media/sarasvi-tour-poster.webp` | WebP still (0.3 s frame) | ~47 KB | shown before anyone presses play |
+
+The 12.8 MB 1344×768 master stays in `source-media/` so the renditions can be
+rebuilt — it is never served to a visitor.
+
+**It does not slow the page down.** The `<video>` ships with `preload="none"`,
+no `autoplay`, a poster, and its `<source>` elements held in `data-src`;
+`src/scripts/main.js` attaches them on the first play click (the overlay pill or
+the hero's "Watch Product Tour" button) and only then turns on native controls.
+Someone who never presses play downloads the 47 KB poster and nothing else, and
+a viewer downloads only whichever of the two files their browser can play.
+Explicit `width`/`height` plus `aspect-ratio` reserve the box, so the section
+never shifts. The clip is also exposed as a `VideoObject` in the page JSON-LD.
+
 ## Spacing system
 
 The vertical rhythm comes from a single set of tokens in `global.css`, so every
@@ -58,6 +83,6 @@ section and it inherits the rhythm. The footer (`.foot-grid`, `.foot-news`,
 
 ## SEO included
 
-Unique title/description, canonical, robots meta, Open Graph + Twitter cards, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage), sitemap + robots.txt, semantic landmarks and a single `h1`, WebP images with width/height + lazy loading, preloaded hero image, self-hosted fonts, tiny JS.
+Unique title/description, canonical, robots meta, Open Graph + Twitter cards, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage), sitemap + robots.txt, semantic landmarks and a single `h1`, WebP images with width/height + lazy loading, preloaded hero image, self-hosted fonts, tiny JS, and a compressed click-to-play product video (see below).
 
 `legacy/` holds the original single-file HTML build (kept for reference).

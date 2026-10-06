@@ -1,0 +1,32 @@
+---
+// The 10-second product film, dropped at the top of the Product Tour section.
+//
+// Why it is cheap to ship:
+//  • Only the 47 KB WebP poster is fetched up front — `preload="none"`, no `autoplay`
+//    and the data-src sources mean not a single video byte moves until someone
+//    presses play (main.js attaches the sources on the first click).
+//  • One of two renditions is downloaded, whichever the browser supports best:
+//    VP9 WebM ~1.5 MB, H.264 MP4 ~1.8 MB — against the 12.8 MB master in
+//    source-media/ (npm run video regenerates all three files).
+//  • Explicit width/height + aspect-ratio, so the reserved space never shifts.
+const poster = '/media/sarasvi-tour-poster.webp';
+---
+<figure class="video-showcase reveal zoom">
+  <div class="video-shell">
+    <video id="tourVideo" poster={poster} width="1260" height="720" preload="none" muted loop playsinline
+      controlslist="nodownload" disablepictureinpicture
+      aria-label="Sarasvi product tour: a school campus, the admin console, a student learning on a tablet and the XP leaderboard">
+      <source data-src="/media/sarasvi-tour.webm" type="video/webm" />
+      <source data-src="/media/sarasvi-tour.mp4" type="video/mp4" />
+      <p>Your browser can’t play this video. <a href="/media/sarasvi-tour.mp4">Download the 10-second tour (1.8 MB MP4)</a>.</p>
+    </video>
+    <button class="tour-play" id="tourPlay" type="button">
+      <svg class="icon"><use href="#i-play"/></svg>
+      <span>Watch the 10-second tour</span>
+    </button>
+  </div>
+  <figcaption class="tour-note">
+    <svg class="icon"><use href="#i-layers"/></svg>
+    <span>10 seconds · 720p · nothing downloads until you press play</span>
+  </figcaption>
+</figure>

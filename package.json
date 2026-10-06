@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "images": "node scripts/optimize-images.mjs",
+    "video": "node scripts/optimize-video.mjs",
     "brand": "node scripts/build-brand-assets.mjs"
   },
   "dependencies": {
