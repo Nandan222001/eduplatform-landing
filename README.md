@@ -120,15 +120,24 @@ idea it is never fetched at all:
 
 | Visitor | Background |
 | :-- | :-- |
-| Desktop / laptop (≥861px, hover) | the 1.3 MB film, buffered, then scrubbed |
-| Phone / tablet / Save-Data / 2G | four stills (~60 KB) cross-fade with the scroll — no video bytes |
+| Any screen, mouse or touch | the 1.3 MB film, buffered, then scrubbed (a finger gets bigger steps through it: 0.12 s vs 0.02 s, so fewer decodes) |
+| Save-Data, or a connection measured as 2G | four stills (~60 KB) cross-fade with the scroll — no video bytes |
 | `prefers-reduced-motion` | the first still, held for the whole visit |
-| JS off | the first still, held |
+| JS off | the poster frame, held |
 
-Note the gate is `min-width:861px` + `hover:hover` + Save-Data/2G only. An earlier
-version also required `pointer:fine` and excluded `effectiveType === '3g'`, which
-silently switched the film off on touch-screen laptops and on ordinary slow Wi-Fi
-(Chrome derives `3g` from *measured throughput*, not from connection type).
+**There is deliberately no width or pointer gate.** Earlier versions required
+`min-width:861px` + `pointer:fine` and excluded `effectiveType === '3g'`, which
+silently switched the film off in a narrow window, on touch-screen laptops, and on
+ordinary slow Wi-Fi (Chrome derives `3g` from *measured throughput*, not connection
+type) — that is how the background went missing. Only two deliberate opt-outs
+remain, above.
+
+**If the film ever looks wrong on a machine, `<html data-film-mode>` says why** —
+`video`, `reduced-motion`, `save-data`, `2g` or `failed` (and its absence means the
+script never ran). The video is also painted unconditionally: it carries a real
+`src` and a `poster` in the markup, and nothing in JS or CSS ever sets it to
+`opacity: 0`, so an unfetched or unplayable film can never mean an invisible
+background — the worst case is the poster frame.
 
 A small dock in the corner shows film progress as a ring around a pause button
 (stop the background where it is, for reading) and a sound button; the story

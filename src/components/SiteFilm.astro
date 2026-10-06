@@ -9,16 +9,15 @@
 // `data-film-wash` — so the film is at its most visible behind the hero and the
 // story section, and quiet behind walls of body copy.
 //
-// Cost control, in order of how much a visitor reads:
-//  • The background file is blurred *in the encode* and muted, ~1 MB instead of
-//    3 MB: a CSS blur() on a full-viewport layer would cost more every frame than
-//    the whole video costs once.
-//  • Phones, tablets, `prefers-reduced-motion`, Save-Data and 2G/3G connections
-//    never fetch the video at all — they scrub four blurred WebP stills instead
-//    (~25 KB each), which is why nothing on the page ever jumps.
-//  • Desktop warms the video on `load`, once critical assets are done.
-// The `.film-dock` in the corner is the way out: pause the scrubbing, or play the
-// film properly (sharp, with its music) in the lightbox.
+// Only two kinds of reader miss out on the video: `prefers-reduced-motion` and
+// connections that asked not to be loaded (Save-Data, 2G/slow-2G). They get four
+// stills (~12-19 KB each) that cross-fade with the scroll, so the page still moves.
+// There is no width or pointer gate any more — hiding the film behind one is how it
+// went missing before. Everything else warms the video the moment the DOM is ready,
+// with `preload="none"` in the markup keeping it off the wire until then.
+//
+// When something looks wrong, <html data-film-mode> says which path was taken
+// (video / reduced-motion / save-data / 2g / failed) — see main.js.
 const bg = [1, 2, 3, 4].map((n) => `/media/sarasvi-blessing-bg-${n}.webp`);
 const film = '/media/sarasvi-blessing.mp4';
 ---
@@ -36,9 +35,14 @@ const film = '/media/sarasvi-blessing.mp4';
       decoding="async"
     />
   ))}
+  <!-- A real src and a poster, deliberately: with `preload="none"` no bytes move
+       until main.js warms it, but if the script never runs the layer still shows
+       the film's first frame rather than an empty box. -->
   <video
     class="site-film-video"
     data-film-video
+    src="/media/sarasvi-blessing-bg.mp4"
+    poster={bg[0]}
     width="1280"
     height="720"
     muted
@@ -46,9 +50,7 @@ const film = '/media/sarasvi-blessing.mp4';
     preload="none"
     tabindex="-1"
     aria-hidden="true"
-  >
-    <source data-src="/media/sarasvi-blessing-bg.mp4" type="video/mp4" />
-  </video>
+  ></video>
   <span class="site-film-wash"></span>
 </div>
 

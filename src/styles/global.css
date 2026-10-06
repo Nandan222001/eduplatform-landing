@@ -183,18 +183,21 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 /* ============ SITE FILM (the whole page sits on it) ============ */
 /* One fixed layer behind everything, painted with the 20-second brand film:
-   blurred and muted in the encode, ~1 MB, seeked by the scroll (main.js). Base
-   styles below are the stills path — phones, tablets, reduced motion, Save-Data —
-   where four WebP stills cross-fade with the scroll and no video byte is fetched.
-   Desktop fades the video in over them once its first frame is decoded. */
+   soft-blurred and muted in the encode, seeked by the scroll (main.js).
+   The video is *never* hidden by a class or a flag — it is always painted, with a
+   poster, so the layer shows the film whether or not the script ran, whether or
+   not the bytes have arrived yet, and whatever the browser decides to do. The
+   stills sit underneath it: they are what reduced-motion, Save-Data and 2G readers
+   see, and they cross-fade with the scroll in the video's place. */
 .site-film{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:var(--cream)}
 .site-film img,.site-film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 /* a whisper of grade so the film reads as picture rather than tint */
 .site-film img,.site-film video{filter:saturate(1.06) contrast(1.03)}
 .site-film-still{opacity:0;transition:opacity .5s ease}
 .site-film-still.is-on{opacity:1}
-.site-film-video{opacity:0;transition:opacity .7s ease}
-.site-film.is-ready .site-film-video{opacity:1}
+.site-film-video{opacity:1}
+/* if the browser cannot play the file at all, fall back to the stills underneath */
+.site-film.no-video .site-film-video{display:none}
 /* The wash that keeps every word on the site readable over a moving picture. Its
    strength is per section (`data-film-wash`), lerped by the scroll in main.js:
    thin behind the hero and the story, heavy behind walls of copy. */
@@ -241,6 +244,9 @@ html.no-film-motion .film-dock [data-film-toggle]{display:none}
    with native controls for free fullscreen, captions and scrubbing. */
 .film-lightbox{position:fixed;inset:0;z-index:3000;display:grid;place-items:center;padding:clamp(14px,4vw,40px);opacity:0;transition:opacity .26s ease}
 .film-lightbox.is-open{opacity:1}
+/* display:grid above out-specifies the UA's [hidden]{display:none}: without this,
+   the closed lightbox is an invisible full-screen layer that eats every click. */
+.film-lightbox[hidden]{display:none}
 .film-box-backdrop{position:absolute;inset:0;background:rgba(28,13,4,.84);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .film-box-inner{position:relative;z-index:1;width:min(1100px,100%);border-radius:20px;overflow:hidden;background:#1b0d05;border:1px solid rgba(255,255,255,.18);box-shadow:0 40px 90px rgba(0,0,0,.62);transform:scale(.97);transition:transform .26s ease}
 .film-lightbox.is-open .film-box-inner{transform:none}

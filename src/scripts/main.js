@@ -69,10 +69,13 @@ if(tourVid&&tourPlay){
    as you scroll back up, and holds its first and last frame at the two ends.
    This is the only place the film moves — it is never "played", so there is no
    third-party player, no autoplay policy, and no sound.
-   Phones and tablets scrub four WebP stills instead (no video byte moves), and
-   reduced motion / Save-Data / 2G-3G readers get a single still that never
-   changes. The wash in front of the film follows the section you are reading:
-   every section declares `data-film-wash`, lerped between section centres. */
+   The video is painted unconditionally (it has a poster, and the markup carries a
+   real src) because hiding it behind a flag or a media query is how it went
+   missing: an unfetched video must never mean an invisible background. Reduced
+   motion and Save-Data/2G readers keep the stills instead, which cross-fade with
+   the scroll in its place.
+   The wash in front of the film follows the section you are reading: every section
+   declares `data-film-wash`, lerped between section centres. */
 (function(){
   var layer=document.querySelector('[data-film-bg]');
   if(!layer)return;
@@ -85,7 +88,7 @@ if(tourVid&&tourPlay){
       box=document.querySelector('[data-film-box]'),
       full=box?box.querySelector('.film-box-video'):null,
       root=document.documentElement,
-      WIDE=matchMedia('(min-width:861px) and (hover:hover)'),
+      TOUCH=matchMedia('(hover:none)'),
       CALM=matchMedia('(prefers-reduced-motion:reduce)'),
       conn=navigator.connection||{},
       /* only the genuinely constrained cases: an explicit Save-Data, or a
@@ -93,28 +96,45 @@ if(tourVid&&tourPlay){
          derived from throughput, so ordinary slow Wi-Fi lands in it. */
       DATA=!!conn.saveData||/^(slow-)?2g$/.test(conn.effectiveType||''),
       RING=125.6;   /* 2*pi*20, the ring's circumference */
-  var duration=20,known=false,warmed=false,ready=false,paused=false,held=false,
+  var duration=20,known=false,warmed=false,paused=false,held=false,failed=false,
       marks=[],lastSeek=-1,lastStill=-1,lastWash=-1,lastRing=-1,pending=null,ticking=false;
 
   function clamp(v){return v<0?0:v>1?1:v}
 
-  /* Phones and tablets get the stills: pinning a video to a whole document is a
-     battery tax they never asked for, and the stills scrub just as well. */
-  function stillsOnly(){return !WIDE.matches||CALM.matches||DATA}
+  /* Who keeps the stills instead of the film: readers who asked for stillness, and
+     connections that asked not to be loaded. Nobody else — in particular not
+     phones, and not narrow windows. */
+  function stillsOnly(){return CALM.matches||DATA}
 
-  /* Nothing is fetched until the page has finished loading its own assets. */
+  /* One attribute, on <html>, recording which path the background took. If the
+     film is ever "missing" again, this says why in one look:
+       <html data-film-mode="video">          scrubbing the film (the normal case)
+       <html data-film-mode="reduced-motion"> reader asked for stillness
+       <html data-film-mode="save-data">      connection asked not to be loaded
+       <html data-film-mode="2g">             connection measured as 2G
+       <html data-film-mode="failed">         the file could not be played
+       <html data-film-mode="no-js">          never set — the script did not run */
+  function mode(){
+    return CALM.matches?'reduced-motion':(conn.saveData?'save-data':DATA?'2g':'video');
+  }
+  function setMode(m){root.setAttribute('data-film-mode',m)}
+  setMode(mode());
+
+  /* `preload="none"` in the markup keeps the film off the wire until here; once we
+     commit to scrubbing we want the whole file buffered, because every scroll tick
+     lands on a different byte range. */
   function warm(){
     if(warmed||stillsOnly())return;warmed=true;
     var s=video.querySelector('source[data-src]');
     if(s){s.src=s.getAttribute('data-src');s.removeAttribute('data-src');}
-    /* `preload="none"` in the markup keeps the film off the wire until here; once
-       we commit to scrubbing we want the whole ~1 MB buffered, because every
-       scroll tick lands on a different byte range. */
     video.preload='auto';
-    video.load();
+    try{video.load()}catch(e){}
   }
-  if(document.readyState==='complete')setTimeout(warm,120);
-  else addEventListener('load',function(){setTimeout(warm,120)});
+  if(document.readyState!=='loading')setTimeout(warm,150);
+  else addEventListener('DOMContentLoaded',function(){setTimeout(warm,150)});
+  /* belt and braces: if DOMContentLoaded has already been and gone, or never
+     fires, the film still gets its turn. */
+  setTimeout(warm,1500);
 
   /* Wash marks: every section that declares one, at its own centre. */
   function measure(){
@@ -128,7 +148,7 @@ if(tourVid&&tourPlay){
     marks.sort(function(p,q){return p.y-q.y});
   }
   function washFor(centre){
-    if(!marks.length)return .62;
+    if(!marks.length)return .30;
     if(centre<=marks[0].y)return marks[0].a;
     var last=marks[marks.length-1];
     if(centre>=last.y)return last.a;
@@ -150,7 +170,9 @@ if(tourVid&&tourPlay){
   function seek(t){
     if(!known||stillsOnly()||paused||held)return;
     t=Math.max(0,Math.min(t,duration-.05));
-    if(Math.abs(t-lastSeek)<.02)return;
+    /* A finger drag leaves far less CPU for decoding than a wheel does, so on a
+       coarse pointer we take bigger steps through the film. */
+    if(Math.abs(t-lastSeek)<(TOUCH.matches?.12:.02))return;
     lastSeek=t;
     if(video.readyState<1){pending=t;return;}
     try{video.currentTime=t}catch(e){}
@@ -188,16 +210,19 @@ if(tourVid&&tourPlay){
     if(pending!==null){lastSeek=-1;seek(pending)}
     else{lastSeek=-1;seek(progress()*duration)}
   });
-  function reveal(){if(!ready){ready=true;layer.classList.add('is-ready')}}
-  video.addEventListener('seeked',reveal);
-  video.addEventListener('loadeddata',reveal);
-  video.addEventListener('canplay',reveal);
+  /* If the file cannot be played (no codec, blocked host, offline), drop the video
+     element and let the stills underneath carry the page. */
+  video.addEventListener('error',function(){failed=true;layer.classList.add('no-video');setMode('failed')});
+  if(video.error){failed=true;layer.classList.add('no-video');setMode('failed')}
   /* Safari drops the first seek until it has a frame to show: nudge it once. */
   video.addEventListener('loadeddata',function(){lastSeek=-1;seek(progress()*duration)});
   /* Only hide the pause button when nothing can move at all. On a phone the stills
      do move with the scroll, so pause there still means something. */
   root.classList.toggle('no-film-motion',CALM.matches);
-  if(WIDE.addEventListener)WIDE.addEventListener('change',function(){warm();ask()});
+  layer.classList.toggle('no-video',failed);
+  if(TOUCH.addEventListener)TOUCH.addEventListener('change',function(){ask()});
+  var calmWatch=(CALM.addEventListener||CALM.addListener);
+  if(calmWatch)calmWatch.call(CALM,'change',function(){if(!failed)setMode(mode());ask()});
 
   /* Pause: freeze the background where it is. The dock shows what you will get. */
   if(toggle){
