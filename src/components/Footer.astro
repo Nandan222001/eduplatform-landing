@@ -1,6 +1,6 @@
 ---
 const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@sarasvi.example';
-const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const endpoint = '/api/submit'; // Supabase via src/pages/api/submit.ts
 
 const columns = [
   {
@@ -76,7 +76,7 @@ const badges = ['Private & secure', 'Always on', 'Your data stays yours', 'Made 
         </div>
       </div>
 
-      <form class="news-form lead-form" method="post" action={endpoint || undefined} data-endpoint={endpoint} data-email={email} data-form="newsletter" novalidate>
+      <form class="news-form lead-form" method="post" action={endpoint} data-endpoint={endpoint} data-email={email} data-form="newsletter" novalidate>
         <label for="nl-email" class="sr-only">Email address</label>
         <div class="news-row">
           <input id="nl-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="you@school.edu" />

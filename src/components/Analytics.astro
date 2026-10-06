@@ -1,52 +1,104 @@
 ---
-// Google Analytics 4, loaded only when PUBLIC_GA_ID is set (e.g. G-XXXXXXXXXX).
-// Visitors whose time zone is in Europe (EU, UK, Switzerland) get a consent banner
-// and GA stays off (Consent Mode "denied") until they accept. Everyone else gets
-// GA with analytics storage granted. The choice is remembered in localStorage.
+// Website analytics, two layers, one consent decision:
+//  1. First-party, cookieless events -> /api/track -> Supabase `analytics_events`
+//     (page views, CTA clicks, form submits, scroll depth, FAQ opens, video plays,
+//     outbound links). A random id in sessionStorage groups one visit; no cookies.
+//  2. Google Analytics 4, only if PUBLIC_GA_ID is set.
+// Visitors in Europe (EU/UK/CH time zones) see a banner and nothing is sent until
+// they accept. Everyone else is tracked by default. The choice is remembered.
 const gaId = import.meta.env.PUBLIC_GA_ID ?? '';
 ---
-{gaId && (
-  <>
-    <div class="consent-bar" id="consentBar" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
-      <p>We use Google Analytics cookies to understand how this site is used. See our <a href="/privacy/">Privacy Policy</a>.</p>
-      <div class="btns">
-        <button class="btn btn-sm btn-decline" type="button" data-consent="denied">Decline</button>
-        <button class="btn btn-primary btn-sm" type="button" data-consent="granted">Accept</button>
-      </div>
-    </div>
-    <script is:inline define:vars={{ gaId }}>
-      (function () {
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        window.gtag = gtag;
-        var KEY = 'sarasvi-consent', saved = null;
-        try { saved = localStorage.getItem(KEY); } catch (e) {}
-        var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
-        var needsConsent = /^(Europe|Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe))\//.test(tz);
-        var state = saved || (needsConsent ? 'denied' : 'granted');
-        gtag('consent', 'default', { analytics_storage: state, ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
-        var loaded = false;
-        function load() {
-          if (loaded) return; loaded = true;
-          var s = document.createElement('script'); s.async = true;
-          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
-          document.head.appendChild(s);
-          gtag('js', new Date()); gtag('config', gaId, { anonymize_ip: true });
-        }
-        if (state === 'granted') load();
-        var bar = document.getElementById('consentBar');
-        if (needsConsent && !saved && bar) {
-          bar.hidden = false;
-          bar.addEventListener('click', function (e) {
-            var c = e.target.closest && e.target.closest('[data-consent]'); if (!c) return;
-            var v = c.getAttribute('data-consent');
-            try { localStorage.setItem(KEY, v); } catch (err) {}
-            gtag('consent', 'update', { analytics_storage: v });
-            if (v === 'granted') load();
-            bar.hidden = true;
-          });
-        }
-      })();
-    </script>
-  </>
-)}
+<div class="consent-bar" id="consentBar" role="dialog" aria-live="polite" aria-label="Analytics consent" hidden>
+  <p>We'd like to measure how this site is used{gaId ? ', including with Google Analytics cookies' : ''}. See our <a href="/privacy/">Privacy Policy</a>.</p>
+  <div class="btns">
+    <button class="btn btn-sm btn-decline" type="button" data-consent="denied">Decline</button>
+    <button class="btn btn-primary btn-sm" type="button" data-consent="granted">Accept</button>
+  </div>
+</div>
+<script is:inline define:vars={{ gaId }}>
+  (function () {
+    var KEY = 'sarasvi-consent', saved = null, q = [];
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+    var needsConsent = /^(Europe|Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe))\//.test(tz);
+    var state = saved || (needsConsent ? 'denied' : 'granted');
+
+    // ---- first-party tracker -------------------------------------------------
+    function sid() {
+      try { var s = sessionStorage.getItem('sarasvi-sid'); if (!s) { s = Math.random().toString(36).slice(2) + Date.now().toString(36); sessionStorage.setItem('sarasvi-sid', s); } return s; }
+      catch (e) { return ''; }
+    }
+    var params = new URLSearchParams(location.search), utm = {};
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) { if (params.get(k)) utm[k] = params.get(k); });
+    try { if (Object.keys(utm).length) sessionStorage.setItem('sarasvi-utm', JSON.stringify(utm)); else utm = JSON.parse(sessionStorage.getItem('sarasvi-utm') || '{}'); } catch (e) {}
+    var ref = document.referrer && document.referrer.indexOf(location.host) === -1 ? document.referrer : '';
+    function send(event, props) {
+      var body = JSON.stringify({ event: event, path: location.pathname + (location.hash && event !== 'page_view' ? location.hash : ''), referrer: ref, sid: sid(),
+        utm_source: utm.utm_source, utm_medium: utm.utm_medium, utm_campaign: utm.utm_campaign,
+        screenW: window.innerWidth, lang: navigator.language, props: props || {} });
+      try {
+        if (navigator.sendBeacon && navigator.sendBeacon('/api/track', new Blob([body], { type: 'application/json' }))) return;
+      } catch (e) {}
+      try { fetch('/api/track', { method: 'POST', body: body, headers: { 'Content-Type': 'application/json' }, keepalive: true }); } catch (e) {}
+    }
+    window.sarasviTrack = function (event, props) { if (state === 'granted') send(event, props); else if (!saved && needsConsent) q.push([event, props]); };
+
+    // ---- Google Analytics 4 (optional) ---------------------------------------
+    var gaLoaded = false;
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    if (gaId) {
+      window.gtag = gtag;
+      gtag('consent', 'default', { analytics_storage: state, ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+    }
+    function loadGA() {
+      if (!gaId || gaLoaded) return; gaLoaded = true;
+      var s = document.createElement('script'); s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+      document.head.appendChild(s);
+      gtag('js', new Date()); gtag('config', gaId, { anonymize_ip: true });
+    }
+
+    function start() {
+      loadGA();
+      send('page_view');
+      q.splice(0).forEach(function (x) { send(x[0], x[1]); });
+    }
+    if (state === 'granted') start();
+
+    // ---- automatic events ----------------------------------------------------
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a, button');
+      if (!a || a.closest('#consentBar')) return;
+      if (a.matches('.btn, [data-track]')) {
+        window.sarasviTrack('cta_click', { label: (a.getAttribute('data-track') || a.textContent || '').trim().slice(0, 60), href: a.getAttribute('href') || '' });
+      } else if (a.tagName === 'A' && a.host && a.host !== location.host && /^https?:/.test(a.href)) {
+        window.sarasviTrack('outbound_click', { href: a.href.slice(0, 120) });
+      } else if (a.matches('.faq-q')) {
+        if (a.getAttribute('aria-expanded') !== 'true') window.sarasviTrack('faq_open', { question: a.textContent.trim().slice(0, 100) });
+      }
+    }, true);
+    var marks = [25, 50, 75, 100], hit = {};
+    addEventListener('scroll', function () {
+      var h = document.documentElement.scrollHeight - innerHeight; if (h <= 0) return;
+      var pct = (scrollY / h) * 100;
+      marks.forEach(function (m) { if (pct >= (m === 100 ? 97 : m) && !hit[m]) { hit[m] = 1; window.sarasviTrack('scroll_depth', { percent: m }); } });
+    }, { passive: true });
+    document.addEventListener('play', function (e) { if (e.target.tagName === 'VIDEO') window.sarasviTrack('video_play', { src: (e.target.currentSrc || '').split('/').pop() }); }, true);
+
+    // ---- consent banner ------------------------------------------------------
+    var bar = document.getElementById('consentBar');
+    if (needsConsent && !saved && bar) {
+      bar.hidden = false;
+      bar.addEventListener('click', function (e) {
+        var c = e.target.closest && e.target.closest('[data-consent]'); if (!c) return;
+        var v = c.getAttribute('data-consent');
+        try { localStorage.setItem(KEY, v); } catch (err) {}
+        saved = state = v;
+        if (gaId) gtag('consent', 'update', { analytics_storage: v });
+        if (v === 'granted') start(); else q.length = 0;
+        bar.hidden = true;
+      });
+    }
+  })();
+</script>

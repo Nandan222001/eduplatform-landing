@@ -11,8 +11,7 @@ Static, SEO-optimised landing page for **Sarasvi**, built with [Astro](https://a
 | :-- | :-- |
 | `npm install` | Install dependencies |
 | `npm run dev` | Dev server at `localhost:4321` |
-| `npm run build` | Build to `dist/` |
-| `npm run preview` | Preview the production build |
+| `npm run build` | Build for Vercel (`.vercel/output/`: static pages + the `/api/*` functions) |
 | `npm run images` | Re-optimise `source-images/*.jpg` → `public/images/*.webp` |
 | `npm run video` | Re-encode `source-media/*.mp4` → `public/media/*` (needs ffmpeg on `PATH`, or `FFMPEG_BIN=/path/to/ffmpeg`) |
 | `npm run brand` | Rebuild favicons, app icons, header mark and the OG card from `source-images/brand/` |
@@ -20,8 +19,28 @@ Static, SEO-optimised landing page for **Sarasvi**, built with [Astro](https://a
 ## Configuration (`.env`, see `.env.example`)
 
 - `SITE_URL` – production URL (canonical, sitemap, robots, Open Graph). **Set this before deploying.**
-- `PUBLIC_FORM_ENDPOINT` – JSON POST endpoint for the demo-request and newsletter forms (Formspree, Getform, your API…). Without it, forms fall back to a prefilled `mailto:`.
-- `PUBLIC_CONTACT_EMAIL` – mailbox shown in the footer / used for the fallback.
+- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` – the backend (below). Server-only; set them in Vercel, never in browser code.
+- `IP_HASH_SALT` – any long random string; visitor IPs are hashed with it before being stored.
+- `PUBLIC_CONTACT_EMAIL` – mailbox shown in the footer, and the fallback if the backend is unreachable.
+- `PUBLIC_GA_ID` – optional Google Analytics 4 ID. Supabase analytics work without it.
+
+## Backend: Supabase (forms + analytics)
+
+Pages are static; two small Vercel functions write to Supabase with the service-role key:
+
+| Endpoint | Writes to | What it does |
+| :-- | :-- | :-- |
+| `POST /api/submit` (`src/pages/api/submit.ts`) | `form_submissions` | All forms (demo request, newsletter, feedback). Same-origin check, honeypot + time trap, server-side validation, max 5 submissions per IP per 10 min, 2-minute duplicate guard. IPs are stored only as a salted hash. |
+| `POST /api/track` (`src/pages/api/track.ts`) | `analytics_events` | Cookieless first-party analytics from `src/components/Analytics.astro`: `page_view`, `cta_click`, `form_submit`, `scroll_depth`, `faq_open`, `video_play`, `outbound_click`, with UTM tags, referrer, device and country. Bots are ignored. Visitors in Europe are only tracked after accepting the banner. |
+
+**Setup (once):**
+1. Create a Supabase project. In **SQL Editor**, run `supabase/migrations/20261006000000_init.sql`. It creates the tables with Row Level Security on and no public access, plus report views.
+2. In Vercel → Settings → Environment Variables, add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (Project Settings → API → `service_role`) and `IP_HASH_SALT`. Redeploy.
+3. Optional: enable `pg_cron` and schedule `select public.purge_old_data()` daily (keeps the retention promised in the privacy policy).
+
+**Reading the data:** Supabase → Table Editor → `form_submissions` (leads; change `status` as you follow up) and `analytics_events`, or the ready-made views `report_daily_traffic`, `report_top_pages`, `report_traffic_sources`, `report_leads_by_day`.
+
+If the Supabase variables are missing, `/api/submit` answers 503 and the forms open the visitor's email app instead, so no enquiry is lost; `/api/track` silently does nothing.
 
 ## Brand
 
@@ -83,6 +102,6 @@ section and it inherits the rhythm. The footer (`.foot-grid`, `.foot-news`,
 
 ## SEO included
 
-Unique title/description, canonical, robots meta, Open Graph + Twitter cards, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage), sitemap + robots.txt, semantic landmarks and a single `h1`, WebP images with width/height + lazy loading, preloaded hero image, self-hosted fonts, tiny JS, and a compressed click-to-play product video (see below).
+Unique title/description, canonical, robots meta, Open Graph + Twitter cards, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage), sitemap + robots.txt, semantic landmarks and a single `h1`, WebP images with width/height + lazy loading, preloaded hero image and fonts, self-hosted Latin-only fonts, inlined CSS, skeleton placeholders while images load, tiny JS, and a compressed click-to-play product video (see below).
 
 `legacy/` holds the original single-file HTML build (kept for reference).

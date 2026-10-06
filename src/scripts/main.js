@@ -63,6 +63,15 @@ if(tourVid&&tourPlay){
   tourVid.addEventListener('ended',function(){tourShell.classList.remove('is-playing')});
 }
 
+/* skeleton loading for content images (see .sk in forms.css) */
+document.querySelectorAll('main img').forEach(function(img){
+  if(img.closest('.logo-mark'))return;
+  if(img.complete&&img.naturalWidth)return;   // already painted: nothing to stand in for
+  img.classList.add('sk');
+  function done(){img.classList.add('is-loaded')}
+  img.addEventListener('load',done,{once:true});img.addEventListener('error',done,{once:true});
+});
+
 /* reviews carousel: only present once real reviews are added */
 var tSlides=document.querySelectorAll('#tCarousel .t-slide'),ti=0,tt;
 if(tSlides.length>1&&document.getElementById('tPrev')){
@@ -107,7 +116,10 @@ document.querySelectorAll('.role-grid,.f-grid,.price-grid,.stats-grid').forEach(
 
 var mq=document.getElementById('mqTrack');mq.innerHTML+=mq.innerHTML;
 
-// ---- Forms (progressive: posts JSON to PUBLIC_FORM_ENDPOINT, falls back to mailto) ----
+// ---- Forms: JSON to /api/submit (Supabase). Field errors from the server are shown
+// inline; if the backend is not configured yet (503) we fall back to the visitor's
+// email app so no enquiry is ever lost. ----
+function utmParams(){var o={};try{o=JSON.parse(sessionStorage.getItem('sarasvi-utm')||'{}')}catch(e){}return o}
 document.querySelectorAll('form.lead-form').forEach(function(form){
   var started=Date.now();
   var status=form.querySelector('.form-status'),btn=form.querySelector('.form-submit'),lbl=btn.querySelector('.lbl'),orig=lbl.textContent;
@@ -121,36 +133,42 @@ document.querySelectorAll('form.lead-form').forEach(function(form){
     if(f.institution&&!f.institution.value.trim()){setErr('institution','Please enter your institution.');ok=false}
     if(f.message&&f.message.required&&f.message.value.trim().length<10){setErr('message','Please write a few words (at least 10 characters).');ok=false}
     if(f.consent&&!f.consent.checked){setErr('consent','Please accept to continue.');ok=false}
-    if(!ok){var bad=form.querySelector('.invalid, [data-err-for]:not(:empty)');var fi=form.querySelector('.invalid');if(fi)fi.focus();}
+    if(!ok){var fi=form.querySelector('.invalid');if(fi)fi.focus();}
     return ok;
   }
   function say(msg,ok){status.textContent=msg;status.className='form-status '+(ok?'ok':'fail')}
+  function mailto(data){
+    var body=Object.keys(data).filter(function(k){return typeof data[k]!=='object'}).map(function(k){return k+': '+data[k]}).join('\n');
+    location.href='mailto:'+form.getAttribute('data-email')+'?subject='+encodeURIComponent('Sarasvi '+data.form)+'&body='+encodeURIComponent(body);
+    say('Opening your email app to send this…',true);
+  }
   form.addEventListener('submit',function(e){
     e.preventDefault();status.textContent='';
     if(form.elements.website&&form.elements.website.value)return; // honeypot
     if(Date.now()-started<3000)return;                              // bots submit instantly
     if(!validate())return;
-    /* one submission per form per minute from this browser; the form provider
-       (e.g. Formspree) does the real server-side rate limiting and validation */
     var tkey='sarasvi-sent-'+form.getAttribute('data-form'),last=0;
     try{last=+localStorage.getItem(tkey)||0}catch(err){}
     if(Date.now()-last<60000){say('You just sent this form. Please wait a minute before sending it again.',false);return;}
-    var data={form:form.getAttribute('data-form'),page:location.href,submittedAt:new Date().toISOString()};
+    var data={form:form.getAttribute('data-form'),page:location.href,referrer:document.referrer||'',utm:utmParams(),elapsedMs:Date.now()-started};
     new FormData(form).forEach(function(v,k){if(k!=='website')data[k]=v});
-    var endpoint=form.getAttribute('data-endpoint');
-    if(!endpoint){
-      var body=Object.keys(data).map(function(k){return k+': '+data[k]}).join('\n');
-      location.href='mailto:'+form.getAttribute('data-email')+'?subject='+encodeURIComponent('Sarasvi '+data.form)+'&body='+encodeURIComponent(body);
-      say('Opening your email app to send the request…',true);return;
-    }
-    btn.classList.add('loading');lbl.textContent='Sending…';
-    fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)})
-      .then(function(r){if(!r.ok)throw new Error(r.status);try{localStorage.setItem(tkey,String(Date.now()))}catch(err){}form.reset();
+    btn.classList.add('loading');btn.disabled=true;lbl.textContent='Sending…';
+    fetch(form.getAttribute('data-endpoint')||'/api/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)})
+      .then(function(r){return r.json().catch(function(){return {}}).then(function(j){return {status:r.status,body:j}})})
+      .then(function(res){
+        if(res.status===503){mailto(data);return;}
+        if(res.status===422&&res.body.fields){Object.keys(res.body.fields).forEach(function(k){setErr(k,res.body.fields[k])});say('Please check the highlighted fields.',false);return;}
+        if(res.status===429){say('Too many attempts from your network. Please try again in a few minutes.',false);return;}
+        if(res.status<200||res.status>=300)throw new Error(res.status);
+        try{localStorage.setItem(tkey,String(Date.now()))}catch(err){}
+        form.reset();started=Date.now();
+        if(window.sarasviTrack)window.sarasviTrack('form_submit',{form:data.form});
         if(data.form==='newsletter'){say('Thanks for subscribing!',true);if(window.gtag)window.gtag('event','sign_up',{method:'newsletter'});return;}
         if(data.form==='feedback'){say('Thank you! We have received your feedback.',true);if(window.gtag)window.gtag('event','feedback_sent');return;}
-        location.href='/thank-you/?form='+encodeURIComponent(data.form);})
-      .catch(function(){say('Something went wrong. Please try again or email us directly.',false)})
-      .finally(function(){btn.classList.remove('loading');lbl.textContent=orig});
+        location.href='/thank-you/?form='+encodeURIComponent(data.form);
+      })
+      .catch(function(){say('Something went wrong. Please try again, or email us at '+form.getAttribute('data-email')+'.',false)})
+      .finally(function(){btn.classList.remove('loading');btn.disabled=false;lbl.textContent=orig});
   });
 });
 })();

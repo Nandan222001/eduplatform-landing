@@ -1,7 +1,5 @@
 ---
-import '@fontsource-variable/eb-garamond';
-import '@fontsource-variable/open-sans';
-import '@fontsource-variable/cinzel';
+import '../styles/fonts.css';
 import '../styles/global.css';
 import '../styles/forms.css';
 import Analytics from '../components/Analytics.astro';
@@ -30,6 +28,10 @@ const ogImage = site + '/og-image.jpg';
     <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
     <meta name="theme-color" content="#BF5000" />
     <meta name="author" content="Sarasvi Technologies" />
+
+    <!-- the two faces every page paints first -->
+    <link rel="preload" href="/fonts/open-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/eb-garamond-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64" />

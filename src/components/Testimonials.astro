@@ -4,7 +4,7 @@
 // never write, invent or reword a review, name or rating.
 //   { quote: '...', name: 'Meera D.', role: 'Principal, Sunrise School · Pune' }
 const reviews: { quote: string; name: string; role: string }[] = [];
-const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const endpoint = '/api/submit'; // Supabase via src/pages/api/submit.ts
 const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@sarasvi.in';
 const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 ---
@@ -43,7 +43,7 @@ const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).join('').slice(0
     </div>
     <div class="form-card">
       <h3>Share your feedback</h3>
-      <form class="lead-form" method="post" action={endpoint || undefined} data-endpoint={endpoint} data-email={email} data-form="feedback" novalidate>
+      <form class="lead-form" method="post" action={endpoint} data-endpoint={endpoint} data-email={email} data-form="feedback" novalidate>
         <div class="f-row">
           <div class="field">
             <label for="fb-name">Your name <span aria-hidden="true">*</span></label>

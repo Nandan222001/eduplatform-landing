@@ -1,11 +1,11 @@
 ---
-const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const endpoint = '/api/submit'; // Supabase via src/pages/api/submit.ts
 const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@sarasvi.example';
 ---
 <div class="form-card" id="book-demo">
   <h3>Book a free demo</h3>
   <p class="form-sub">Tell us about your institution &mdash; we reply within one working day. <b>2 months free</b> on annual plans (launch offer).</p>
-  <form class="lead-form" method="post" action={endpoint || undefined} data-endpoint={endpoint} data-email={email} data-form="demo-request" novalidate>
+  <form class="lead-form" method="post" action={endpoint} data-endpoint={endpoint} data-email={email} data-form="demo-request" novalidate>
     <div class="f-row">
       <div class="field">
         <label for="lf-name">Full name <span aria-hidden="true">*</span></label>

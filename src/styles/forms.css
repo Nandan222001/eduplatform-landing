@@ -97,3 +97,11 @@ body.menu-open{overflow:hidden}
 .fb-copy p{color:var(--ink-2);margin-top:14px}
 .fb-wrap .consent+.consent{margin-top:4px}
 @media (max-width:860px){.fb-wrap{grid-template-columns:1fr}}
+/* ---- Skeleton loading: images shimmer in brand cream until their pixels arrive.
+   The shimmer is the image's own background, so it takes the image's exact box
+   (every <img> has width/height) and the photo simply paints over it. ---- */
+@keyframes sk-shimmer{from{background-position:150% 0}to{background-position:-50% 0}}
+.js img.sk:not(.is-loaded){background:linear-gradient(100deg,#EDDFCC 20%,#F7EEE2 40%,#EDDFCC 60%) #EDDFCC;background-size:200% 100%;animation:sk-shimmer 1.3s linear infinite}
+.js img.sk.is-loaded{animation:sk-fade .35s ease-out}
+@keyframes sk-fade{from{opacity:.4}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.js img.sk:not(.is-loaded){animation:none}.js img.sk.is-loaded{animation:none}}
