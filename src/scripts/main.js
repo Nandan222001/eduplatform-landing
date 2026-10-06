@@ -1,8 +1,14 @@
 (function(){
 "use strict";
+/* Everything below is written to survive a page that only has some of these
+   elements: the script now runs on every page, including the legal pages that
+   have no header, no carousel and no stats bar. An unguarded querySelector here
+   used to throw and take the rest of the file - the film included - down with it. */
 var header=document.getElementById('siteHeader');
-addEventListener('scroll',function(){header.classList.toggle('scrolled',scrollY>10)},{passive:true});
+if(header)addEventListener('scroll',function(){header.classList.toggle('scrolled',scrollY>10)},{passive:true});
 var ham=document.getElementById('hamburger'),mm=document.getElementById('mobileMenu'),bd=document.getElementById('menuBackdrop');
+if(ham&&mm&&bd)menu();
+function menu(){
 function setMenu(open){
   mm.hidden=false;mm.classList.toggle('open',open);bd.hidden=false;bd.classList.toggle('show',open);
   ham.setAttribute('aria-expanded',String(open));ham.setAttribute('aria-label',open?'Close menu':'Open menu');
@@ -14,6 +20,7 @@ bd.addEventListener('click',function(){setMenu(false)});
 mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){setMenu(false)})});
 addEventListener('keydown',function(e){if(e.key==='Escape'&&mm.classList.contains('open')){setMenu(false);ham.focus()}});
 matchMedia('(min-width:1021px)').addEventListener('change',function(e){if(e.matches)setMenu(false)});
+}
 
 document.querySelectorAll('[data-carousel]').forEach(function(root){
   var track=root.querySelector('.carousel-track'),slides=root.querySelectorAll('.slide'),
@@ -277,11 +284,15 @@ if(tourVid&&tourPlay){
   ask();
 })();
 
-var tSlides=document.querySelectorAll('#tCarousel .t-slide'),ti=0,tt;
+var tSlides=document.querySelectorAll('#tCarousel .t-slide'),ti=0,tt,
+    tPrev=document.getElementById('tPrev'),tNext=document.getElementById('tNext');
 function tShow(x){ti=(x+tSlides.length)%tSlides.length;tSlides.forEach(function(s,k){s.classList.toggle('active',k===ti)});}
-document.getElementById('tPrev').addEventListener('click',function(){tShow(ti-1);tReset();});
-document.getElementById('tNext').addEventListener('click',function(){tShow(ti+1);tReset();});
-function tReset(){clearInterval(tt);tt=setInterval(function(){tShow(ti+1)},6500);}tReset();
+function tReset(){clearInterval(tt);tt=setInterval(function(){tShow(ti+1)},6500);}
+if(tSlides.length&&tPrev&&tNext){
+  tPrev.addEventListener('click',function(){tShow(ti-1);tReset();});
+  tNext.addEventListener('click',function(){tShow(ti+1);tReset();});
+  tReset();
+}
 
 var counted=false;
 function runCounters(){
@@ -308,18 +319,20 @@ document.querySelectorAll('.faq-item').forEach(function(item){
 
 
 var sp=document.getElementById('scrollProgress'),ticking=false;
-function onScroll(){var h=document.documentElement.scrollHeight-innerHeight;sp.style.transform='scaleX('+(h>0?scrollY/h:0)+')';
+function onScroll(){var h=document.documentElement.scrollHeight-innerHeight;if(sp)sp.style.transform='scaleX('+(h>0?scrollY/h:0)+')';
   var fr=document.querySelector('.hero-visual');if(fr&&scrollY<900)fr.style.transform='translateY('+(scrollY*.06)+'px)';ticking=false;}
 addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(onScroll)}},{passive:true});onScroll();
 document.querySelectorAll('.role-grid,.f-grid,.price-grid,.stats-grid').forEach(function(g){
   Array.prototype.forEach.call(g.children,function(c,k){c.style.transitionDelay=(k*90)+'ms';if(c.classList.contains('reveal'))c.classList.add('zoom');});
 });
 
-var mq=document.getElementById('mqTrack');mq.innerHTML+=mq.innerHTML;
+var mq=document.getElementById('mqTrack');if(mq)mq.innerHTML+=mq.innerHTML;
 
 // ---- Forms (progressive: posts JSON to PUBLIC_FORM_ENDPOINT, falls back to mailto) ----
 document.querySelectorAll('form.lead-form').forEach(function(form){
-  var status=form.querySelector('.form-status'),btn=form.querySelector('.form-submit'),lbl=btn.querySelector('.lbl'),orig=lbl.textContent;
+  var status=form.querySelector('.form-status'),btn=form.querySelector('.form-submit'),
+      lbl=btn&&btn.querySelector('.lbl'),orig=lbl?lbl.textContent:'';
+  if(!lbl)return;
   function setErr(name,msg){var el=form.querySelector('[data-err-for="'+name+'"]'),inp=form.elements[name];if(el)el.textContent=msg||'';if(inp&&inp.classList)inp.classList.toggle('invalid',!!msg);if(inp&&inp.setAttribute)inp.setAttribute('aria-invalid',msg?'true':'false');}
   function validate(){
     var ok=true,f=form.elements;

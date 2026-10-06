@@ -60,5 +60,11 @@ const ogImage = site + '/og-image.jpg';
          `main`/`footer` are lifted above it in global.css. -->
     <SiteFilm />
     <slot />
+    <!-- Site script on every page, not just the home page: the film is the
+         background of the whole site, so the legal pages need the scrub too.
+         Every block in it is guarded against the elements it does not have. -->
+    <script>
+      import '../scripts/main.js';
+    </script>
   </body>
 </html>
