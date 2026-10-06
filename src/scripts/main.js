@@ -63,6 +63,163 @@ if(tourVid&&tourPlay){
   tourVid.addEventListener('ended',function(){tourShell.classList.remove('is-playing')});
 }
 
+/* ---- Brand film: scrubbed by scroll -----------------------------------------
+   The 20-second film is never played here, it is *seeked*: scroll position inside
+   the runway maps to currentTime, so it runs forward as you scroll down and
+   backwards as you scroll up, from the first frame to the last and no further.
+   On a real pointer the frame is pinned by CSS (position:sticky) inside a 260vh
+   runway, which gives the film about 1.6 screen-heights of travel. On touch the
+   runway is a normal block and the frame cross-fades its four stills instead of
+   seeking — no video byte moves until a finger asks for sound.
+   The media query in PINNED must stay identical to the one in global.css. */
+(function(){
+  var root=document.querySelector('[data-film-scrub]');
+  if(!root)return;
+  var frame=root.querySelector('.film-frame'),
+      video=root.querySelector('[data-film-video]'),
+      stills=Array.prototype.slice.call(root.querySelectorAll('[data-film-still]')),
+      bar=root.querySelector('[data-film-bar]'),
+      clock=root.querySelector('[data-film-clock]'),
+      hint=root.querySelector('[data-film-hint]'),
+      soundBtn=root.querySelector('[data-film-sound]'),
+      box=document.querySelector('[data-film-box]'),
+      full=box?box.querySelector('.film-box-video'):null,
+      PINNED=matchMedia('(min-width:861px) and (hover:hover) and (pointer:fine)'),
+      CALM=matchMedia('(prefers-reduced-motion:reduce)');
+  var duration=20,known=false,warmed=false,ready=false,
+      lastSeek=-1,lastClock=-1,lastStill=0,pending=null,ticking=false;
+
+  function clamp(v){return v<0?0:v>1?1:v}
+  function fmt(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2)}
+
+  /* Nothing is fetched until the section is within two viewports of the
+     read-line, and the video is only ever fetched where it can be scrubbed: a
+     visitor who never scrolls this far, anyone reading on a phone, and anyone who
+     asked for reduced motion all download stills and no film at all. */
+  function warm(){
+    if(warmed||!PINNED.matches||CALM.matches)return;warmed=true;
+    var s=video.querySelector('source[data-src]');
+    if(s){s.src=s.getAttribute('data-src');s.removeAttribute('data-src');}
+    /* `preload="none"` in the markup keeps the film off the wire until here; once
+       we commit to scrubbing, we want the whole 3.2 MB buffered, because every
+       scroll tick lands on a different byte range. */
+    video.preload='auto';
+    video.load();
+  }
+  if('IntersectionObserver' in window){
+    var warms=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){warm();warms.disconnect()}});
+    },{rootMargin:'200% 0px'});
+    warms.observe(root);
+  }
+
+  function sticking(){return PINNED.matches&&document.documentElement.className.indexOf('no-pin')<0}
+
+  /* Scroll -> 0..1. Pinned: the runway's own travel. In flow: the frame crossing
+     the viewport, bottom-edge to top-edge. */
+  function progress(){
+    var r=root.getBoundingClientRect(),vh=innerHeight;
+    if(sticking()){
+      var travel=root.offsetHeight-vh;
+      return travel>0?clamp(-r.top/travel):0;
+    }
+    var span=vh+r.height;
+    return span>0?clamp((vh-r.top)/span):0;
+  }
+
+  function seek(t){
+    /* Stills only on touch; nothing moves at all under reduced motion. */
+    if(!known||!PINNED.matches||CALM.matches)return;
+    t=Math.max(0,Math.min(t,duration-.05));
+    if(Math.abs(t-lastSeek)<.02)return;
+    lastSeek=t;
+    if(video.readyState<1){pending=t;return;}
+    try{video.currentTime=t}catch(e){}
+  }
+
+  var started=false;
+  /* Safety net: if the browser refuses to pin the stage (a clipping ancestor, an
+     engine without sticky), collapse the runway instead of leaving a screen of
+     empty space. The film still scrubs — it just does it as the frame scrolls
+     past, the way it does on a phone. Judged once, only from inside the runway. */
+  var pinChecked=false;
+  function checkPin(){
+    if(pinChecked||!PINNED.matches)return;
+    var r=root.getBoundingClientRect(),vh=innerHeight;
+    if(r.top>-vh*.9||r.bottom<vh*.6)return;   /* not deep enough in, or already past */
+    pinChecked=true;
+    if(frame.getBoundingClientRect().bottom<vh*.4)document.documentElement.classList.add('no-pin');
+  }
+
+  function paint(){
+    ticking=false;
+    checkPin();
+    var p=CALM.matches?0:progress();
+    if(!CALM.matches)seek(p*duration);
+    bar.style.transform='scaleX('+p+')';
+    var startedNow=p>.015;
+    if(startedNow!==started){started=startedNow;frame.classList.toggle('is-started',started)}
+    var i=Math.min(stills.length-1,Math.floor(p*stills.length));
+    if(i!==lastStill){lastStill=i;stills.forEach(function(el,k){el.classList.toggle('is-on',k===i)})}
+    var secs=Math.round(p*duration);
+    if(secs!==lastClock){lastClock=secs;clock.textContent=fmt(secs)}
+  }
+  function ask(){if(!ticking){ticking=true;requestAnimationFrame(paint)}}
+  /* crossing the pin breakpoint (rotate a tablet, resize a window) can make the
+     video worth fetching, or stop it being worth fetching: re-ask each time. */
+  if(PINNED.addEventListener)PINNED.addEventListener('change',function(){warm();ask()});
+  addEventListener('scroll',ask,{passive:true});
+  addEventListener('resize',ask);
+  ask();
+
+  video.addEventListener('loadedmetadata',function(){
+    if(video.duration&&isFinite(video.duration))duration=video.duration;
+    known=true;
+    if(pending!==null){lastSeek=-1;seek(pending)}
+    else{lastSeek=-1;seek(progress()*duration)}
+  });
+  video.addEventListener('seeked',function(){
+    if(!ready){ready=true;frame.classList.add('is-ready')}
+  });
+  /* Safari drops the first seek until it has a frame to show: nudge it once. */
+  video.addEventListener('loadeddata',function(){lastSeek=-1;seek(progress()*duration)});
+
+  if(CALM.matches&&hint)hint.style.display='none';
+
+  /* "Watch with sound" — the film plays once, properly, in the lightbox, with
+     native controls (which also means free fullscreen, captions and scrubbing). */
+  function openBox(){
+    if(!box||!full)return;
+    box.hidden=false;
+    requestAnimationFrame(function(){box.classList.add('is-open')});
+    document.body.classList.add('film-open');
+    var close=box.querySelector('.film-box-close');
+    if(close)close.focus();
+    var pr=full.play();if(pr&&pr.catch)pr.catch(function(){});
+  }
+  function closeBox(){
+    if(!box||box.hidden)return;
+    box.classList.remove('is-open');
+    if(full){full.pause();try{full.currentTime=0}catch(e){}}
+    document.body.classList.remove('film-open');
+    setTimeout(function(){if(!box.classList.contains('is-open'))box.hidden=true},260);
+    if(soundBtn)soundBtn.focus();
+  }
+  if(soundBtn)soundBtn.addEventListener('click',openBox);
+  if(box){
+    box.querySelectorAll('[data-film-close]').forEach(function(el){el.addEventListener('click',closeBox)});
+    addEventListener('keydown',function(e){
+      if(e.key==='Escape'){closeBox();return}
+      if(e.key!=='Tab'||box.hidden)return;
+      var f=box.querySelectorAll('button,[href],video,[tabindex]:not([tabindex="-1"])');
+      if(!f.length)return;
+      var first=f[0],last=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+    });
+  }
+})();
+
 var tSlides=document.querySelectorAll('#tCarousel .t-slide'),ti=0,tt;
 function tShow(x){ti=(x+tSlides.length)%tSlides.length;tSlides.forEach(function(s,k){s.classList.toggle('active',k===ti)});}
 document.getElementById('tPrev').addEventListener('click',function(){tShow(ti-1);tReset();});

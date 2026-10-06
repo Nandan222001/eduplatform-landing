@@ -177,6 +177,79 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .tour-note{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:16px;font-size:.86rem;color:var(--ink-2)}
 .tour-note .icon{width:16px;height:16px;color:var(--primary-dark)}
 
+/* ============ BRAND FILM (scroll-scrubbed) ============ */
+/* The 20s film is seeked by the scroll wheel. Base styles below are the
+   un-pinned (touch / small screen) layout: the frame simply scrolls past and the
+   four WebP stills cross-fade with the scroll. The pinned cinema layout lives in
+   the (hover:hover)+(pointer:fine) block further down, and is mirrored by
+   main.js — both must keep the same media query. */
+.film-section{
+  /* warm gold above, lavender below: the film's own palette, on the site bg */
+  background:
+    radial-gradient(120% 58% at 50% 22%,rgba(255,222,178,.5),rgba(255,244,240,0) 62%),
+    radial-gradient(110% 55% at 50% 82%,rgba(210,204,255,.42),rgba(255,244,240,0) 64%),
+    var(--bg);
+}
+.film-scrub{position:relative}
+.film-pin{display:flex;flex-direction:column;align-items:center;gap:14px}
+.film-frame{position:relative;margin:0 auto;width:100%;max-width:1000px;aspect-ratio:16/9;border-radius:22px;overflow:hidden;background:var(--cream);border:1px solid var(--line);box-shadow:var(--shadow-lg)}
+.film-frame img,.film-frame video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+/* stills sit under the video and cover the gap until the first frame decodes */
+.film-still{opacity:0;transition:opacity .45s ease}
+.film-still.is-on{opacity:1}
+.film-video{opacity:0;transition:opacity .5s ease}
+.film-frame.is-ready .film-video{opacity:1}
+.film-hint{position:absolute;left:50%;bottom:24px;z-index:3;display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;background:rgba(43,20,6,.62);color:#fff;font-weight:700;font-size:.88rem;transform:translateX(-50%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 10px 26px rgba(43,20,6,.28);transition:opacity .35s,visibility .35s;animation:filmHint 2.6s ease-in-out infinite}
+.film-hint .icon{width:17px;height:17px}
+.film-frame.is-started .film-hint{opacity:0;visibility:hidden}
+:root.no-js .film-hint{display:none}
+.film-bar{position:absolute;left:0;right:0;bottom:0;z-index:3;display:block;height:5px;background:rgba(43,20,6,.22)}
+.film-bar i{display:block;width:100%;height:100%;transform:scaleX(0);transform-origin:0 50%;background:linear-gradient(90deg,var(--primary),var(--gold) 55%,var(--secondary))}
+.film-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 18px;font-size:.88rem;color:var(--ink-2);font-weight:600}
+.film-clock b{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:800}
+.film-tag{padding-left:18px;border-left:1px solid var(--line)}
+.film-sound{display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border-radius:999px;background:rgba(255,255,255,.9);border:1px solid var(--line);color:var(--ink);font-weight:700;font-size:.88rem;box-shadow:var(--shadow-sm);transition:transform .2s,box-shadow .2s,background .2s}
+.film-sound .icon{width:18px;height:18px;color:var(--primary-dark)}
+.film-sound:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);background:#fff}
+@keyframes filmHint{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,5px)}}
+
+/* Lightbox: the only place the film plays with sound (native controls = free
+   fullscreen, scrubbing and captions for anyone who wants them). */
+.film-lightbox{position:fixed;inset:0;z-index:3000;display:grid;place-items:center;padding:clamp(14px,4vw,40px);opacity:0;transition:opacity .26s ease}
+.film-lightbox.is-open{opacity:1}
+.film-box-backdrop{position:absolute;inset:0;background:rgba(28,13,4,.84);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.film-box-inner{position:relative;z-index:1;width:min(1100px,100%);border-radius:20px;overflow:hidden;background:#1b0d05;border:1px solid rgba(255,255,255,.18);box-shadow:0 40px 90px rgba(0,0,0,.62);transform:scale(.97);transition:transform .26s ease}
+.film-lightbox.is-open .film-box-inner{transform:none}
+.film-box-video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000}
+.film-box-close{position:absolute;top:12px;right:12px;z-index:2;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.94);color:var(--ink);box-shadow:var(--shadow-md);transition:transform .2s,background .2s}
+.film-box-close .icon{width:19px;height:19px}
+.film-box-close:hover{transform:scale(1.06);background:#fff}
+.film-box-note{margin:0;padding:13px 18px;text-align:center;font-size:.84rem;font-weight:600;color:rgba(255,255,255,.72)}
+body.film-open{overflow:hidden}
+
+/* Pinned stage — the cinema layout. Kept in one query so main.js can mirror it. */
+@media (min-width:861px) and (hover:hover) and (pointer:fine){
+  .film-scrub{height:260vh;height:260svh}
+  .film-pin{
+    position:sticky;top:0;height:100vh;height:100svh;justify-content:center;gap:16px;
+    padding:calc(var(--header-h) + 10px) var(--pad-x) 22px;
+    /* 400-byte blurred still of the film, stretched: the letterbox picks up the
+       film's own palette for free */
+    background-image:url(/media/sarasvi-blessing-bg.webp);background-size:cover;background-position:center;
+  }
+  .film-pin::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(115% 78% at 50% 46%,rgba(255,247,241,.18),rgba(255,244,240,.9))}
+  .film-frame,.film-meta{position:relative;z-index:1}
+  .film-frame{width:min(1000px,92vw);max-height:calc(100svh - var(--header-h) - 118px)}
+}
+
+/* Fall back to the un-pinned layout above — instead of leaving a long empty
+   runway — when the stage could not be pinned (main.js checks once) or when there
+   is no script to scrub it with. */
+html.no-pin .film-scrub,html.no-js .film-scrub{height:auto}
+html.no-pin .film-pin,html.no-js .film-pin{position:static;height:auto;justify-content:flex-start;padding:0;background-image:none}
+html.no-pin .film-pin::before,html.no-js .film-pin::before{display:none}
+html.no-pin .film-frame,html.no-js .film-frame{width:min(1000px,100%);max-height:none}
+
 /* ============ UI MOCKUPS (product screenshots built in CSS) ============ */
 /* the fake product UI uses the body face so it reads as software, not marketing */
 .browser,.phone{--font-head:var(--font-body)}
@@ -455,6 +528,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 }
 @media (max-width:640px){
   .role-grid,.f-grid,.price-grid{grid-template-columns:1fr}
+  .film-frame{aspect-ratio:1;border-radius:18px}
+  .film-hint{bottom:18px;font-size:.82rem;padding:9px 16px}
+  .film-tag{padding-left:0;border-left:none;flex-basis:100%;order:2;text-align:center}
   .slide .shot{height:420px}
   .slide-cap p{display:none}
   .browser{inset:14px 12px}
