@@ -27,8 +27,12 @@ const securityHeaders = {
   },
 };
 
-// Set SITE to the production URL (used for canonical URLs, sitemap and Open Graph tags).
-const site = process.env.SITE_URL || 'https://www.sarasvi.in';
+// The production URL, used for canonical links, sitemap, robots.txt and the share
+// (Open Graph) image. SITE_URL wins; otherwise Vercel's own production domain
+// (VERCEL_PROJECT_PRODUCTION_URL, set automatically at build time), so share
+// previews never point at a domain that isn't live.
+const vercelDomain = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const site = process.env.SITE_URL || (vercelDomain ? `https://${vercelDomain}` : 'https://sarasvi.nmtsolution.com');
 
 export default defineConfig({
   site,
