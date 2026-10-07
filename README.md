@@ -38,6 +38,8 @@ Pages are static; two small Vercel functions write to Supabase with the service-
 2. In Vercel → Settings → Environment Variables, add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (Project Settings → API → `service_role`) and `IP_HASH_SALT`. Redeploy.
 3. Optional: enable `pg_cron` and schedule `select public.purge_old_data()` daily (keeps the retention promised in the privacy policy).
 
+**Email alerts:** set `RESEND_API_KEY` (free at resend.com, sign up with the inbox that should receive alerts) and every submission is also emailed to `NOTIFY_EMAIL` (default `nmtsolutiontech@gmail.com`, comma-separate several), with Reply-To set to the visitor (`src/lib/notify.ts`). Until a sending domain is verified in Resend, alerts can only go to the Resend account's own email address.
+
 **Reading the data:** Supabase → Table Editor → `form_submissions` (leads; change `status` as you follow up) and `analytics_events`, or the ready-made views `report_daily_traffic`, `report_top_pages`, `report_traffic_sources`, `report_leads_by_day`.
 
 If the Supabase variables are missing, `/api/submit` answers 503 and the forms open the visitor's email app instead, so no enquiry is lost; `/api/track` silently does nothing.

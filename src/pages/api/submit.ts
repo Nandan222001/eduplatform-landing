@@ -3,6 +3,7 @@
 // limit, duplicate guard, then one row into Supabase `form_submissions`.
 import type { APIRoute } from 'astro';
 import { clientInfo, configured, count, insert, ipHash, json, sameOrigin, str } from '../../lib/server';
+import { notifyTeam } from '../../lib/notify';
 
 export const prerender = false;
 
@@ -60,7 +61,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       return json(200, { ok: true, duplicate: true });
 
     const utm = (typeof d.utm === 'object' && d.utm) ? d.utm as Record<string, unknown> : {};
-    await insert('form_submissions', {
+    const row = {
       form_type: form,
       name, email, phone, institution,
       role: str(d.role, 60),
@@ -73,7 +74,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       utm: Object.fromEntries(['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']
         .map((k) => [k, str(utm[k], 100)]).filter(([, v]) => v)),
       country, user_agent: userAgent, ip_hash: hash,
-    });
+    };
+    await insert('form_submissions', row);
+    // Awaited (not fire-and-forget): a serverless function may be frozen as soon
+    // as it responds. notifyTeam never throws and times out after 6 s.
+    await notifyTeam(form, row);
     return json(200, { ok: true });
   } catch (e) {
     console.error('[submit]', e);
