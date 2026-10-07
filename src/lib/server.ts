@@ -4,16 +4,21 @@
 
 const env = (k: string): string => (process.env[k] ?? (import.meta.env as Record<string, string | undefined>)[k] ?? '').trim();
 
+// Names set by the Supabase <-> Vercel integration are accepted as fallbacks, and
+// both key formats work: the legacy service_role JWT and the newer sb_secret_ key.
+const first = (...keys: string[]) => keys.map(env).find(Boolean) ?? '';
 export const config = () => ({
-  url: env('SUPABASE_URL').replace(/\/$/, ''),
-  key: env('SUPABASE_SERVICE_ROLE_KEY'),
-  salt: env('IP_HASH_SALT') || 'sarasvi',
+  url: first('SUPABASE_URL', 'PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL').replace(/\/$/, ''),
+  key: first('SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SECRET_KEY'),
+  salt: env('IP_HASH_SALT') || env('SUPABASE_JWT_SECRET') || 'sarasvi',
 });
 export const configured = () => { const c = config(); return !!(c.url && c.key); };
 
 function headers(extra: Record<string, string> = {}) {
   const { key } = config();
-  return { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', ...extra };
+  // sb_secret_ keys go in `apikey` only; a legacy JWT key is also sent as the bearer token.
+  const auth: Record<string, string> = key.startsWith('eyJ') ? { Authorization: `Bearer ${key}` } : {};
+  return { apikey: key, ...auth, 'Content-Type': 'application/json', ...extra };
 }
 
 /** Insert one row. Throws on a non-2xx answer so the caller can return 502. */
