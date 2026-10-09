@@ -38,6 +38,13 @@ Pages are static; two small Vercel functions write to Supabase with the service-
 2. In Vercel → Settings → Environment Variables, add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (Project Settings → API → `service_role`) and `IP_HASH_SALT`. Redeploy.
 3. Optional: enable `pg_cron` and schedule `select public.purge_old_data()` daily (keeps the retention promised in the privacy policy).
 
+**Admin panel (`/admin`):** password-protected dashboard for leads and website statistics.
+1. In Supabase → SQL Editor, also run `supabase/migrations/20261010000000_admin.sql` (adds the `approved` column and the `admin_stats` function).
+2. In Vercel set `ADMIN_PASSWORD` (long and unique) and optionally `ADMIN_EMAIL` (default: the first `NOTIFY_EMAIL`), then redeploy.
+3. Open `/admin` and sign in. Sessions last 12 hours (signed HttpOnly cookie); five wrong passwords lock that IP out for 15 minutes.
+
+It shows visitors, page views, demo requests, conversion and a visitor journey (7/30/90 days), top pages, sources, countries, devices, clicked buttons and FAQ opens; a Leads table (search, filters, status, private notes, reply by email/WhatsApp, delete, CSV export); a Feedback tab where ticking **Show on website** publishes a customer's feedback (only if they allowed it) in the website's testimonials; a live activity feed; and system status. All data goes through `src/pages/api/admin/[...path].ts` using the service-role key; the browser never talks to Supabase directly. `/admin` is `noindex`, disallowed in robots.txt and left out of the sitemap.
+
 **Email alerts:** set `RESEND_API_KEY` (free at resend.com, sign up with the inbox that should receive alerts) and every submission is also emailed to `NOTIFY_EMAIL` (default `nmtsolutiontech@gmail.com`, comma-separate several), with Reply-To set to the visitor (`src/lib/notify.ts`). Until a sending domain is verified in Resend, alerts can only go to the Resend account's own email address.
 
 **Reading the data:** Supabase → Table Editor → `form_submissions` (leads; change `status` as you follow up) and `analytics_events`, or the ready-made views `report_daily_traffic`, `report_top_pages`, `report_traffic_sources`, `report_leads_by_day`.

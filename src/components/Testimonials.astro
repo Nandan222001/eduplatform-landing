@@ -1,38 +1,20 @@
 ---
-// Real customer reviews only. Add one here ONLY when the customer has given written
-// permission (the feedback form below asks for it). Use their words exactly as sent:
-// never write, invent or reword a review, name or rating.
-//   { quote: '...', name: 'Meera D.', role: 'Principal, Sunrise School · Pune' }
-const reviews: { quote: string; name: string; role: string }[] = [];
+// Reviews are never typed in here. They come from /api/reviews: real feedback from
+// the form where the customer ticked "may publish" AND the admin approved it in the
+// admin panel (Feedback -> "Show on website"), shown word for word.
 const endpoint = '/api/submit'; // Supabase via src/pages/api/submit.ts
 const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@sarasvi.in';
-const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 ---
 <section class="section alt-bg" id="testimonials">
-  {reviews.length > 0 && (
-    <>
-      <div class="container center reveal">
-        <span class="eyebrow gold"><svg class="icon"><use href="#i-msg"/></svg> From our customers</span>
-        <h2 class="section-title">What Schools <span class="grad-text">Are Saying</span></h2>
-      </div>
-      <div class="container">
-        <div class="t-carousel reveal" id="tCarousel">
-          {reviews.map((r, i) => (
-            <div class={i === 0 ? 't-slide active' : 't-slide'}>
-              <p class="t-quote">"{r.quote}"</p>
-              <div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#BF5000,#8A3A00)" aria-hidden="true">{initials(r.name)}</div><div class="who"><b>{r.name}</b><span>{r.role}</span></div></div>
-            </div>
-          ))}
-          {reviews.length > 1 && (
-            <div class="t-nav">
-              <button id="tPrev" aria-label="Previous review"><svg class="icon"><use href="#i-chevron-l"/></svg></button>
-              <button id="tNext" aria-label="Next review"><svg class="icon"><use href="#i-chevron-r"/></svg></button>
-            </div>
-          )}
-        </div>
-      </div>
-    </>
-  )}
+  <div id="reviewsBlock" hidden>
+    <div class="container center">
+      <span class="eyebrow gold"><svg class="icon"><use href="#i-msg"/></svg> From our customers</span>
+      <h2 class="section-title">What Schools <span class="grad-text">Are Saying</span></h2>
+    </div>
+    <div class="container">
+      <div class="t-carousel" id="tCarousel"></div>
+    </div>
+  </div>
 
   <div class="container fb-wrap reveal" id="feedback">
     <div class="fb-copy">
@@ -90,3 +72,27 @@ const initials = (n: string) => n.split(/\s+/).map((w) => w[0]).join('').slice(0
     </div>
   </div>
 </section>
+<script>
+  // Fills the reviews carousel from approved feedback; the block stays hidden when there is none.
+  (function () {
+    var block = document.getElementById('reviewsBlock'), box = document.getElementById('tCarousel');
+    if (!block || !box) return;
+    var esc = function (v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+    fetch('/api/reviews').then(function (r) { return r.json(); }).then(function (j) {
+      var list = (j && j.reviews) || []; if (!list.length) return;
+      box.innerHTML = list.map(function (r, i) {
+        var ini = esc(String(r.name || '?').split(/\s+/).map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase());
+        var who = [r.role, r.institution].filter(Boolean).join(' · ');
+        return '<div class="t-slide' + (i === 0 ? ' active' : '') + '"><p class="t-quote">\u201C' + esc(r.message) + '\u201D</p><div class="t-person"><div class="t-avatar" style="background:linear-gradient(135deg,#BF5000,#8A3A00)" aria-hidden="true">' + ini + '</div><div class="who"><b>' + esc(r.name) + '</b><span>' + esc(who) + '</span></div></div></div>';
+      }).join('') + (list.length > 1 ? '<div class="t-nav"><button id="tPrev" aria-label="Previous review">\u2039</button><button id="tNext" aria-label="Next review">\u203A</button></div>' : '');
+      block.hidden = false;
+      if (list.length < 2) return;
+      var slides = box.querySelectorAll('.t-slide'), n = 0, timer;
+      function show(x) { n = (x + slides.length) % slides.length; slides.forEach(function (s, k) { s.classList.toggle('active', k === n); }); }
+      function reset() { clearInterval(timer); timer = setInterval(function () { show(n + 1); }, 6500); }
+      document.getElementById('tPrev').onclick = function () { show(n - 1); reset(); };
+      document.getElementById('tNext').onclick = function () { show(n + 1); reset(); };
+      reset();
+    }).catch(function () {});
+  })();
+</script>

@@ -74,3 +74,41 @@ export const str = (v: unknown, max: number): string | null => {
   const s = v.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
   return s ? s.slice(0, max) : null;
 };
+
+// ---------------------------------------------------------------------------
+// Generic PostgREST helpers used by the admin API.
+// ---------------------------------------------------------------------------
+export async function select<T = Record<string, unknown>>(
+  table: string, params: Record<string, string>, range?: [number, number],
+): Promise<{ rows: T[]; total: number }> {
+  const qs = new URLSearchParams(params);
+  const res = await fetch(`${config().url}/rest/v1/${table}?${qs}`, {
+    headers: headers({ Prefer: 'count=exact', ...(range ? { Range: `${range[0]}-${range[1]}`, 'Range-Unit': 'items' } : {}) }),
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!res.ok && res.status !== 206) throw new Error(`supabase select ${table}: ${res.status} ${await res.text().catch(() => '')}`);
+  const total = Number((res.headers.get('content-range') ?? '*/0').split('/')[1]) || 0;
+  return { rows: (await res.json()) as T[], total };
+}
+
+export async function update(table: string, filters: Record<string, string>, patch: Record<string, unknown>): Promise<void> {
+  const res = await fetch(`${config().url}/rest/v1/${table}?${new URLSearchParams(filters)}`, {
+    method: 'PATCH', headers: headers({ Prefer: 'return=minimal' }), body: JSON.stringify(patch), signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) throw new Error(`supabase update ${table}: ${res.status} ${await res.text().catch(() => '')}`);
+}
+
+export async function remove(table: string, filters: Record<string, string>): Promise<void> {
+  const res = await fetch(`${config().url}/rest/v1/${table}?${new URLSearchParams(filters)}`, {
+    method: 'DELETE', headers: headers({ Prefer: 'return=minimal' }), signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) throw new Error(`supabase delete ${table}: ${res.status} ${await res.text().catch(() => '')}`);
+}
+
+export async function rpc<T = unknown>(fn: string, args: Record<string, unknown>): Promise<T> {
+  const res = await fetch(`${config().url}/rest/v1/rpc/${fn}`, {
+    method: 'POST', headers: headers(), body: JSON.stringify(args), signal: AbortSignal.timeout(15000),
+  });
+  if (!res.ok) throw new Error(`supabase rpc ${fn}: ${res.status} ${await res.text().catch(() => '')}`);
+  return (await res.json()) as T;
+}

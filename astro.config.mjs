@@ -41,7 +41,7 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [
     securityHeaders,
-    sitemap({ filter: (page) => !/\/(404|thank-you|api\/.*)\/?$/.test(page) }),
+    sitemap({ filter: (page) => !/\/(404|thank-you|admin|api\/.*)\/?$/.test(page) }),
   ],
   compressHTML: true,
   // CSS is small once compressed; inlining it removes the render-blocking request.
