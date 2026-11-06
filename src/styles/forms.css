@@ -42,7 +42,11 @@ body.menu-open{overflow:hidden}
   .nav-cta-btn{padding:9px 14px;font-size:.84rem}
   .mobile-menu{max-height:calc(100dvh - var(--header-h) - env(safe-area-inset-top))}
 }
-@media (max-width:360px){.nav-cta-btn{display:none}}
+/* Narrow phones: logo + 2 buttons + hamburger don't fit one row, so drop the
+   secondary actions progressively (all of them live in the mobile menu). */
+@media (max-width:480px){.nav-cta{gap:8px}.nav-cta .btn-outline{display:none}.nav{gap:10px}}
+@media (max-width:380px){.nav-cta-btn{display:none}.nav-cta .btn-outline{display:inline-flex}}
+@media (max-width:340px){.nav-cta .btn-outline{display:none}}
 
 /* ===== Forms ===== */
 .form-card{background:#fff;color:var(--ink);border-radius:22px;padding:28px;box-shadow:var(--shadow-lg)}
