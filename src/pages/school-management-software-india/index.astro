@@ -1,0 +1,49 @@
+---
+import Layout from '../../layouts/Layout.astro';
+const site = Astro.site?.origin ?? 'https://www.sarasvi.site';
+const faqs = [
+  ['How much does school management software cost with Sarasvi?', 'Starter is ₹29 per student per month and Growth is ₹59 per student per month, billed annually, GST extra. Teachers and parents are unlimited on every plan, and there are volume discounts for 2,000+ students.'],
+  ['Is there a free trial?', 'Yes. Every plan includes a 30-day free trial, and no credit card is required.'],
+  ['Can parents pay school fees online?', 'Yes. Parents pay fees inside the app by UPI, card or net banking, and reminders are included.'],
+  ['Does it work on phone and computer?', 'Yes. Sarasvi runs in the browser on a computer and as an app on Android and iOS.'],
+];
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+}, {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Sarasvi', item: site + '/' },
+    { '@type': 'ListItem', position: 2, name: 'School management software for India', item: site + '/school-management-software-india/' },
+  ],
+}];
+---
+<Layout title="School Management Software for India: Attendance, Fees, Exams | Sarasvi" description="School management software for Indian schools: attendance, exams, fee collection by UPI, a parent app and AI learning in one platform. From ₹29 per student per month, with a 30-day free trial." path="/school-management-software-india/" schema={schema}>
+  <main class="legal container" id="main" style="max-width:860px">
+    <p><a href="/">← Sarasvi</a></p>
+    <h1>School Management Software for India</h1>
+    <p>Sarasvi is one platform for the daily work of a school: attendance, timetable, assignments, exams and results, fees, library, transport, and updates for parents. It works on a computer and on a phone, so teachers, students, parents and administrators all use the same system.</p>
+
+    <h2>What a school can run on Sarasvi</h2>
+    <ul>
+      <li><b>Attendance and timetable:</b> smart attendance, timetable, syllabus and academic structure.</li>
+      <li><b>Exams and results:</b> exam suite, question bank and past papers, and assignments with copy check.</li>
+      <li><b>Fees and payments:</b> online fee collection by UPI, card or net banking, with reminders.</li>
+      <li><b>Parent app:</b> notifications by app, SMS and email.</li>
+      <li><b>Library and transport:</b> both included from the Starter plan.</li>
+      <li><b>AI learning (Growth plan):</b> an AI study helper, homework scanner, predictions and adaptive learning paths.</li>
+      <li><b>Your school's own look:</b> your logo, colours and web address on the Growth plan.</li>
+    </ul>
+
+    <h2>Pricing</h2>
+    <p>Starter is <b>₹29 per student per month</b>. Growth, with the full AI suite, gamification, live classes and branding, is <b>₹59 per student per month</b>. Enterprise for groups, boards and universities is custom. Billed annually, GST extra, with volume discounts for 2,000+ students. Every plan has a <b>30-day free trial</b>, and no credit card is required.</p>
+    <p><a class="btn btn-primary" href="/#pricing">See all plan details</a> &nbsp; <a class="btn btn-outline" href="/#book-demo">Book a free demo</a></p>
+
+    <h2>Frequently asked questions</h2>
+    {faqs.map(([q, a]) => <><h3>{q}</h3><p>{a}</p></>)}
+
+    <p>Questions? Email <a href="mailto:contact@sarasvi.site">contact@sarasvi.site</a> or call <a href="tel:+919226002903">+91 92260 02903</a>.</p>
+  </main>
+</Layout>
