@@ -1,4 +1,5 @@
 ---
+const loginUrl = import.meta.env.PUBLIC_DASHBOARD_URL || 'https://dashboard.sarasvi.site';
 const links = [
   ['#tour', 'Product Tour'],
   ['#ai', 'AI Learning'],
@@ -23,6 +24,7 @@ const links = [
       </ul>
     </nav>
     <div class="nav-cta">
+      <a href={loginUrl} class="btn btn-outline btn-sm">Login</a>
       <a href="#book-demo" class="btn btn-primary btn-sm nav-cta-btn">Book a Demo</a>
       <button class="hamburger" id="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
         <span></span><span></span><span></span>
@@ -36,6 +38,7 @@ const links = [
       </ul>
     </nav>
     <div class="mm-actions">
+      <a href={loginUrl} class="btn btn-outline">Login</a>
       <a href="#book-demo" class="btn btn-primary">Start 30-Day Free Trial</a>
       <a href="#pricing" class="btn btn-outline">View Pricing</a>
     </div>
