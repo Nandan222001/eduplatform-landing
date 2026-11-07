@@ -1,5 +1,5 @@
 ---
-const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'hello@sarasvi.example';
+const email = import.meta.env.PUBLIC_CONTACT_EMAIL ?? 'contact@sarasvi.site';
 const endpoint = '/api/submit'; // Supabase via src/pages/api/submit.ts
 
 const columns = [
@@ -32,6 +32,7 @@ const columns = [
     links: [
       ['#book-demo', 'Contact Sales'],
       ['#faq', 'FAQ'],
+      ['/school-management-software-india/', 'School Software for India'],
       ['#book-demo', 'Book a Demo'],
       ['/privacy/', 'Privacy Policy'],
       ['/terms/', 'Terms of Service'],
@@ -98,6 +99,8 @@ const badges = ['Private & secure', 'Always on', 'Your data stays yours', 'Made 
         <a href="/privacy/">Privacy</a>
         <a href="/terms/">Terms</a>
         <a href={`mailto:${email}`}>{email}</a>
+        <a href="tel:+919226002903">+91 92260 02903</a>
+        <a href="https://wa.me/919226002903" target="_blank" rel="noopener">WhatsApp</a>
       </nav>
     </div>
   </div>

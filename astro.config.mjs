@@ -28,11 +28,11 @@ const securityHeaders = {
 };
 
 // The production URL, used for canonical links, sitemap, robots.txt and the share
-// (Open Graph) image. SITE_URL wins; otherwise Vercel's own production domain
-// (VERCEL_PROJECT_PRODUCTION_URL, set automatically at build time), so share
-// previews never point at a domain that isn't live.
-const vercelDomain = process.env.VERCEL_PROJECT_PRODUCTION_URL;
-const site = process.env.SITE_URL || (vercelDomain ? `https://${vercelDomain}` : 'https://sarasvi.nmtsolution.com');
+// (Open Graph) image. SITE_URL wins. The fallback is the live domain itself, NOT
+// Vercel's VERCEL_PROJECT_PRODUCTION_URL (that can be an old/parked domain), so
+// canonicals never point at a host that isn't serving the site. The bare domain
+// sarasvi.site redirects to www, so www is the canonical host.
+const site = process.env.SITE_URL || 'https://www.sarasvi.site';
 
 export default defineConfig({
   site,
