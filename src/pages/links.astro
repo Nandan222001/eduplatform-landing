@@ -1,0 +1,50 @@
+---
+// Link-in-bio page for Instagram (@nmt_solution). Not indexed; the newest blog article is picked up automatically.
+import Layout from '../layouts/Layout.astro';
+import { getPosts } from '../lib/blog';
+const latest = getPosts()[0];
+const wa = (msg: string) => `https://wa.me/919226002903?text=${encodeURIComponent(msg)}`;
+const links = [
+  { href: 'https://cal.com/nandan-singh-ptfgwh/30min', label: 'Book a free 30-min demo call', note: 'Pick a time that suits you', primary: true },
+  { href: '/#book-demo', label: 'Sarasvi: start the 30-day free trial', note: 'School management app · no credit card' },
+  { href: wa("Hi NMT Solutions, I saw your Instagram. I'd like a free concept for my business."), label: 'Get a free concept for your business', note: 'Apps, AI chatbots, automation, websites' },
+  ...(latest ? [{ href: `/blog/${latest.slug}/`, label: `New guide: ${latest.meta.title}`, note: 'Sarasvi blog' }] : []),
+  { href: '/blog/', label: 'All guides for schools', note: 'Fees, attendance, parents, exams' },
+  { href: wa('Hi, I have a question.'), label: 'WhatsApp us', note: '+91 92260 02903' },
+  { href: 'mailto:contact@sarasvi.site', label: 'Email us', note: 'contact@sarasvi.site' },
+];
+---
+<Layout title="NMT Solutions × Sarasvi | Links" description="Book a free demo, try Sarasvi free for 30 days, or get a free concept for your business." path="/links/" noindex>
+  <main class="links" id="main">
+    <img class="mark" src="/images/brand/sarasvi-mark.png" alt="" width="72" height="72" />
+    <h1>NMT Solutions <span>×</span> Sarasvi</h1>
+    <p class="bio">AI apps, automation and websites for Indian businesses, and Sarasvi, the all-in-one school app.</p>
+    <ul>
+      {links.map((l) => (
+        <li>
+          <a class:list={['lk', { primary: l.primary }]} href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel={l.href.startsWith('http') ? 'noopener' : undefined}>
+            <span class="t">{l.label}</span>
+            <span class="n">{l.note}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="foot">Pune · Mumbai · Nashik · serving schools and businesses across India</p>
+  </main>
+</Layout>
+
+<style>
+  .links{min-height:100vh;max-width:560px;margin:0 auto;padding:clamp(36px,8vw,64px) 18px 48px;text-align:center}
+  .mark{border-radius:20px;box-shadow:var(--shadow-md);margin-bottom:16px}
+  h1{font-size:clamp(1.6rem,6vw,2.1rem);margin:0 0 8px}
+  h1 span{color:var(--primary)}
+  .bio{color:var(--ink-2);margin:0 auto 28px;max-width:420px;line-height:1.5}
+  ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
+  .lk{display:flex;flex-direction:column;gap:3px;padding:16px 20px;border-radius:18px;background:var(--paper);border:1.5px solid var(--line);box-shadow:var(--shadow-sm);color:var(--ink);text-decoration:none;transition:transform .15s,box-shadow .15s}
+  .lk:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+  .lk .t{font-weight:700;font-size:1.02rem;line-height:1.35}
+  .lk .n{font-size:.86rem;color:var(--ink-2)}
+  .lk.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  .lk.primary .n{color:#ffe3cc}
+  .foot{margin-top:30px;font-size:.85rem;color:var(--ink-2)}
+</style>
