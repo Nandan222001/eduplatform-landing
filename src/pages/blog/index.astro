@@ -1,0 +1,60 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getPosts, fmtDate } from '../../lib/blog';
+const site = Astro.site?.origin ?? 'https://www.sarasvi.site';
+const posts = getPosts();
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Sarasvi Blog',
+  url: site + '/blog/',
+  publisher: { '@type': 'Organization', name: 'Sarasvi', url: site + '/' },
+  blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.meta.title, url: `${site}/blog/${p.slug}/`, datePublished: p.meta.date })),
+}];
+---
+<Layout title="Sarasvi Blog: Practical Guides for Indian Schools" description="Practical guides for school owners, principals and administrators in India: fees, attendance, parent communication, exams and using AI in school." path="/blog/" schema={schema}>
+  <main class="blog container" id="main">
+    <p class="crumb"><a href="/">← Sarasvi</a></p>
+    <h1>Sarasvi Blog</h1>
+    <p class="lede">Practical guides for school owners, principals and administrators in India.</p>
+    {posts.length === 0 && <p>The first articles are on their way.</p>}
+    <ul class="grid">
+      {posts.map((p) => (
+        <li class="card">
+          <a href={`/blog/${p.slug}/`}>
+            {p.meta.cover && <img src={p.meta.cover} alt={p.meta.coverAlt ?? ''} width="1200" height="675" loading="lazy" decoding="async" />}
+            <div class="body">
+              <time datetime={p.meta.date}>{fmtDate(p.meta.date)} · {Math.max(1, Math.round(p.words / 200))} min read</time>
+              <h2>{p.meta.title}</h2>
+              <p>{p.meta.description}</p>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="cta">
+      <h2>See Sarasvi running in your school</h2>
+      <p>30-day free trial, no credit card. Free data migration from Excel.</p>
+      <a class="btn btn-primary" href="/#book-demo">Book a free demo</a>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .blog{padding:calc(var(--header-h) + clamp(32px,5vw,56px)) var(--pad-x) clamp(56px,7vw,80px);max-width:1100px}
+  .crumb a{color:var(--ink-2)}
+  h1{font-size:clamp(2rem,4vw,2.8rem);margin:8px 0 6px}
+  .lede{color:var(--ink-2);font-size:1.1rem;margin-bottom:clamp(28px,4vw,44px)}
+  .grid{list-style:none;padding:0;margin:0;display:grid;gap:var(--gap-card);grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))}
+  .card{background:var(--paper);border-radius:var(--r-card);box-shadow:var(--shadow-sm);overflow:hidden;transition:box-shadow .2s,transform .2s}
+  .card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+  .card a{display:block;color:inherit;text-decoration:none;height:100%}
+  .card img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block}
+  .body{padding:var(--pad-card)}
+  .body time{font-size:.85rem;color:var(--ink-2)}
+  .body h2{font-size:1.25rem;line-height:1.3;margin:8px 0}
+  .body p{color:var(--ink-2);margin:0}
+  .cta{margin-top:clamp(48px,6vw,72px);padding:var(--pad-card);border-radius:var(--r-card);background:var(--secondary-dark);color:#fff;text-align:center}
+  .cta h2{color:#fff;margin:0 0 6px}
+  .cta p{color:var(--secondary-light);margin:0 0 18px}
+</style>
